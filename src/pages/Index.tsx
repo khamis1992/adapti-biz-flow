@@ -2,10 +2,33 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Building2, ArrowRight, Globe, Shield, Users } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useTenant } from '@/hooks/useTenant';
 import heroLogo from '@/assets/erp-hero-logo.jpg';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { tenant, loading: tenantLoading } = useTenant();
+
+  if (authLoading || tenantLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Redirect authenticated users based on their onboarding status
+  if (user) {
+    if (tenant) {
+      navigate('/dashboard');
+      return null;
+    } else {
+      navigate('/onboarding');
+      return null;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-accent/30">
@@ -27,11 +50,11 @@ const Index = () => {
             <div className="flex gap-4">
               <Button 
                 size="lg" 
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/auth')}
                 className="text-lg px-8 py-4 h-auto"
               >
                 <Building2 className="w-5 h-5 mr-2" />
-                ابدأ الإعداد الآن
+                ابدأ الآن
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button 
@@ -104,11 +127,11 @@ const Index = () => {
             <CardContent>
               <Button 
                 size="lg" 
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/auth')}
                 className="w-full text-lg py-6"
               >
                 <Building2 className="w-5 h-5 mr-2" />
-                ابدأ معالج الإعداد
+                ابدأ الآن
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </CardContent>

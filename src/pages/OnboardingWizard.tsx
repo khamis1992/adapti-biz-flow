@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +18,22 @@ import ModuleSelectionCard from '@/components/onboarding/ModuleSelectionCard';
 // All interfaces and data are now imported from separate files
 
 export default function OnboardingWizard() {
+  const { user, loading, completeOnboarding } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Redirect to auth if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  
   const [state, setState] = useState<OnboardingState>({
     currentStep: 1,
     selectedBusinessType: '',
@@ -98,6 +116,33 @@ export default function OnboardingWizard() {
       ...prev,
       formData: { ...prev.formData, ...updates }
     }));
+  };
+
+  const handleCreateSystem = async () => {
+    setIsSubmitting(true);
+    try {
+      const onboardingData = {
+        selectedBusinessType: state.selectedBusinessType,
+        selectedModules: state.selectedModules,
+        companyName: state.formData.companyName,
+        currency: state.formData.currency,
+        country: state.formData.country,
+        needsAccounting: state.formData.needsAccounting,
+        needsPayroll: state.formData.needsPayroll,
+        defaultUsers: state.formData.defaultUsers
+      };
+
+      const { error } = await completeOnboarding(onboardingData);
+      
+      if (!error) {
+        // Redirect to dashboard will happen automatically
+        window.location.href = '/dashboard';
+      }
+    } catch (error) {
+      console.error('Error creating system:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getCurrentStepData = () => {
@@ -417,17 +462,14 @@ export default function OnboardingWizard() {
               ) : (
                 <Button 
                   className="flex items-center gap-2 bg-gradient-primary hover:bg-gradient-primary/90"
-                  onClick={() => {
-                    // Handle final setup
-                    console.log('Setting up system with:', {
-                      businessType: state.selectedBusinessType,
-                      modules: state.selectedModules,
-                      settings: state.formData
-                    });
-                  }}
+                  onClick={handleCreateSystem}
+                  disabled={isSubmitting}
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  {state.isRTL ? 'إنشاء النظام' : 'Create System'}
+                  {isSubmitting 
+                    ? (state.isRTL ? 'جاري الإعداد...' : 'Setting up...')
+                    : (state.isRTL ? 'إنشاء النظام' : 'Create System')
+                  }
                 </Button>
               )}
             </div>

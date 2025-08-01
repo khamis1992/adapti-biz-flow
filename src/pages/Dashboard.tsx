@@ -1,296 +1,205 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
-  BarChart3, 
-  Users, 
   Car, 
-  Building2, 
+  Users, 
+  FileText, 
   DollarSign, 
-  TrendingUp, 
+  Settings, 
+  UserPlus,
   Calendar,
-  Settings,
-  LogOut,
-  Bell,
-  Search
+  ClipboardList,
+  TrendingUp,
+  BarChart3
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { useTenant } from '@/hooks/useTenant';
 
-const Dashboard = () => {
-  const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  const { toast } = useToast();
+export default function Dashboard() {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { tenant, modules, loading: tenantLoading, dashboardData } = useTenant();
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-        } else {
-          navigate('/auth');
-        }
-        setIsLoading(false);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-      } else {
-        navigate('/auth');
-      }
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        title: 'خطأ في تسجيل الخروج',
-        description: error.message,
-        variant: 'destructive'
-      });
-    } else {
-      toast({
-        title: 'تم تسجيل الخروج بنجاح',
-        description: 'نراك قريباً'
-      });
-      navigate('/');
-    }
-  };
-
-  if (isLoading) {
+  if (authLoading || tenantLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Building2 className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-          <p className="text-muted-foreground">جاري تحميل لوحة التحكم...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (!tenant) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  const enabledModules = modules.filter(m => m.is_enabled);
+  
+  const getModuleIcon = (moduleId: string) => {
+    switch (moduleId) {
+      case 'fleet_management': return <Car className="h-6 w-6" />;
+      case 'customer_management': return <Users className="h-6 w-6" />;
+      case 'contract_management': return <FileText className="h-6 w-6" />;
+      case 'accounting': return <DollarSign className="h-6 w-6" />;
+      case 'hr_management': return <UserPlus className="h-6 w-6" />;
+      case 'payroll': return <BarChart3 className="h-6 w-6" />;
+      case 'attendance': return <Calendar className="h-6 w-6" />;
+      case 'leaves': return <ClipboardList className="h-6 w-6" />;
+      case 'financial_reports': return <TrendingUp className="h-6 w-6" />;
+      default: return <Settings className="h-6 w-6" />;
+    }
+  };
+
+  const getModuleName = (moduleId: string) => {
+    const moduleNames: Record<string, string> = {
+      'fleet_management': 'إدارة الأسطول',
+      'customer_management': 'إدارة العملاء',
+      'contract_management': 'إدارة العقود',
+      'accounting': 'المحاسبة',
+      'hr_management': 'إدارة الموارد البشرية',
+      'payroll': 'الرواتب',
+      'attendance': 'الحضور والانصراف',
+      'leaves': 'إدارة الإجازات',
+      'financial_reports': 'التقارير المالية',
+      'inventory': 'إدارة المخزون',
+      'purchasing': 'المشتريات',
+      'invoices': 'الفواتير'
+    };
+    return moduleNames[moduleId] || moduleId;
+  };
+
+  const getModuleRoute = (moduleId: string) => {
+    const routes: Record<string, string> = {
+      'fleet_management': '/fleet',
+      'customer_management': '/customers',
+      'contract_management': '/contracts',
+      'accounting': '/accounting',
+      'hr_management': '/hr',
+      'payroll': '/payroll',
+      'attendance': '/attendance',
+      'leaves': '/leaves',
+      'financial_reports': '/financial-reports',
+      'inventory': '/inventory',
+      'purchasing': '/purchasing',
+      'invoices': '/invoices'
+    };
+    return routes[moduleId] || '/settings';
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card shadow-soft">
+      <div className="border-b bg-card">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 space-x-reverse">
-              <Building2 className="w-8 h-8 text-primary" />
-              <div>
-                <h1 className="text-xl font-bold">نظام إدارة الأعمال</h1>
-                <p className="text-sm text-muted-foreground">لوحة التحكم الرئيسية</p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold">{tenant.name}</h1>
+              <p className="text-muted-foreground">لوحة التحكم الرئيسية</p>
             </div>
-
-            <div className="flex items-center space-x-4 space-x-reverse">
-              <Button variant="ghost" size="sm">
-                <Search className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Bell className="w-4 h-4" />
-                <Badge variant="destructive" className="w-2 h-2 p-0 ml-1"></Badge>
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
-                <Settings className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                خروج
-              </Button>
-            </div>
+            <Button variant="outline" onClick={signOut}>
+              تسجيل الخروج
+            </Button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">
-            مرحباً، {user?.user_metadata?.full_name || user?.email}
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            إليك ملخص سريع عن أداء نشاطك التجاري اليوم
-          </p>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="hover:shadow-medium transition-shadow">
+      <div className="container mx-auto px-6 py-8">
+        {/* Statistics Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">الإيرادات اليومية</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">٢٤,٥٠٠ د.ك</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-success">+20.1%</span> من الأمس
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-medium transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">العقود النشطة</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">١٢٣</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-success">+5</span> عقود جديدة
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-medium transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">المركبات المتاحة</CardTitle>
+              <CardTitle className="text-sm font-medium">المركبات</CardTitle>
               <Car className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">٤٥/٦٨</div>
-              <p className="text-xs text-muted-foreground">
-                ٢٣ مركبة مؤجرة حالياً
-              </p>
+              <div className="text-2xl font-bold">{dashboardData?.vehicles || 0}</div>
+              <p className="text-xs text-muted-foreground">إجمالي المركبات</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-medium transition-shadow">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">معدل الإشغال</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">العملاء</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">٧٨٪</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-success">+12%</span> هذا الشهر
-              </p>
+              <div className="text-2xl font-bold">{dashboardData?.customers || 0}</div>
+              <p className="text-xs text-muted-foreground">إجمالي العملاء</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">العقود</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardData?.contracts || 0}</div>
+              <p className="text-xs text-muted-foreground">العقود النشطة</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">الموظفون</CardTitle>
+              <UserPlus className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardData?.employees || 0}</div>
+              <p className="text-xs text-muted-foreground">إجمالي الموظفين</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Modules Grid */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {enabledModules.map((module) => (
+            <Card key={module.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  {getModuleIcon(module.module_id)}
+                </div>
+                <CardTitle className="text-lg">{getModuleName(module.module_id)}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => window.location.href = getModuleRoute(module.module_id)}
+                >
+                  فتح الوحدة
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Building2 className="w-5 h-5 mr-2" />
-                الإجراءات السريعة
-              </CardTitle>
-              <CardDescription>
-                الوظائف الأكثر استخداماً في النظام
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/customers')}>
-                <Users className="w-6 h-6 mb-2" />
-                إدارة العملاء
-              </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/contracts')}>
-                <Car className="w-6 h-6 mb-2" />
-                إدارة العقود
-              </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/invoices')}>
-                <DollarSign className="w-6 h-6 mb-2" />
-                الفواتير
-              </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/fleet')}>
-                <BarChart3 className="w-6 h-6 mb-2" />
-                إدارة الأسطول
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                التنبيهات والمهام
-              </CardTitle>
-              <CardDescription>
-                المهام المعلقة والتنبيهات المهمة
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="w-2 h-2 bg-warning rounded-full mt-2 flex-shrink-0"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">انتهاء تأمين المركبة ABC-123</p>
-                  <p className="text-xs text-muted-foreground">خلال ٣ أيام</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="w-2 h-2 bg-error rounded-full mt-2 flex-shrink-0"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">مخالفة مرورية غير مدفوعة</p>
-                  <p className="text-xs text-muted-foreground">مركبة DEF-456</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="w-2 h-2 bg-success rounded-full mt-2 flex-shrink-0"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">صيانة دورية مجدولة</p>
-                  <p className="text-xs text-muted-foreground">٥ مركبات غداً</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">إجراءات سريعة</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <UserPlus className="h-6 w-6" />
+              إضافة عميل جديد
+            </Button>
+            <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <Car className="h-6 w-6" />
+              إضافة مركبة جديدة
+            </Button>
+            <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <FileText className="h-6 w-6" />
+              إنشاء عقد جديد
+            </Button>
+            <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <Settings className="h-6 w-6" />
+              الإعدادات
+            </Button>
+          </div>
         </div>
-
-        {/* System Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle>حالة النظام</CardTitle>
-            <CardDescription>
-              نظرة عامة على وحدات النظام والخدمات
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-medium">المحاسبة</p>
-                  <p className="text-sm text-muted-foreground">جميع الخدمات تعمل</p>
-                </div>
-                <Badge variant="default" className="bg-success text-success-foreground">
-                  نشط
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-medium">إدارة العقود</p>
-                  <p className="text-sm text-muted-foreground">جميع الخدمات تعمل</p>
-                </div>
-                <Badge variant="default" className="bg-success text-success-foreground">
-                  نشط
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-medium">نظام التقارير</p>
-                  <p className="text-sm text-muted-foreground">جميع الخدمات تعمل</p>
-                </div>
-                <Badge variant="default" className="bg-success text-success-foreground">
-                  نشط
-                </Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </main>
+      </div>
     </div>
   );
-};
-
-export default Dashboard;
+}
