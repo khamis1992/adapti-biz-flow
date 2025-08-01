@@ -28,6 +28,7 @@ import { AccountDetails } from '@/components/accounting/AccountDetails';
 import { JournalEntryDialog } from '@/components/accounting/JournalEntryDialog';
 import { JournalEntriesList } from '@/components/accounting/JournalEntriesList';
 import TrialBalance from '@/components/accounting/TrialBalance';
+import { BalanceSheet } from '@/components/accounting/BalanceSheet';
 
 interface Account {
   id: string;
@@ -175,7 +176,7 @@ const Accounting = () => {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="chart-of-accounts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="chart-of-accounts" className="flex items-center">
               <BookOpen className="w-4 h-4 mr-2" />
               دليل الحسابات
@@ -187,6 +188,10 @@ const Accounting = () => {
             <TabsTrigger value="trial-balance" className="flex items-center">
               <Calculator className="w-4 h-4 mr-2" />
               ميزان المراجعة
+            </TabsTrigger>
+            <TabsTrigger value="balance-sheet" className="flex items-center">
+              <Building2 className="w-4 h-4 mr-2" />
+              قائمة المركز المالي
             </TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center">
               <TrendingUp className="w-4 h-4 mr-2" />
@@ -386,6 +391,19 @@ const Accounting = () => {
           {/* Trial Balance */}
           <TabsContent value="trial-balance">
             <TrialBalance 
+              onViewAccountDetails={(accountId) => {
+                const account = accounts.find(acc => acc.id === accountId);
+                if (account) {
+                  setSelectedAccount(account);
+                  setShowDetailsDialog(true);
+                }
+              }} 
+            />
+          </TabsContent>
+
+          {/* Balance Sheet */}
+          <TabsContent value="balance-sheet">
+            <BalanceSheet 
               onViewAccountDetails={(accountId) => {
                 const account = accounts.find(acc => acc.id === accountId);
                 if (account) {
