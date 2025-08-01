@@ -40,6 +40,7 @@ import Attendance from "./pages/Attendance";
 import Leaves from "./pages/Leaves";
 import Payroll from "./pages/Payroll";
 import Payments from "./pages/Payments";
+import WorkOrders from "./pages/WorkOrders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -314,6 +315,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Payments />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/work-orders" 
+                  element={
+                    <ProtectedRoute>
+                      <WorkOrders />
                     </ProtectedRoute>
                   } 
                 />
