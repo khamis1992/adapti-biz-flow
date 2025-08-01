@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from '@/hooks/useAuth';
 import { TenantProvider } from '@/hooks/useTenant';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import Index from "./pages/Index";
 import OnboardingWizard from "./pages/OnboardingWizard";
 import Auth from "./pages/Auth";
@@ -37,46 +39,230 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TenantProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/onboarding" element={<OnboardingWizard />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/accounting" element={<Accounting />} />
-          <Route path="/invoices" element={<Invoices />} />
-          <Route path="/financial-reports" element={<FinancialReports />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/purchasing" element={<Purchasing />} />
-          <Route path="/fleet" element={<Fleet />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/customers/new" element={<AddCustomer />} />
-          <Route path="/customers/import" element={<ImportCustomers />} />
-          <Route path="/customers/:id" element={<CustomerDetails />} />
-          <Route path="/customers/:id/edit" element={<EditCustomer />} />
-          <Route path="/contracts" element={<Contracts />} />
-          <Route path="/contracts/new" element={<CreateContract />} />
-          <Route path="/contracts/:id" element={<ContractDetails />} />
-          <Route path="/contracts/:id/edit" element={<EditContract />} />
-          <Route path="/contracts/templates" element={<ContractTemplates />} />
-          <Route path="/contracts/reports" element={<ContractReports />} />
-          <Route path="/hr" element={<HR />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path="/leaves" element={<Leaves />} />
-          <Route path="/payroll" element={<Payroll />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-      </TenantProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <TenantProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                {/* Public routes - no authentication required */}
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                
+                {/* Auth required, no tenant required */}
+                <Route 
+                  path="/onboarding" 
+                  element={
+                    <ProtectedRoute requireTenant={false}>
+                      <OnboardingWizard />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Protected routes - auth + tenant required */}
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/settings" 
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/accounting" 
+                  element={
+                    <ProtectedRoute>
+                      <Accounting />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/invoices" 
+                  element={
+                    <ProtectedRoute>
+                      <Invoices />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/financial-reports" 
+                  element={
+                    <ProtectedRoute>
+                      <FinancialReports />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/inventory" 
+                  element={
+                    <ProtectedRoute>
+                      <Inventory />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/purchasing" 
+                  element={
+                    <ProtectedRoute>
+                      <Purchasing />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/fleet" 
+                  element={
+                    <ProtectedRoute>
+                      <Fleet />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/customers" 
+                  element={
+                    <ProtectedRoute>
+                      <Customers />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/customers/new" 
+                  element={
+                    <ProtectedRoute>
+                      <AddCustomer />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/customers/add" 
+                  element={
+                    <ProtectedRoute>
+                      <AddCustomer />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/customers/import" 
+                  element={
+                    <ProtectedRoute>
+                      <ImportCustomers />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/customers/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <CustomerDetails />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/customers/:id/edit" 
+                  element={
+                    <ProtectedRoute>
+                      <EditCustomer />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/contracts" 
+                  element={
+                    <ProtectedRoute>
+                      <Contracts />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/contracts/new" 
+                  element={
+                    <ProtectedRoute>
+                      <CreateContract />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/contracts/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <ContractDetails />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/contracts/:id/edit" 
+                  element={
+                    <ProtectedRoute>
+                      <EditContract />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/contracts/templates" 
+                  element={
+                    <ProtectedRoute>
+                      <ContractTemplates />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/contracts/reports" 
+                  element={
+                    <ProtectedRoute>
+                      <ContractReports />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/hr" 
+                  element={
+                    <ProtectedRoute>
+                      <HR />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/attendance" 
+                  element={
+                    <ProtectedRoute>
+                      <Attendance />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/leaves" 
+                  element={
+                    <ProtectedRoute>
+                      <Leaves />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/payroll" 
+                  element={
+                    <ProtectedRoute>
+                      <Payroll />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Catch-all route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </TenantProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   </QueryClientProvider>
 );
 

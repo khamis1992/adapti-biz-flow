@@ -40,20 +40,27 @@ export function TenantProvider({ children }: { children: ReactNode }) {
 
   const fetchTenant = async () => {
     if (!user || !session) {
+      setTenant(null);
+      setModules([]);
+      setDashboardData(null);
       setLoading(false);
       return;
     }
 
     try {
-      // Fetch tenant data
+      setLoading(true);
+      
+      // Fetch tenant data - use maybeSingle to avoid errors when no tenant exists
       const { data: tenantData, error: tenantError } = await supabase
         .from('tenants')
         .select('*')
-        .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (tenantError && tenantError.code !== 'PGRST116') {
+      if (tenantError) {
         console.error('Error fetching tenant:', tenantError);
+        setTenant(null);
+        setModules([]);
+        setDashboardData(null);
         setLoading(false);
         return;
       }
@@ -61,7 +68,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
       setTenant(tenantData);
 
       if (tenantData) {
-        // Fetch tenant modules
+        // Fetch tenant modules - cast to any to handle type mismatch
         const { data: modulesData, error: modulesError } = await supabase
           .from('tenant_modules' as any)
           .select('*')
@@ -69,12 +76,19 @@ export function TenantProvider({ children }: { children: ReactNode }) {
 
         if (modulesError) {
           console.error('Error fetching modules:', modulesError);
+          setModules([]);
         } else {
-          setModules((modulesData as any) || []);
+          setModules((modulesData as unknown as TenantModule[]) || []);
         }
+      } else {
+        setModules([]);
+        setDashboardData(null);
       }
     } catch (error) {
       console.error('Error in fetchTenant:', error);
+      setTenant(null);
+      setModules([]);
+      setDashboardData(null);
     } finally {
       setLoading(false);
     }

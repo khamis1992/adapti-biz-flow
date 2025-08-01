@@ -1,6 +1,6 @@
-import { Navigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Car, 
   Users, 
@@ -11,30 +11,17 @@ import {
   Calendar,
   ClipboardList,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  Plus
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
-  const { user, loading: authLoading, signOut } = useAuth();
-  const { tenant, modules, loading: tenantLoading, dashboardData } = useTenant();
-
-  if (authLoading || tenantLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (!tenant) {
-    return <Navigate to="/onboarding" replace />;
-  }
+  const { signOut } = useAuth();
+  const { tenant, modules, loading, dashboardData } = useTenant();
+  const navigate = useNavigate();
 
   const enabledModules = modules.filter(m => m.is_enabled);
   
@@ -115,7 +102,11 @@ export default function Dashboard() {
               <Car className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.vehicles_count || 0}</div>
+              {loading ? (
+                <Skeleton className="h-7 w-16" />
+              ) : (
+                <div className="text-2xl font-bold">{dashboardData?.vehicles_count || 0}</div>
+              )}
               <p className="text-xs text-muted-foreground">إجمالي المركبات</p>
             </CardContent>
           </Card>
@@ -126,7 +117,11 @@ export default function Dashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.customers_count || 0}</div>
+              {loading ? (
+                <Skeleton className="h-7 w-16" />
+              ) : (
+                <div className="text-2xl font-bold">{dashboardData?.customers_count || 0}</div>
+              )}
               <p className="text-xs text-muted-foreground">إجمالي العملاء</p>
             </CardContent>
           </Card>
@@ -137,7 +132,11 @@ export default function Dashboard() {
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.contracts_count || 0}</div>
+              {loading ? (
+                <Skeleton className="h-7 w-16" />
+              ) : (
+                <div className="text-2xl font-bold">{dashboardData?.active_contracts || 0}</div>
+              )}
               <p className="text-xs text-muted-foreground">العقود النشطة</p>
             </CardContent>
           </Card>
@@ -148,7 +147,11 @@ export default function Dashboard() {
               <UserPlus className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.employees_count || 0}</div>
+              {loading ? (
+                <Skeleton className="h-7 w-16" />
+              ) : (
+                <div className="text-2xl font-bold">{dashboardData?.employees_count || 0}</div>
+              )}
               <p className="text-xs text-muted-foreground">إجمالي الموظفين</p>
             </CardContent>
           </Card>
@@ -168,7 +171,7 @@ export default function Dashboard() {
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  onClick={() => window.location.href = getModuleRoute(module.module_id)}
+                  onClick={() => navigate(getModuleRoute(module.module_id))}
                 >
                   فتح الوحدة
                 </Button>
@@ -181,19 +184,35 @@ export default function Dashboard() {
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">إجراءات سريعة</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Button variant="outline" className="h-20 flex flex-col gap-2">
+            <Button 
+              variant="outline" 
+              className="h-20 flex flex-col gap-2"
+              onClick={() => navigate('/customers/add')}
+            >
               <UserPlus className="h-6 w-6" />
               إضافة عميل جديد
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col gap-2">
+            <Button 
+              variant="outline" 
+              className="h-20 flex flex-col gap-2"
+              onClick={() => navigate('/fleet')}
+            >
               <Car className="h-6 w-6" />
               إضافة مركبة جديدة
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col gap-2">
+            <Button 
+              variant="outline" 
+              className="h-20 flex flex-col gap-2"
+              onClick={() => navigate('/contracts')}
+            >
               <FileText className="h-6 w-6" />
               إنشاء عقد جديد
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col gap-2">
+            <Button 
+              variant="outline" 
+              className="h-20 flex flex-col gap-2"
+              onClick={() => navigate('/settings')}
+            >
               <Settings className="h-6 w-6" />
               الإعدادات
             </Button>
