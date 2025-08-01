@@ -29,6 +29,7 @@ import { JournalEntryDialog } from '@/components/accounting/JournalEntryDialog';
 import { JournalEntriesList } from '@/components/accounting/JournalEntriesList';
 import TrialBalance from '@/components/accounting/TrialBalance';
 import { BalanceSheet } from '@/components/accounting/BalanceSheet';
+import IncomeStatement from '@/components/accounting/IncomeStatement';
 
 interface Account {
   id: string;
@@ -176,7 +177,7 @@ const Accounting = () => {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="chart-of-accounts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="chart-of-accounts" className="flex items-center">
               <BookOpen className="w-4 h-4 mr-2" />
               دليل الحسابات
@@ -193,9 +194,13 @@ const Accounting = () => {
               <Building2 className="w-4 h-4 mr-2" />
               قائمة المركز المالي
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center">
+            <TabsTrigger value="income-statement" className="flex items-center">
               <TrendingUp className="w-4 h-4 mr-2" />
-              التقارير المالية
+              قائمة الدخل
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="flex items-center">
+              <FileText className="w-4 h-4 mr-2" />
+              تقارير أخرى
             </TabsTrigger>
           </TabsList>
 
@@ -412,6 +417,11 @@ const Accounting = () => {
                 }
               }} 
             />
+          </TabsContent>
+
+          {/* Income Statement */}
+          <TabsContent value="income-statement">
+            <IncomeStatement />
           </TabsContent>
 
           {/* Reports */}
