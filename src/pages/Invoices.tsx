@@ -29,12 +29,15 @@ import { useTenant } from '@/hooks/useTenant';
 interface Invoice {
   id: string;
   invoice_number: string;
-  customer_name: string;
+  customer_id: string;
   total_amount: number;
-  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  status: 'draft' | 'sent' | 'paid' | 'overdue';
   issue_date: string;
   due_date: string;
   created_at: string;
+  customer?: {
+    full_name: string;
+  };
 }
 
 const Invoices = () => {
@@ -51,34 +54,34 @@ const Invoices = () => {
     
     try {
       setIsLoading(true);
-      // For now, use mock data until types are regenerated
+      
+      // Mock data until invoice tables are available in Supabase types
       const mockInvoices: Invoice[] = [
         {
           id: '1',
           invoice_number: 'INV-202501-0001',
-          customer_name: 'أحمد محمد الكندري',
+          customer_id: '1',
           total_amount: 450.750,
           status: 'paid',
           issue_date: '2025-01-15',
           due_date: '2025-01-30',
-          created_at: '2025-01-15T10:00:00Z'
+          created_at: '2025-01-15T10:00:00Z',
+          customer: { full_name: 'أحمد محمد الكندري' }
         },
         {
           id: '2',
           invoice_number: 'INV-202501-0002',
-          customer_name: 'شركة الخليج للتجارة',
+          customer_id: '2',
           total_amount: 1250.500,
           status: 'sent',
           issue_date: '2025-01-20',
           due_date: '2025-02-05',
-          created_at: '2025-01-20T14:30:00Z'
+          created_at: '2025-01-20T14:30:00Z',
+          customer: { full_name: 'شركة الخليج للتجارة' }
         }
       ];
       
-      setTimeout(() => {
-        setInvoices(mockInvoices);
-        setIsLoading(false);
-      }, 1000);
+      setInvoices(mockInvoices);
     } catch (error: any) {
       console.error('Error fetching invoices:', error);
       toast({
@@ -86,6 +89,7 @@ const Invoices = () => {
         description: "حدث خطأ في جلب الفواتير",
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -117,8 +121,9 @@ const Invoices = () => {
   };
 
   const filteredInvoices = invoices.filter(invoice => {
+    const customerName = invoice.customer?.full_name || '';
     const matchesSearch = invoice.invoice_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         invoice.customer_name.toLowerCase().includes(searchTerm.toLowerCase());
+                         customerName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || invoice.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -307,10 +312,10 @@ const Invoices = () => {
                             </Badge>
                           </div>
                           <div className="flex items-center space-x-4 space-x-reverse text-sm text-muted-foreground">
-                            <span className="flex items-center">
-                              <User className="w-3 h-3 mr-1" />
-                              {invoice.customer_name}
-                            </span>
+                             <span className="flex items-center">
+                               <User className="w-3 h-3 mr-1" />
+                               {invoice.customer?.full_name}
+                             </span>
                             <span className="flex items-center">
                               <Calendar className="w-3 h-3 mr-1" />
                               تاريخ الإصدار: {formatDate(invoice.issue_date)}
@@ -332,20 +337,42 @@ const Invoices = () => {
                             }
                           </p>
                         </div>
-                        <div className="flex space-x-1 space-x-reverse">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Send className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Download className="w-4 h-4" />
-                          </Button>
-                        </div>
+                         <div className="flex space-x-1 space-x-reverse">
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => navigate(`/invoices/${invoice.id}`)}
+                           >
+                             <Eye className="w-4 h-4" />
+                           </Button>
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => navigate(`/invoices/${invoice.id}/edit`)}
+                           >
+                             <Edit className="w-4 h-4" />
+                           </Button>
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => toast({
+                               title: "قريباً",
+                               description: "سيتم إضافة إرسال الفاتورة قريباً"
+                             })}
+                           >
+                             <Send className="w-4 h-4" />
+                           </Button>
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => toast({
+                               title: "قريباً", 
+                               description: "سيتم إضافة تحميل الفاتورة قريباً"
+                             })}
+                           >
+                             <Download className="w-4 h-4" />
+                           </Button>
+                         </div>
                       </div>
                     </div>
                   ))}
