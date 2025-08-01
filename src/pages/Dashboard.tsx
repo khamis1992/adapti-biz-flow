@@ -193,21 +193,21 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/invoices')}>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/customers')}>
                 <Users className="w-6 h-6 mb-2" />
-                فاتورة جديدة
+                إدارة العملاء
+              </Button>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/contracts')}>
+                <Car className="w-6 h-6 mb-2" />
+                إدارة العقود
+              </Button>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/invoices')}>
+                <DollarSign className="w-6 h-6 mb-2" />
+                الفواتير
               </Button>
               <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/fleet')}>
-                <Car className="w-6 h-6 mb-2" />
-                إدارة الأسطول
-              </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/inventory')}>
-                <DollarSign className="w-6 h-6 mb-2" />
-                إدارة المخزون
-              </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/purchasing')}>
                 <BarChart3 className="w-6 h-6 mb-2" />
-                المشتريات
+                إدارة الأسطول
               </Button>
             </CardContent>
           </Card>
