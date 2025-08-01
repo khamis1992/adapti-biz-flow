@@ -35,21 +35,6 @@ export default function OnboardingWizard() {
     isRTL: true
   });
 
-  // Redirect to auth if not logged in
-  if (!loading && !user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  const totalSteps = 4;
-
   // Organize modules by category for better display
   const modulesByCategory = useMemo(() => {
     const categoryMap = new Map();
@@ -68,6 +53,21 @@ export default function OnboardingWizard() {
     
     return categoryMap;
   }, []);
+
+  // Redirect to auth if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  const totalSteps = 4;
 
   const handleBusinessTypeSelect = (typeId: string) => {
     setState(prev => {
