@@ -25,6 +25,8 @@ import { useToast } from '@/hooks/use-toast';
 import { AccountDialog } from '@/components/accounting/AccountDialog';
 import { DeleteAccountDialog } from '@/components/accounting/DeleteAccountDialog';
 import { AccountDetails } from '@/components/accounting/AccountDetails';
+import { JournalEntryDialog } from '@/components/accounting/JournalEntryDialog';
+import { JournalEntriesList } from '@/components/accounting/JournalEntriesList';
 
 interface Account {
   id: string;
@@ -49,6 +51,7 @@ const Accounting = () => {
   const [showAccountDialog, setShowAccountDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [showJournalEntryDialog, setShowJournalEntryDialog] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -374,29 +377,9 @@ const Accounting = () => {
 
           {/* Journal Entries */}
           <TabsContent value="journal-entries">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  القيود المحاسبية
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    قيد جديد
-                  </Button>
-                </CardTitle>
-                <CardDescription>
-                  إدارة القيود المحاسبية والمعاملات المالية
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">لا توجد قيود محاسبية حتى الآن</p>
-                  <Button className="mt-4" variant="outline">
-                    إنشاء أول قيد محاسبي
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <JournalEntriesList 
+              onCreateNew={() => setShowJournalEntryDialog(true)} 
+            />
           </TabsContent>
 
           {/* Trial Balance */}
@@ -489,6 +472,14 @@ const Accounting = () => {
           if (!open) setSelectedAccount(null);
         }}
         account={selectedAccount}
+      />
+
+      <JournalEntryDialog
+        open={showJournalEntryDialog}
+        onOpenChange={setShowJournalEntryDialog}
+        onSuccess={() => {
+          // Refresh any data if needed
+        }}
       />
     </div>
   );
