@@ -18,6 +18,7 @@ export interface Module {
   required?: boolean;
   businessTypes?: string[];
   advanced?: boolean;
+  dependencies?: string[];
 }
 
 export interface ModuleCategory {

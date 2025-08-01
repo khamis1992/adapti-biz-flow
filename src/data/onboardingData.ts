@@ -105,21 +105,24 @@ export const allModules: Module[] = [
     nameAr: 'دفتر الأستاذ', 
     nameEn: 'General Ledger', 
     description: 'دفتر الأستاذ العام والحسابات التفصيلية',
-    category: moduleCategories[1]
+    category: moduleCategories[1],
+    dependencies: ['accounting']
   },
   { 
     id: 'invoicing', 
     nameAr: 'نظام الفوترة', 
     nameEn: 'Invoicing System', 
     description: 'إصدار وإدارة الفواتير',
-    category: moduleCategories[1]
+    category: moduleCategories[1],
+    dependencies: ['accounting']
   },
   { 
     id: 'payments', 
     nameAr: 'إدارة المدفوعات', 
     nameEn: 'Payment Management', 
     description: 'معالجة وتتبع المدفوعات',
-    category: moduleCategories[1]
+    category: moduleCategories[1],
+    dependencies: ['accounting']
   },
   { 
     id: 'e_invoicing', 
@@ -127,6 +130,7 @@ export const allModules: Module[] = [
     nameEn: 'E-Invoicing', 
     description: 'نظام الفوترة الإلكترونية المعتمد',
     category: moduleCategories[1],
+    dependencies: ['invoicing'],
     advanced: true
   },
 

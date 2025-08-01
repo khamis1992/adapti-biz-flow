@@ -1,8 +1,10 @@
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Module, ModuleCategory } from '@/types/onboarding';
+import { isModuleUnavailable, getDependencyMessage } from '@/utils/moduleDependencies';
 
 interface ModuleSelectionCardProps {
   category: ModuleCategory;
@@ -10,6 +12,8 @@ interface ModuleSelectionCardProps {
   selectedModules: string[];
   onModuleToggle: (moduleId: string) => void;
   isRTL: boolean;
+  availableModules?: Module[];
+  allModules: Module[];
 }
 
 export default function ModuleSelectionCard({ 
@@ -17,9 +21,16 @@ export default function ModuleSelectionCard({
   modules, 
   selectedModules, 
   onModuleToggle, 
-  isRTL 
+  isRTL,
+  availableModules = modules,
+  allModules
 }: ModuleSelectionCardProps) {
-  if (modules.length === 0) return null;
+  // Only show modules that are available
+  const displayModules = modules.filter(module => 
+    availableModules.some(availableModule => availableModule.id === module.id)
+  );
+  
+  if (displayModules.length === 0) return null;
 
   return (
     <Card className="h-fit">
@@ -30,7 +41,7 @@ export default function ModuleSelectionCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {modules.map((module) => (
+        {displayModules.map((module) => (
           <div
             key={module.id}
             className={`flex items-start space-x-3 p-3 rounded-lg border transition-colors ${
@@ -42,12 +53,16 @@ export default function ModuleSelectionCard({
             <Checkbox
               checked={selectedModules.includes(module.id)}
               onCheckedChange={() => onModuleToggle(module.id)}
-              disabled={module.required}
+              disabled={module.required || isModuleUnavailable(module, selectedModules)}
               className="mt-1"
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <Label className="font-medium cursor-pointer text-sm">
+                <Label 
+                  className={`font-medium cursor-pointer text-sm ${
+                    isModuleUnavailable(module, selectedModules) ? 'opacity-50' : ''
+                  }`}
+                >
                   {isRTL ? module.nameAr : module.nameEn}
                 </Label>
                 {module.required && (
@@ -60,7 +75,18 @@ export default function ModuleSelectionCard({
                     {isRTL ? 'متقدم' : 'Advanced'}
                   </Badge>
                 )}
+                {module.dependencies && module.dependencies.length > 0 && (
+                  <Badge variant="outline" className="text-xs">
+                    {isRTL ? 'يعتمد على وحدات أخرى' : 'Has Dependencies'}
+                  </Badge>
+                )}
               </div>
+              {/* Dependency message for unavailable modules */}
+              {isModuleUnavailable(module, selectedModules) && (
+                <div className="text-xs text-muted-foreground mt-1">
+                  {getDependencyMessage(module, allModules, isRTL)}
+                </div>
+              )}
               <p className="text-xs text-muted-foreground mt-1">
                 {module.description}
               </p>

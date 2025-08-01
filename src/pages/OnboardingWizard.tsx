@@ -14,6 +14,8 @@ import OnboardingHeader from '@/components/onboarding/OnboardingHeader';
 import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
 import BusinessTypeCard from '@/components/onboarding/BusinessTypeCard';
 import ModuleSelectionCard from '@/components/onboarding/ModuleSelectionCard';
+import { getAvailableModules, handleModuleSelection } from '@/utils/moduleDependencies';
+import { toast } from 'sonner';
 
 // All interfaces and data are now imported from separate files
 
@@ -35,6 +37,11 @@ export default function OnboardingWizard() {
     isRTL: true
   });
 
+  // Get available modules based on current selection and business type
+  const availableModules = useMemo(() => {
+    return getAvailableModules(allModules, state.selectedModules, state.selectedBusinessType);
+  }, [state.selectedModules, state.selectedBusinessType]);
+
   // Organize modules by category for better display
   const modulesByCategory = useMemo(() => {
     const categoryMap = new Map();
@@ -44,7 +51,7 @@ export default function OnboardingWizard() {
       categoryMap.set(category.id, []);
     });
     
-    // Group modules by category
+    // Group all modules by category (we'll filter available ones in the component)
     allModules.forEach(module => {
       const categoryModules = categoryMap.get(module.category.id) || [];
       categoryModules.push(module);
@@ -87,14 +94,54 @@ export default function OnboardingWizard() {
   };
 
   const handleModuleToggle = (moduleId: string) => {
-    const module = allModules.find(m => m.id === moduleId);
-    if (module?.required) return; // Can't toggle required modules
-    
+    const isCurrentlySelected = state.selectedModules.includes(moduleId);
+    const result = handleModuleSelection(
+      allModules,
+      state.selectedModules,
+      moduleId,
+      !isCurrentlySelected
+    );
+
+    // Show warning if provided
+    if (result.warningMessage) {
+      toast.warning(result.warningMessage);
+      return;
+    }
+
+    // Show notification for auto-added dependencies
+    if (result.autoAddedModules.length > 0) {
+      const moduleNames = result.autoAddedModules.map(id => {
+        const module = allModules.find(m => m.id === id);
+        return module ? (state.isRTL ? module.nameAr : module.nameEn) : id;
+      }).join(', ');
+      
+      toast.info(
+        state.isRTL 
+          ? `تم إضافة الوحدات المطلوبة تلقائياً: ${moduleNames}`
+          : `Auto-added required modules: ${moduleNames}`
+      );
+    }
+
+    // Show notification for auto-removed dependent modules
+    if (result.autoRemovedModules.length > 1) { // More than just the module being removed
+      const removedDependents = result.autoRemovedModules.filter(id => id !== moduleId);
+      if (removedDependents.length > 0) {
+        const moduleNames = removedDependents.map(id => {
+          const module = allModules.find(m => m.id === id);
+          return module ? (state.isRTL ? module.nameAr : module.nameEn) : id;
+        }).join(', ');
+        
+        toast.info(
+          state.isRTL 
+            ? `تم إزالة الوحدات التابعة تلقائياً: ${moduleNames}`
+            : `Auto-removed dependent modules: ${moduleNames}`
+        );
+      }
+    }
+
     setState(prev => ({
       ...prev,
-      selectedModules: prev.selectedModules.includes(moduleId) 
-        ? prev.selectedModules.filter(id => id !== moduleId)
-        : [...prev.selectedModules, moduleId]
+      selectedModules: result.newSelection
     }));
   };
 
@@ -236,14 +283,16 @@ export default function OnboardingWizard() {
                 {moduleCategories
                   .sort((a, b) => a.order - b.order)
                   .map((category) => (
-                    <ModuleSelectionCard
-                      key={category.id}
-                      category={category}
-                      modules={modulesByCategory.get(category.id) || []}
-                      selectedModules={state.selectedModules}
-                      onModuleToggle={handleModuleToggle}
-                      isRTL={state.isRTL}
-                    />
+                     <ModuleSelectionCard
+                       key={category.id}
+                       category={category}
+                       modules={modulesByCategory.get(category.id) || []}
+                       selectedModules={state.selectedModules}
+                       onModuleToggle={handleModuleToggle}
+                       isRTL={state.isRTL}
+                       availableModules={availableModules}
+                       allModules={allModules}
+                     />
                   ))}
               </div>
             )}
