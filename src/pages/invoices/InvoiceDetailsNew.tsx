@@ -16,11 +16,14 @@ import {
   User,
   Phone,
   Mail,
-  MapPin
+  MapPin,
+  Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTenant } from '@/hooks/useTenant';
 import { supabase } from '@/integrations/supabase/client';
+import PaymentDialog from '@/components/invoices/PaymentDialog';
+import DeleteInvoiceDialog from '@/components/invoices/DeleteInvoiceDialog';
 
 interface InvoiceItem {
   id: string;
@@ -73,6 +76,8 @@ interface InvoiceDetails {
 const InvoiceDetailsNew = () => {
   const [invoice, setInvoice] = useState<InvoiceDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -90,7 +95,7 @@ const InvoiceDetailsNew = () => {
     try {
       setIsLoading(true);
       
-      // @ts-ignore - Supabase types not updated yet
+      // @ts-ignore - Invoice tables not in schema yet
       const { data: invoiceData, error: invoiceError } = await (supabase as any)
         .from('invoices')
         .select(`
@@ -105,7 +110,7 @@ const InvoiceDetailsNew = () => {
         throw invoiceError;
       }
 
-      // @ts-ignore - Supabase types not updated yet
+      // @ts-ignore - Invoice tables not in schema yet
       const { data: itemsData, error: itemsError } = await (supabase as any)
         .from('invoice_items')
         .select('*')
@@ -116,7 +121,7 @@ const InvoiceDetailsNew = () => {
         throw itemsError;
       }
 
-      // @ts-ignore - Supabase types not updated yet
+      // @ts-ignore - Invoice tables not in schema yet
       const { data: paymentsData, error: paymentsError } = await (supabase as any)
         .from('invoice_payments')
         .select('*')
@@ -210,6 +215,18 @@ const InvoiceDetailsNew = () => {
     });
   };
 
+  const handlePaymentAdded = () => {
+    if (id) {
+      fetchInvoiceDetails(id);
+    }
+  };
+
+  const handleInvoiceDeleted = () => {
+    navigate('/invoices');
+  };
+
+  const remainingAmount = invoice ? invoice.total_amount - invoice.paid_amount : 0;
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -269,9 +286,27 @@ const InvoiceDetailsNew = () => {
                 <Send className="w-4 h-4 mr-2" />
                 إرسال
               </Button>
+              {remainingAmount > 0 && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowPaymentDialog(true)}
+                  className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                >
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  تسجيل دفعة
+                </Button>
+              )}
               <Button onClick={() => navigate(`/invoices/${invoice.id}/edit`)}>
                 <Edit className="w-4 h-4 mr-2" />
                 تعديل
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowDeleteDialog(true)}
+                className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                حذف
               </Button>
             </div>
           </div>
@@ -487,6 +522,29 @@ const InvoiceDetailsNew = () => {
           )}
         </div>
       </main>
+
+      {/* Payment Dialog */}
+      {invoice && (
+        <PaymentDialog
+          open={showPaymentDialog}
+          onOpenChange={setShowPaymentDialog}
+          invoiceId={invoice.id}
+          invoiceNumber={invoice.invoice_number}
+          remainingAmount={remainingAmount}
+          onPaymentAdded={handlePaymentAdded}
+        />
+      )}
+
+      {/* Delete Dialog */}
+      {invoice && (
+        <DeleteInvoiceDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          invoiceId={invoice.id}
+          invoiceNumber={invoice.invoice_number}
+          onDeleted={handleInvoiceDeleted}
+        />
+      )}
     </div>
   );
 };

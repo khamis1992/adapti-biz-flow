@@ -55,7 +55,7 @@ const Invoices = () => {
     try {
       setIsLoading(true);
       
-      // @ts-ignore - Supabase types not yet updated to include invoice tables
+      // @ts-ignore - Invoice tables not in schema yet  
       const { data, error } = await (supabase as any)
         .from('invoices')
         .select(`
@@ -358,13 +358,13 @@ const Invoices = () => {
                            >
                              <Eye className="w-4 h-4" />
                            </Button>
-                           <Button 
-                             variant="ghost" 
-                             size="sm"
-                             onClick={() => navigate(`/invoices/${invoice.id}/edit`)}
-                           >
-                             <Edit className="w-4 h-4" />
-                           </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => navigate(`/invoices/edit/${invoice.id}`)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
                            <Button 
                              variant="ghost" 
                              size="sm"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +11,9 @@ import {
   FileText, 
   Plus,
   Save,
-  Send,
   X,
-  Calculator
+  Calculator,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTenant } from '@/hooks/useTenant';
@@ -37,40 +37,86 @@ interface Customer {
   phone: string;
 }
 
-const CreateInvoice = () => {
+interface EditInvoiceData {
+  id: string;
+  invoice_number: string;
+  customer_id: string;
+  issue_date: string;
+  due_date: string;
+  notes: string;
+  terms_conditions: string;
+  payment_terms: string;
+  subtotal: number;
+  discount_amount: number;
+  tax_amount: number;
+  total_amount: number;
+  status: 'draft' | 'sent' | 'paid' | 'overdue';
+  items: InvoiceItem[];
+}
+
+const EditInvoice = () => {
+  const { id } = useParams<{ id: string }>();
+  const [invoice, setInvoice] = useState<EditInvoiceData | null>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [selectedCustomerId, setSelectedCustomerId] = useState('');
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
-  const [dueDate, setDueDate] = useState('');
-  const [notes, setNotes] = useState('');
-  const [termsConditions, setTermsConditions] = useState('');
-  const [paymentTerms, setPaymentTerms] = useState('');
-  const [items, setItems] = useState<InvoiceItem[]>([
-    {
-      id: '1',
-      item_name: '',
-      description: '',
-      quantity: 1,
-      unit_price: 0,
-      discount_percentage: 0,
-      tax_percentage: 10,
-      line_total: 0
-    }
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [items, setItems] = useState<InvoiceItem[]>([]);
 
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tenant } = useTenant();
 
   useEffect(() => {
-    fetchCustomers();
-    // Set default due date to 30 days from issue date
-    const defaultDueDate = new Date();
-    defaultDueDate.setDate(defaultDueDate.getDate() + 30);
-    setDueDate(defaultDueDate.toISOString().split('T')[0]);
-  }, []);
+    if (id && tenant?.id) {
+      fetchInvoiceData();
+      fetchCustomers();
+    }
+  }, [id, tenant?.id]);
+
+  const fetchInvoiceData = async () => {
+    if (!id || !tenant?.id) return;
+
+    try {
+      setIsLoading(true);
+      
+      // @ts-ignore - Invoice tables not in schema yet
+      const { data: invoiceData, error: invoiceError } = await (supabase as any)
+        .from('invoices')
+        .select('*')
+        .eq('id', id)
+        .eq('tenant_id', tenant.id)
+        .single();
+
+      if (invoiceError) throw invoiceError;
+
+      // @ts-ignore - Invoice tables not in schema yet
+      const { data: itemsData, error: itemsError } = await (supabase as any)
+        .from('invoice_items')
+        .select('*')
+        .eq('invoice_id', id)
+        .order('created_at');
+
+      if (itemsError) throw itemsError;
+
+      const invoiceWithItems: EditInvoiceData = {
+        ...invoiceData,
+        items: itemsData || []
+      };
+
+      setInvoice(invoiceWithItems);
+      setItems(itemsData || []);
+    } catch (error: any) {
+      console.error('Error fetching invoice:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ في جلب بيانات الفاتورة",
+        variant: "destructive"
+      });
+      navigate('/invoices');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const fetchCustomers = async () => {
     if (!tenant?.id) return;
@@ -86,11 +132,6 @@ const CreateInvoice = () => {
       setCustomers(data || []);
     } catch (error: any) {
       console.error('Error fetching customers:', error);
-      toast({
-        title: "خطأ",
-        description: "حدث خطأ في جلب قائمة العملاء",
-        variant: "destructive"
-      });
     }
   };
 
@@ -155,8 +196,6 @@ const CreateInvoice = () => {
     };
   };
 
-  const totals = calculateTotals();
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ar-KW', {
       style: 'currency',
@@ -164,15 +203,8 @@ const CreateInvoice = () => {
     }).format(amount);
   };
 
-  const handleSaveInvoice = async (status: 'draft' | 'sent') => {
-    if (!selectedCustomerId) {
-      toast({
-        title: "خطأ",
-        description: "يرجى اختيار العميل",
-        variant: "destructive"
-      });
-      return;
-    }
+  const handleSaveInvoice = async () => {
+    if (!invoice || !tenant?.id) return;
 
     if (items.some(item => !item.item_name || item.unit_price <= 0)) {
       toast({
@@ -183,54 +215,43 @@ const CreateInvoice = () => {
       return;
     }
 
-    if (!tenant?.id) {
-      toast({
-        title: "خطأ",
-        description: "خطأ في بيانات المستأجر",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setIsSaving(true);
     try {
-      // حساب المجاميع
       const { subtotal, totalDiscount, totalTax, total } = calculateTotals();
       
-      // إنشاء رقم فاتورة مؤقت
-      const invoiceNumber = `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
-      
-      // إنشاء الفاتورة في قاعدة البيانات
+      // تحديث الفاتورة
       // @ts-ignore - Invoice tables not in schema yet
-      const { data: invoiceData, error: invoiceError } = await (supabase as any)
+      const { error: invoiceError } = await (supabase as any)
         .from('invoices')
-        .insert({
-          tenant_id: tenant.id,
-          invoice_number: invoiceNumber,
-          customer_id: selectedCustomerId,
-          issue_date: issueDate,
-          due_date: dueDate,
+        .update({
+          customer_id: invoice.customer_id,
+          issue_date: invoice.issue_date,
+          due_date: invoice.due_date,
           subtotal: subtotal,
           discount_amount: totalDiscount,
           tax_amount: totalTax,
           total_amount: total,
-          status: status,
-          notes: notes,
-          terms_conditions: termsConditions,
-          payment_terms: paymentTerms,
-          created_by: tenant.id, // مؤقتاً حتى يتم إضافة المصادقة
-          currency: 'KWD'
+          notes: invoice.notes,
+          terms_conditions: invoice.terms_conditions,
+          payment_terms: invoice.payment_terms
         })
-        .select()
-        .single();
+        .eq('id', invoice.id)
+        .eq('tenant_id', tenant.id);
 
-      if (invoiceError) {
-        throw invoiceError;
-      }
+      if (invoiceError) throw invoiceError;
 
-      // إضافة عناصر الفاتورة
+      // حذف العناصر القديمة
+      // @ts-ignore - Invoice tables not in schema yet
+      const { error: deleteError } = await (supabase as any)
+        .from('invoice_items')
+        .delete()
+        .eq('invoice_id', invoice.id);
+
+      if (deleteError) throw deleteError;
+
+      // إضافة العناصر الجديدة
       const invoiceItemsToInsert = items.filter(item => item.item_name.trim()).map(item => ({
-        invoice_id: invoiceData.id,
+        invoice_id: invoice.id,
         item_name: item.item_name,
         description: item.description,
         quantity: item.quantity,
@@ -246,28 +267,53 @@ const CreateInvoice = () => {
           .from('invoice_items')
           .insert(invoiceItemsToInsert);
 
-        if (itemsError) {
-          throw itemsError;
-        }
+        if (itemsError) throw itemsError;
       }
       
       toast({
-        title: "تم الحفظ بنجاح",
-        description: `تم ${status === 'draft' ? 'حفظ الفاتورة كمسودة' : 'إرسال الفاتورة'} برقم ${invoiceNumber}`,
+        title: "تم التحديث بنجاح",
+        description: `تم تحديث الفاتورة ${invoice.invoice_number} بنجاح`,
       });
       
       navigate('/invoices');
     } catch (error: any) {
-      console.error('Error saving invoice:', error);
+      console.error('Error updating invoice:', error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ في حفظ الفاتورة",
+        description: "حدث خطأ في تحديث الفاتورة",
         variant: "destructive"
       });
     } finally {
       setIsSaving(false);
     }
   };
+
+  const totals = calculateTotals();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
+          <p className="text-muted-foreground">جاري تحميل بيانات الفاتورة...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!invoice) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">الفاتورة غير موجودة</p>
+          <Button onClick={() => navigate('/invoices')} className="mt-4">
+            العودة للفواتير
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -286,25 +332,27 @@ const CreateInvoice = () => {
               </Button>
               <FileText className="w-8 h-8 text-primary" />
               <div>
-                <h1 className="text-xl font-bold">إنشاء فاتورة جديدة</h1>
-                <p className="text-sm text-muted-foreground">إضافة فاتورة جديدة للعميل</p>
+                <h1 className="text-xl font-bold">تعديل فاتورة {invoice.invoice_number}</h1>
+                <p className="text-sm text-muted-foreground">تحديث بيانات الفاتورة والعناصر</p>
               </div>
             </div>
             <div className="flex space-x-2 space-x-reverse">
               <Button 
-                variant="outline" 
-                onClick={() => handleSaveInvoice('draft')}
-                disabled={isSaving}
+                variant="outline"
+                onClick={() => navigate('/invoices')}
               >
-                <Save className="w-4 h-4 mr-2" />
-                حفظ كمسودة
+                إلغاء
               </Button>
               <Button 
-                onClick={() => handleSaveInvoice('sent')}
+                onClick={handleSaveInvoice}
                 disabled={isSaving}
               >
-                <Send className="w-4 h-4 mr-2" />
-                إرسال الفاتورة
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
+                حفظ التغييرات
               </Button>
             </div>
           </div>
@@ -325,7 +373,10 @@ const CreateInvoice = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="customer">العميل *</Label>
-                    <Select value={selectedCustomerId} onValueChange={setSelectedCustomerId}>
+                    <Select 
+                      value={invoice.customer_id} 
+                      onValueChange={(value) => setInvoice({...invoice, customer_id: value})}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="اختر العميل" />
                       </SelectTrigger>
@@ -342,8 +393,8 @@ const CreateInvoice = () => {
                     <Label htmlFor="payment-terms">شروط الدفع</Label>
                     <Input
                       id="payment-terms"
-                      value={paymentTerms}
-                      onChange={(e) => setPaymentTerms(e.target.value)}
+                      value={invoice.payment_terms}
+                      onChange={(e) => setInvoice({...invoice, payment_terms: e.target.value})}
                       placeholder="مثال: صافي 30 يوم"
                     />
                   </div>
@@ -352,8 +403,8 @@ const CreateInvoice = () => {
                     <Input
                       id="issue-date"
                       type="date"
-                      value={issueDate}
-                      onChange={(e) => setIssueDate(e.target.value)}
+                      value={invoice.issue_date}
+                      onChange={(e) => setInvoice({...invoice, issue_date: e.target.value})}
                     />
                   </div>
                   <div>
@@ -361,8 +412,8 @@ const CreateInvoice = () => {
                     <Input
                       id="due-date"
                       type="date"
-                      value={dueDate}
-                      onChange={(e) => setDueDate(e.target.value)}
+                      value={invoice.due_date}
+                      onChange={(e) => setInvoice({...invoice, due_date: e.target.value})}
                     />
                   </div>
                 </div>
@@ -482,8 +533,8 @@ const CreateInvoice = () => {
                   <Label htmlFor="notes">ملاحظات</Label>
                   <Textarea
                     id="notes"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
+                    value={invoice.notes}
+                    onChange={(e) => setInvoice({...invoice, notes: e.target.value})}
                     placeholder="ملاحظات إضافية للفاتورة..."
                     rows={3}
                   />
@@ -492,8 +543,8 @@ const CreateInvoice = () => {
                   <Label htmlFor="terms">الشروط والأحكام</Label>
                   <Textarea
                     id="terms"
-                    value={termsConditions}
-                    onChange={(e) => setTermsConditions(e.target.value)}
+                    value={invoice.terms_conditions}
+                    onChange={(e) => setInvoice({...invoice, terms_conditions: e.target.value})}
                     placeholder="الشروط والأحكام..."
                     rows={3}
                   />
@@ -531,23 +582,6 @@ const CreateInvoice = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>إجراءات سريعة</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  <FileText className="w-4 h-4 mr-2" />
-                  معاينة الفاتورة
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Send className="w-4 h-4 mr-2" />
-                  إرسال عبر البريد
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </main>
@@ -555,4 +589,4 @@ const CreateInvoice = () => {
   );
 };
 
-export default CreateInvoice;
+export default EditInvoice;
