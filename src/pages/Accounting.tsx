@@ -30,6 +30,7 @@ import { JournalEntriesList } from '@/components/accounting/JournalEntriesList';
 import TrialBalance from '@/components/accounting/TrialBalance';
 import { BalanceSheet } from '@/components/accounting/BalanceSheet';
 import IncomeStatement from '@/components/accounting/IncomeStatement';
+import { CashFlowStatement } from '@/components/accounting/CashFlowStatement';
 
 interface Account {
   id: string;
@@ -177,7 +178,7 @@ const Accounting = () => {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="chart-of-accounts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="chart-of-accounts" className="flex items-center">
               <BookOpen className="w-4 h-4 mr-2" />
               دليل الحسابات
@@ -197,6 +198,10 @@ const Accounting = () => {
             <TabsTrigger value="income-statement" className="flex items-center">
               <TrendingUp className="w-4 h-4 mr-2" />
               قائمة الدخل
+            </TabsTrigger>
+            <TabsTrigger value="cash-flow" className="flex items-center">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              التدفقات النقدية
             </TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center">
               <FileText className="w-4 h-4 mr-2" />
@@ -422,6 +427,19 @@ const Accounting = () => {
           {/* Income Statement */}
           <TabsContent value="income-statement">
             <IncomeStatement />
+          </TabsContent>
+
+          {/* Cash Flow Statement */}
+          <TabsContent value="cash-flow">
+            <CashFlowStatement 
+              onViewAccountDetails={(accountId) => {
+                const account = accounts.find(acc => acc.id === accountId);
+                if (account) {
+                  setSelectedAccount(account);
+                  setShowDetailsDialog(true);
+                }
+              }} 
+            />
           </TabsContent>
 
           {/* Reports */}
