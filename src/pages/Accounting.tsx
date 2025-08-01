@@ -22,18 +22,23 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { AccountDialog } from '@/components/accounting/AccountDialog';
+import { DeleteAccountDialog } from '@/components/accounting/DeleteAccountDialog';
+import { AccountDetails } from '@/components/accounting/AccountDetails';
 
 interface Account {
   id: string;
   account_code: string;
   account_name_ar: string;
   account_name_en: string;
-  account_type: string;
+  account_type: 'assets' | 'liabilities' | 'equity' | 'revenue' | 'expenses';
   level: number;
   balance: number;
   allow_posting: boolean;
   is_active: boolean;
   parent_account_id?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const Accounting = () => {
@@ -41,6 +46,10 @@ const Accounting = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
+  const [showAccountDialog, setShowAccountDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -151,7 +160,7 @@ const Accounting = () => {
                 <p className="text-sm text-muted-foreground">إدارة دليل الحسابات والقيود المحاسبية</p>
               </div>
             </div>
-            <Button onClick={() => navigate('/accounting/new-account')}>
+            <Button onClick={() => setShowAccountDialog(true)}>
               <Plus className="w-4 h-4 mr-2" />
               حساب جديد
             </Button>
@@ -322,13 +331,34 @@ const Accounting = () => {
                               {formatBalance(account.balance)}
                             </span>
                             <div className="flex space-x-1 space-x-reverse">
-                              <Button variant="ghost" size="sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedAccount(account);
+                                  setShowDetailsDialog(true);
+                                }}
+                              >
                                 <Eye className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedAccount(account);
+                                  setShowAccountDialog(true);
+                                }}
+                              >
                                 <Edit className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedAccount(account);
+                                  setShowDeleteDialog(true);
+                                }}
+                              >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
@@ -430,6 +460,36 @@ const Accounting = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Dialogs */}
+      <AccountDialog
+        open={showAccountDialog}
+        onOpenChange={(open) => {
+          setShowAccountDialog(open);
+          if (!open) setSelectedAccount(null);
+        }}
+        account={selectedAccount}
+        onSuccess={fetchAccounts}
+      />
+
+      <DeleteAccountDialog
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          setShowDeleteDialog(open);
+          if (!open) setSelectedAccount(null);
+        }}
+        account={selectedAccount}
+        onSuccess={fetchAccounts}
+      />
+
+      <AccountDetails
+        open={showDetailsDialog}
+        onOpenChange={(open) => {
+          setShowDetailsDialog(open);
+          if (!open) setSelectedAccount(null);
+        }}
+        account={selectedAccount}
+      />
     </div>
   );
 };
