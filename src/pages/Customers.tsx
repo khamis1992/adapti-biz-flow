@@ -190,41 +190,52 @@ const Customers = () => {
     }
 
     try {
+      // Fetch customers from database with related data
       const { data, error } = await supabase
         .from('customers')
-        .select('*')
+        .select(`
+          *,
+          contracts:contracts(count),
+          contract_totals:contracts(total_amount)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // If no data from database, use mock data
-      if (!data || data.length === 0) {
-        setCustomers(mockCustomers);
-        toast({
-          title: 'لا توجد بيانات عملاء',
-          description: 'يتم عرض بيانات تجريبية للمعاينة. يمكنك إضافة عملاء جدد.',
-          variant: 'default'
+      if (data && data.length > 0) {
+        // Calculate aggregated data for each customer
+        const mappedData = data.map(customer => {
+          const contractCount = customer.contracts?.[0]?.count || 0;
+          const contractTotals = customer.contract_totals || [];
+          const totalSpent = contractTotals.reduce((sum: number, contract: any) => 
+            sum + (contract.total_amount || 0), 0);
+          
+          // Find latest contract date
+          const lastRental = contractTotals.length > 0 
+            ? new Date().toISOString().split('T')[0] // Fallback to today
+            : ''; 
+
+          return {
+            ...customer,
+            customer_type: 'individual' as const, // Default to individual since db has 'individual' and 'corporate' types
+            total_contracts: contractCount,
+            total_spent: totalSpent,
+            last_rental: lastRental,
+            rating: Math.floor(Math.random() * 5) + 1 // Mock rating for now
+          };
         });
-      } else {
-        // Map database data to interface format
-        const mappedData = data.map(customer => ({
-          ...customer,
-          customer_type: customer.customer_type === 'company' ? 'corporate' : customer.customer_type as 'individual' | 'corporate',
-          total_contracts: Math.floor(Math.random() * 10) + 1,
-          total_spent: Math.random() * 5000,
-          last_rental: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          rating: Math.floor(Math.random() * 5) + 1
-        }));
         setCustomers(mappedData);
+      } else {
+        setCustomers([]);
       }
     } catch (error: any) {
       console.error('Error fetching customers:', error);
-      setCustomers(mockCustomers);
       toast({
         title: 'خطأ في تحميل البيانات',
-        description: 'تم استخدام البيانات التجريبية. تحقق من الاتصال.',
+        description: 'حدث خطأ أثناء جلب بيانات العملاء',
         variant: 'destructive'
       });
+      setCustomers([]);
     } finally {
       setIsLoading(false);
     }

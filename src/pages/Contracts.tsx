@@ -170,36 +170,47 @@ const Contracts = () => {
 
   const fetchContracts = async () => {
     try {
+      // Fetch contracts with customer and vehicle details
       const { data, error } = await supabase
         .from('contracts')
-        .select('*')
+        .select(`
+          *,
+          customers:customer_id(full_name),
+          vehicles:vehicle_id(plate_number, make, model)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // If no data from database, use mock data
-      if (!data || data.length === 0) {
-        setContracts(mockContracts);
-      } else {
+      if (data && data.length > 0) {
         // Map database data to interface format
-        const mappedData = data.map(contract => ({
-          ...contract,
-          customer_name: 'عميل رقم ' + contract.customer_id,
-          vehicle_info: 'مركبة رقم ' + contract.vehicle_id,
-          created_by: 'مدير النظام',
-          payment_status: 'paid' as 'paid' | 'pending' | 'overdue',
-          status: contract.status === 'overdue' ? 'expired' : contract.status as 'active' | 'completed' | 'cancelled' | 'expired'
-        }));
+        const mappedData = data.map(contract => {
+          const customer = contract.customers as any;
+          const vehicle = contract.vehicles as any;
+          
+          return {
+            ...contract,
+            customer_name: customer?.full_name || `عميل رقم ${contract.customer_id}`,
+            vehicle_info: vehicle 
+              ? `${vehicle.make} ${vehicle.model} - ${vehicle.plate_number}`
+              : `مركبة رقم ${contract.vehicle_id}`,
+            created_by: 'مدير النظام',
+            payment_status: 'paid' as 'paid' | 'pending' | 'overdue', // Mock for now
+            status: contract.status as 'active' | 'completed' | 'cancelled' | 'expired'
+          };
+        });
         setContracts(mappedData);
+      } else {
+        setContracts([]);
       }
     } catch (error: any) {
-      // Use mock data on error
-      setContracts(mockContracts);
+      console.error('Error fetching contracts:', error);
       toast({
-        title: 'تم استخدام البيانات التجريبية',
-        description: 'يتم عرض بيانات تجريبية للمعاينة',
-        variant: 'default'
+        title: 'خطأ في تحميل البيانات',
+        description: 'حدث خطأ أثناء جلب بيانات العقود',
+        variant: 'destructive'
       });
+      setContracts([]);
     } finally {
       setIsLoading(false);
     }
