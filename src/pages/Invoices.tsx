@@ -55,7 +55,7 @@ const Invoices = () => {
     try {
       setIsLoading(true);
       
-      // Mock data until invoice tables are available in Supabase types
+      // Use mock data for now until types are regenerated
       const mockInvoices: Invoice[] = [
         {
           id: '1',
@@ -80,7 +80,6 @@ const Invoices = () => {
           customer: { full_name: 'شركة الخليج للتجارة' }
         }
       ];
-      
       setInvoices(mockInvoices);
     } catch (error: any) {
       console.error('Error fetching invoices:', error);

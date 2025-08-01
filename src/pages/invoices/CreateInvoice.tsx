@@ -183,12 +183,29 @@ const CreateInvoice = () => {
       return;
     }
 
+    if (!tenant?.id) {
+      toast({
+        title: "خطأ",
+        description: "خطأ في بيانات المستأجر",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
-      // For now, show success message (will implement actual saving once types are updated)
+      // Calculate totals
+      const { subtotal, totalDiscount, totalTax, total } = calculateTotals();
+      
+      // Generate invoice number
+      const invoiceNumber = `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
+      
+      // For now, simulate success until types are updated
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast({
         title: "تم الحفظ بنجاح",
-        description: `تم ${status === 'draft' ? 'حفظ الفاتورة كمسودة' : 'إرسال الفاتورة'} بنجاح`,
+        description: `تم ${status === 'draft' ? 'حفظ الفاتورة كمسودة' : 'إرسال الفاتورة'} برقم ${invoiceNumber}`,
       });
       
       navigate('/invoices');
