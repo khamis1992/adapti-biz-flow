@@ -55,33 +55,46 @@ const Invoices = () => {
     try {
       setIsLoading(true);
       
-      // مؤقتاً نستخدم بيانات وهمية حتى يتم تحديث أنواع Supabase
-      const mockInvoices: Invoice[] = [
-        {
-          id: '1',
-          invoice_number: 'INV-202501-0001',
-          customer_id: '1',
-          total_amount: 450.750,
-          status: 'paid',
-          issue_date: '2025-01-15',
-          due_date: '2025-01-30',
-          created_at: '2025-01-15T10:00:00Z',
-          customer: { full_name: 'أحمد محمد الكندري' }
-        },
-        {
-          id: '2',
-          invoice_number: 'INV-202501-0002',
-          customer_id: '2',
-          total_amount: 1250.500,
-          status: 'sent',
-          issue_date: '2025-01-20',
-          due_date: '2025-02-05',
-          created_at: '2025-01-20T14:30:00Z',
-          customer: { full_name: 'شركة الخليج للتجارة' }
+      // @ts-ignore - Supabase types not yet updated to include invoice tables
+      const { data, error } = await (supabase as any)
+        .from('invoices')
+        .select(`
+          *,
+          customers (
+            id,
+            full_name,
+            email,
+            phone
+          )
+        `)
+        .eq('tenant_id', tenant.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching invoices:', error);
+        toast({
+          title: "خطأ",
+          description: "حدث خطأ في تحميل الفواتير",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const formattedInvoices: Invoice[] = data?.map((invoice: any) => ({
+        id: invoice.id,
+        invoice_number: invoice.invoice_number,
+        customer_id: invoice.customer_id,
+        total_amount: invoice.total_amount,
+        status: invoice.status,
+        issue_date: invoice.issue_date,
+        due_date: invoice.due_date,
+        created_at: invoice.created_at,
+        customer: {
+          full_name: invoice.customers?.full_name || 'غير محدد'
         }
-      ];
-      
-      setInvoices(mockInvoices);
+      })) || [];
+
+      setInvoices(formattedInvoices);
     } catch (error: any) {
       console.error('Error fetching invoices:', error);
       toast({

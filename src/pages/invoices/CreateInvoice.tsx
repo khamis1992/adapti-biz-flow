@@ -200,8 +200,56 @@ const CreateInvoice = () => {
       // إنشاء رقم فاتورة مؤقت
       const invoiceNumber = `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
       
-      // محاكاة عملية الحفظ (سيتم تفعيلها عند تحديث أنواع Supabase)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // إنشاء الفاتورة في قاعدة البيانات
+      // @ts-ignore - Supabase types not updated yet
+      const { data: invoiceData, error: invoiceError } = await (supabase as any)
+        .from('invoices')
+        .insert({
+          tenant_id: tenant.id,
+          invoice_number: invoiceNumber,
+          customer_id: selectedCustomerId,
+          issue_date: issueDate,
+          due_date: dueDate,
+          subtotal: subtotal,
+          discount_amount: totalDiscount,
+          tax_amount: totalTax,
+          total_amount: total,
+          status: status,
+          notes: notes,
+          terms_conditions: termsConditions,
+          payment_terms: paymentTerms,
+          created_by: tenant.id, // مؤقتاً حتى يتم إضافة المصادقة
+          currency: 'KWD'
+        })
+        .select()
+        .single();
+
+      if (invoiceError) {
+        throw invoiceError;
+      }
+
+      // إضافة عناصر الفاتورة
+      const invoiceItemsToInsert = items.filter(item => item.item_name.trim()).map(item => ({
+        invoice_id: invoiceData.id,
+        item_name: item.item_name,
+        description: item.description,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount_percentage: item.discount_percentage,
+        tax_percentage: item.tax_percentage,
+        line_total: calculateLineTotal(item)
+      }));
+
+      if (invoiceItemsToInsert.length > 0) {
+        // @ts-ignore - Supabase types not updated yet
+        const { error: itemsError } = await (supabase as any)
+          .from('invoice_items')
+          .insert(invoiceItemsToInsert);
+
+        if (itemsError) {
+          throw itemsError;
+        }
+      }
       
       toast({
         title: "تم الحفظ بنجاح",
