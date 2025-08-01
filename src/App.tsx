@@ -15,6 +15,8 @@ import Settings from "./pages/Settings";
 import Accounting from "./pages/Accounting";
 import AccountLedger from "./pages/AccountLedger";
 import Invoices from "./pages/Invoices";
+import CreateInvoice from "./pages/invoices/CreateInvoice";
+import InvoiceDetails from "./pages/invoices/InvoiceDetails";
 import FinancialReports from "./pages/FinancialReports";
 import Inventory from "./pages/Inventory";
 import Purchasing from "./pages/Purchasing";
@@ -102,6 +104,30 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Invoices />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/invoices/new" 
+                  element={
+                    <ProtectedRoute>
+                      <CreateInvoice />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/invoices/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <InvoiceDetails />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/invoices/:id/edit" 
+                  element={
+                    <ProtectedRoute>
+                      <CreateInvoice />
                     </ProtectedRoute>
                   } 
                 />

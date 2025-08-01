@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTenant } from '@/hooks/useTenant';
 
 interface Invoice {
   id: string;
@@ -43,58 +44,55 @@ const Invoices = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { tenant } = useTenant();
 
-  // Mock data - في التطبيق الحقيقي سيتم جلبها من قاعدة البيانات
-  const mockInvoices: Invoice[] = [
-    {
-      id: '1',
-      invoice_number: 'INV-2024-001',
-      customer_name: 'أحمد محمد الكندري',
-      total_amount: 450.750,
-      status: 'paid',
-      issue_date: '2024-01-15',
-      due_date: '2024-01-30',
-      created_at: '2024-01-15T10:00:00Z'
-    },
-    {
-      id: '2',
-      invoice_number: 'INV-2024-002',
-      customer_name: 'شركة الخليج للتجارة',
-      total_amount: 1250.500,
-      status: 'sent',
-      issue_date: '2024-01-20',
-      due_date: '2024-02-05',
-      created_at: '2024-01-20T14:30:00Z'
-    },
-    {
-      id: '3',
-      invoice_number: 'INV-2024-003',
-      customer_name: 'سارة عبدالله العتيبي',
-      total_amount: 325.250,
-      status: 'overdue',
-      issue_date: '2024-01-10',
-      due_date: '2024-01-25',
-      created_at: '2024-01-10T09:15:00Z'
-    },
-    {
-      id: '4',
-      invoice_number: 'INV-2024-004',
-      customer_name: 'مؤسسة الكويت التجارية',
-      total_amount: 2100.000,
-      status: 'draft',
-      issue_date: '2024-01-25',
-      due_date: '2024-02-10',
-      created_at: '2024-01-25T16:45:00Z'
+  const fetchInvoices = async () => {
+    if (!tenant?.id) return;
+    
+    try {
+      setIsLoading(true);
+      // For now, use mock data until types are regenerated
+      const mockInvoices: Invoice[] = [
+        {
+          id: '1',
+          invoice_number: 'INV-202501-0001',
+          customer_name: 'أحمد محمد الكندري',
+          total_amount: 450.750,
+          status: 'paid',
+          issue_date: '2025-01-15',
+          due_date: '2025-01-30',
+          created_at: '2025-01-15T10:00:00Z'
+        },
+        {
+          id: '2',
+          invoice_number: 'INV-202501-0002',
+          customer_name: 'شركة الخليج للتجارة',
+          total_amount: 1250.500,
+          status: 'sent',
+          issue_date: '2025-01-20',
+          due_date: '2025-02-05',
+          created_at: '2025-01-20T14:30:00Z'
+        }
+      ];
+      
+      setTimeout(() => {
+        setInvoices(mockInvoices);
+        setIsLoading(false);
+      }, 1000);
+    } catch (error: any) {
+      console.error('Error fetching invoices:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ في جلب الفواتير",
+        variant: "destructive"
+      });
+      setIsLoading(false);
     }
-  ];
+  };
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setInvoices(mockInvoices);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    fetchInvoices();
+  }, [tenant?.id]);
 
   const getStatusColor = (status: string) => {
     const colors = {
