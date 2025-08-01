@@ -1,10 +1,10 @@
-import { LucideIcon } from 'lucide-react';
+import { ComponentType, SVGProps } from 'react';
 
 export interface BusinessType {
   id: string;
   nameAr: string;
   nameEn: string;
-  icon: LucideIcon;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   modules: string[];
   description?: string;
 }
@@ -24,7 +24,7 @@ export interface ModuleCategory {
   id: string;
   nameAr: string;
   nameEn: string;
-  icon: LucideIcon;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   order: number;
 }
 
