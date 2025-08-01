@@ -20,20 +20,6 @@ import ModuleSelectionCard from '@/components/onboarding/ModuleSelectionCard';
 export default function OnboardingWizard() {
   const { user, loading, completeOnboarding } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Redirect to auth if not logged in
-  if (!loading && !user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-  
   const [state, setState] = useState<OnboardingState>({
     currentStep: 1,
     selectedBusinessType: '',
@@ -48,6 +34,19 @@ export default function OnboardingWizard() {
     },
     isRTL: true
   });
+
+  // Redirect to auth if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   const totalSteps = 4;
 
