@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
-import { Calendar, Download, Filter, Eye, TrendingUp, TrendingDown } from 'lucide-react';
+import { Calendar, Download, Filter, Eye, TrendingUp, TrendingDown, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,6 +33,7 @@ interface TrialBalanceProps {
 }
 
 const TrialBalance: React.FC<TrialBalanceProps> = ({ onViewAccountDetails }) => {
+  const navigate = useNavigate();
   const [data, setData] = useState<TrialBalanceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [fromDate, setFromDate] = useState<Date>(new Date(new Date().getFullYear(), 0, 1));
@@ -466,13 +468,24 @@ const TrialBalance: React.FC<TrialBalanceProps> = ({ onViewAccountDetails }) => 
                       {formatCurrency(Math.abs(item.closing_balance))}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onViewAccountDetails?.(item.account_id)}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
+                      <div className="flex space-x-1 space-x-reverse">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => navigate(`/accounting/accounts/${item.account_id}`)}
+                          title="عرض الأستاذ"
+                        >
+                          <BookOpen className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onViewAccountDetails?.(item.account_id)}
+                          title="تفاصيل الحساب"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

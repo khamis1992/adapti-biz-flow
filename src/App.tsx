@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Accounting from "./pages/Accounting";
+import AccountLedger from "./pages/AccountLedger";
 import Invoices from "./pages/Invoices";
 import FinancialReports from "./pages/FinancialReports";
 import Inventory from "./pages/Inventory";
@@ -85,6 +86,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Accounting />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/accounting/accounts/:accountId" 
+                  element={
+                    <ProtectedRoute>
+                      <AccountLedger />
                     </ProtectedRoute>
                   } 
                 />

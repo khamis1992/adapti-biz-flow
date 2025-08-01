@@ -18,7 +18,8 @@ import {
   ChevronRight,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  BookOpen as Ledger
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -350,6 +351,16 @@ const Accounting = () => {
                               {formatBalance(account.balance)}
                             </span>
                             <div className="flex space-x-1 space-x-reverse">
+                              {account.allow_posting && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => navigate(`/accounting/accounts/${account.id}`)}
+                                  title="عرض الأستاذ"
+                                >
+                                  <Ledger className="w-4 h-4" />
+                                </Button>
+                              )}
                               <Button 
                                 variant="ghost" 
                                 size="sm"
@@ -357,6 +368,7 @@ const Accounting = () => {
                                   setSelectedAccount(account);
                                   setShowDetailsDialog(true);
                                 }}
+                                title="تفاصيل الحساب"
                               >
                                 <Eye className="w-4 h-4" />
                               </Button>
@@ -367,6 +379,7 @@ const Accounting = () => {
                                   setSelectedAccount(account);
                                   setShowAccountDialog(true);
                                 }}
+                                title="تعديل الحساب"
                               >
                                 <Edit className="w-4 h-4" />
                               </Button>
@@ -377,6 +390,7 @@ const Accounting = () => {
                                   setSelectedAccount(account);
                                   setShowDeleteDialog(true);
                                 }}
+                                title="حذف الحساب"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
