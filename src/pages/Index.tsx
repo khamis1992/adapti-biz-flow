@@ -37,10 +37,11 @@ const Index = () => {
               <Button 
                 variant="outline" 
                 size="lg"
+                onClick={() => navigate('/auth')}
                 className="text-lg px-8 py-4 h-auto bg-white/10 border-white/30 text-white hover:bg-white/20"
               >
                 <Globe className="w-5 h-5 mr-2" />
-                Start Setup Now
+                تسجيل الدخول
               </Button>
             </div>
           </div>
