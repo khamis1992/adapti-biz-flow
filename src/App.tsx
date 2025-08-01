@@ -18,6 +18,8 @@ import FinancialReports from "./pages/FinancialReports";
 import Inventory from "./pages/Inventory";
 import Purchasing from "./pages/Purchasing";
 import Fleet from "./pages/Fleet";
+import AddVehicle from "./pages/fleet/AddVehicle";
+import EditVehicle from "./pages/fleet/EditVehicle";
 import Customers from "./pages/Customers";
 import AddCustomer from "./pages/customers/AddCustomer";
 import CustomerDetails from "./pages/customers/CustomerDetails";
@@ -123,6 +125,22 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Fleet />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/fleet/add-vehicle" 
+                  element={
+                    <ProtectedRoute>
+                      <AddVehicle />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/fleet/edit-vehicle/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <EditVehicle />
                     </ProtectedRoute>
                   } 
                 />

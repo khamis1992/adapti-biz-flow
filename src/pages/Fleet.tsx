@@ -162,6 +162,11 @@ const Fleet = () => {
       // If no data from database, use mock data
       if (!data || data.length === 0) {
         setVehicles(mockVehicles);
+        toast({
+          title: 'لا توجد مركبات',
+          description: 'يتم عرض بيانات تجريبية للمعاينة. قم بإضافة مركبات جديدة.',
+          variant: 'default'
+        });
       } else {
         // Map database data to interface format
         const mappedData = data.map(vehicle => ({
@@ -171,9 +176,7 @@ const Fleet = () => {
           model: vehicle.model,
           year: vehicle.year,
           color: vehicle.color,
-          status: vehicle.status === 'unavailable' ? 'out_of_service' : 
-                 vehicle.status === 'reserved' ? 'rented' : 
-                 vehicle.status as 'available' | 'rented' | 'maintenance' | 'out_of_service',
+          status: vehicle.status as 'available' | 'rented' | 'maintenance' | 'out_of_service',
           daily_rate: vehicle.daily_rate || 0,
           monthly_rate: vehicle.monthly_rate || 0,
           current_location: vehicle.current_location || 'غير محدد',
@@ -189,9 +192,9 @@ const Fleet = () => {
       // Use mock data on error
       setVehicles(mockVehicles);
       toast({
-        title: 'تم استخدام البيانات التجريبية',
+        title: 'خطأ في تحميل البيانات',
         description: 'يتم عرض بيانات تجريبية للمعاينة',
-        variant: 'default'
+        variant: 'destructive'
       });
     } finally {
       setIsLoading(false);
@@ -298,7 +301,7 @@ const Fleet = () => {
                 <Wrench className="w-4 h-4 mr-2" />
                 الصيانة
               </Button>
-              <Button onClick={() => navigate('/fleet/new-vehicle')}>
+              <Button onClick={() => navigate('/fleet/add-vehicle')}>
                 <Plus className="w-4 h-4 mr-2" />
                 مركبة جديدة
               </Button>
@@ -557,7 +560,11 @@ const Fleet = () => {
                       <Button variant="ghost" size="sm">
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => navigate(`/fleet/edit-vehicle/${vehicle.id}`)}
+                      >
                         <Edit className="w-4 h-4" />
                       </Button>
                       <Button variant="ghost" size="sm">
