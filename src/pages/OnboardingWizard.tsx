@@ -118,6 +118,11 @@ export default function OnboardingWizard() {
   };
 
   const handleCreateSystem = async () => {
+    if (!state.formData.companyName.trim()) {
+      alert('يرجى إدخال اسم الشركة');
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
       const onboardingData = {
@@ -131,11 +136,13 @@ export default function OnboardingWizard() {
         defaultUsers: state.formData.defaultUsers
       };
 
-      const { error } = await completeOnboarding(onboardingData);
+      const { error, tenantId } = await completeOnboarding(onboardingData);
       
-      if (!error) {
-        // Redirect to dashboard will happen automatically
-        window.location.href = '/dashboard';
+      if (!error && tenantId) {
+        // Give some time for tenant data to be created and then redirect
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1000);
       }
     } catch (error) {
       console.error('Error creating system:', error);
