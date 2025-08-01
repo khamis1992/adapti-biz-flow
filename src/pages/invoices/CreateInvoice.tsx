@@ -194,13 +194,13 @@ const CreateInvoice = () => {
 
     setIsSaving(true);
     try {
-      // Calculate totals
+      // حساب المجاميع
       const { subtotal, totalDiscount, totalTax, total } = calculateTotals();
       
-      // Generate invoice number
+      // إنشاء رقم فاتورة مؤقت
       const invoiceNumber = `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
       
-      // For now, simulate success until types are updated
+      // محاكاة عملية الحفظ (سيتم تفعيلها عند تحديث أنواع Supabase)
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
