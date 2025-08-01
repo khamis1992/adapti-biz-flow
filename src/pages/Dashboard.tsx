@@ -115,7 +115,7 @@ export default function Dashboard() {
               <Car className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.vehicles || 0}</div>
+              <div className="text-2xl font-bold">{dashboardData?.vehicles_count || 0}</div>
               <p className="text-xs text-muted-foreground">إجمالي المركبات</p>
             </CardContent>
           </Card>
@@ -126,7 +126,7 @@ export default function Dashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.customers || 0}</div>
+              <div className="text-2xl font-bold">{dashboardData?.customers_count || 0}</div>
               <p className="text-xs text-muted-foreground">إجمالي العملاء</p>
             </CardContent>
           </Card>
@@ -137,7 +137,7 @@ export default function Dashboard() {
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.contracts || 0}</div>
+              <div className="text-2xl font-bold">{dashboardData?.contracts_count || 0}</div>
               <p className="text-xs text-muted-foreground">العقود النشطة</p>
             </CardContent>
           </Card>
@@ -148,7 +148,7 @@ export default function Dashboard() {
               <UserPlus className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardData?.employees || 0}</div>
+              <div className="text-2xl font-bold">{dashboardData?.employees_count || 0}</div>
               <p className="text-xs text-muted-foreground">إجمالي الموظفين</p>
             </CardContent>
           </Card>

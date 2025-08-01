@@ -107,10 +107,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data, error } = await supabase.rpc('complete_onboarding' as any, {
         p_user_id: user.id,
+        p_user_email: user.email || '',
+        p_user_name: user.user_metadata?.full_name || user.email || '',
         p_company_name: formData.companyName,
         p_business_type: formData.selectedBusinessType,
-        p_selected_modules: formData.selectedModules,
-        p_form_data: formData
+        p_currency: formData.currency || 'KWD',
+        p_country: formData.country || 'Kuwait',
+        p_selected_modules: formData.selectedModules || []
       });
 
       if (error) {
@@ -122,12 +125,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error };
       }
 
+      // Check if the function returned an error in the data
+      const result = data as any;
+      if (result && !result.success) {
+        toast({
+          title: "خطأ في إعداد النظام",
+          description: result.message || result.error,
+          variant: "destructive",
+        });
+        return { error: result.error };
+      }
+
       toast({
         title: "تم إعداد النظام بنجاح",
         description: "مرحباً بك في نظام إدارة الأعمال المتكامل",
       });
 
-      return { error: null, tenantId: data };
+      return { error: null, tenantId: result?.tenant_id };
     } catch (err: any) {
       toast({
         title: "خطأ في إعداد النظام",

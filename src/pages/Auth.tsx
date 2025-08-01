@@ -6,15 +6,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
+import { useTenant } from '@/hooks/useTenant';
 import heroLogo from '@/assets/erp-hero-logo.jpg';
 
 export default function Auth() {
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, loading: authLoading } = useAuth();
+  const { tenant, loading: tenantLoading } = useTenant();
   const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already authenticated
-  if (user && !loading) {
-    return <Navigate to="/dashboard" replace />;
+  if (user && !authLoading && !tenantLoading) {
+    if (tenant) {
+      return <Navigate to="/dashboard" replace />;
+    } else {
+      return <Navigate to="/onboarding" replace />;
+    }
   }
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -54,7 +60,7 @@ export default function Auth() {
     setIsLoading(false);
   };
 
-  if (loading) {
+  if (authLoading || tenantLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>

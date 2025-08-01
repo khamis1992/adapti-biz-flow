@@ -61,7 +61,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
       setTenant(tenantData);
 
       if (tenantData) {
-        // Fetch tenant modules using any to bypass type checking
+        // Fetch tenant modules
         const { data: modulesData, error: modulesError } = await supabase
           .from('tenant_modules' as any)
           .select('*')
