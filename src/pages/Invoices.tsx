@@ -375,16 +375,13 @@ const Invoices = () => {
                            >
                              <Send className="w-4 h-4" />
                            </Button>
-                           <Button 
-                             variant="ghost" 
-                             size="sm"
-                             onClick={() => toast({
-                               title: "قريباً", 
-                               description: "سيتم إضافة تحميل الفاتورة قريباً"
-                             })}
-                           >
-                             <Download className="w-4 h-4" />
-                           </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => navigate(`/invoices/${invoice.id}`)}
+                            >
+                              <Download className="w-4 h-4" />
+                            </Button>
                          </div>
                       </div>
                     </div>

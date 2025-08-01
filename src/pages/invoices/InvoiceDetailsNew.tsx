@@ -24,6 +24,8 @@ import { useTenant } from '@/hooks/useTenant';
 import { supabase } from '@/integrations/supabase/client';
 import PaymentDialog from '@/components/invoices/PaymentDialog';
 import DeleteInvoiceDialog from '@/components/invoices/DeleteInvoiceDialog';
+import { InvoicePrintView } from '@/components/invoices/InvoicePrintView';
+import { generateInvoicePDF, generateInvoicePDFFromElement, downloadPDF, printPDF } from '@/utils/pdfGenerator';
 
 interface InvoiceItem {
   id: string;
@@ -197,15 +199,51 @@ const InvoiceDetailsNew = () => {
     return labels[status as keyof typeof labels] || status;
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrint = async () => {
+    try {
+      if (!invoice) return;
+      
+      // Generate PDF and print it
+      const pdf = await generateInvoicePDF(invoice);
+      printPDF(pdf);
+      
+      toast({
+        title: "تم بنجاح",
+        description: "تم فتح نافذة الطباعة"
+      });
+    } catch (error) {
+      console.error('Error printing invoice:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ في طباعة الفاتورة",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleDownloadPDF = () => {
-    toast({
-      title: "قريباً",
-      description: "سيتم إضافة تحميل PDF قريباً"
-    });
+  const handleDownloadPDF = async () => {
+    try {
+      if (!invoice) return;
+      
+      // Generate PDF from the print view element
+      const pdf = await generateInvoicePDFFromElement(
+        'invoice-print-view', 
+        `فاتورة-${invoice.invoice_number}.pdf`
+      );
+      downloadPDF(pdf, `فاتورة-${invoice.invoice_number}.pdf`);
+      
+      toast({
+        title: "تم بنجاح",
+        description: "تم تحميل الفاتورة بصيغة PDF"
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ في إنشاء ملف PDF",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSendEmail = () => {
@@ -545,6 +583,11 @@ const InvoiceDetailsNew = () => {
           onDeleted={handleInvoiceDeleted}
         />
       )}
+
+      {/* Hidden Print View Component */}
+      <div className="hidden">
+        {invoice && <InvoicePrintView invoice={invoice} />}
+      </div>
     </div>
   );
 };

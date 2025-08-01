@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import { useNavigate } from 'react-router-dom';
+import { PaymentNotifications } from '@/components/invoices/PaymentNotifications';
 
 export default function Dashboard() {
   const { signOut } = useAuth();
@@ -180,42 +181,29 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">إجراءات سريعة</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Button 
-              variant="outline" 
-              className="h-20 flex flex-col gap-2"
-              onClick={() => navigate('/customers/add')}
-            >
-              <UserPlus className="h-6 w-6" />
-              إضافة عميل جديد
-            </Button>
-            <Button 
-              variant="outline" 
-              className="h-20 flex flex-col gap-2"
-              onClick={() => navigate('/fleet')}
-            >
-              <Car className="h-6 w-6" />
-              إضافة مركبة جديدة
-            </Button>
-            <Button 
-              variant="outline" 
-              className="h-20 flex flex-col gap-2"
-              onClick={() => navigate('/contracts')}
-            >
-              <FileText className="h-6 w-6" />
-              إنشاء عقد جديد
-            </Button>
-            <Button 
-              variant="outline" 
-              className="h-20 flex flex-col gap-2"
-              onClick={() => navigate('/settings')}
-            >
-              <Settings className="h-6 w-6" />
-              الإعدادات
-            </Button>
+        {/* Payment Notifications */}
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <PaymentNotifications />
+          <div>
+            <h2 className="text-xl font-bold mb-4">إجراءات سريعة</h2>
+            <div className="grid gap-4 grid-cols-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => navigate('/invoices/new')}
+              >
+                <Plus className="h-6 w-6" />
+                فاتورة جديدة
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => navigate('/contracts')}
+              >
+                <FileText className="h-6 w-6" />
+                عقد جديد
+              </Button>
+            </div>
           </div>
         </div>
       </div>
