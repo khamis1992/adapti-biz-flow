@@ -197,17 +197,17 @@ const Dashboard = () => {
                 <Users className="w-6 h-6 mb-2" />
                 فاتورة جديدة
               </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/accounting')}>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/fleet')}>
                 <Car className="w-6 h-6 mb-2" />
-                المحاسبة
+                إدارة الأسطول
               </Button>
-              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/financial-reports')}>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/inventory')}>
                 <DollarSign className="w-6 h-6 mb-2" />
-                التقارير المالية
+                إدارة المخزون
               </Button>
-              <Button variant="outline" className="h-20 flex-col">
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/purchasing')}>
                 <BarChart3 className="w-6 h-6 mb-2" />
-                عقد جديد
+                المشتريات
               </Button>
             </CardContent>
           </Card>
