@@ -27,6 +27,7 @@ import { DeleteAccountDialog } from '@/components/accounting/DeleteAccountDialog
 import { AccountDetails } from '@/components/accounting/AccountDetails';
 import { JournalEntryDialog } from '@/components/accounting/JournalEntryDialog';
 import { JournalEntriesList } from '@/components/accounting/JournalEntriesList';
+import TrialBalance from '@/components/accounting/TrialBalance';
 
 interface Account {
   id: string;
@@ -384,20 +385,15 @@ const Accounting = () => {
 
           {/* Trial Balance */}
           <TabsContent value="trial-balance">
-            <Card>
-              <CardHeader>
-                <CardTitle>ميزان المراجعة</CardTitle>
-                <CardDescription>
-                  عرض أرصدة جميع الحسابات في تاريخ محدد
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Calculator className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">سيتم عرض ميزان المراجعة هنا</p>
-                </div>
-              </CardContent>
-            </Card>
+            <TrialBalance 
+              onViewAccountDetails={(accountId) => {
+                const account = accounts.find(acc => acc.id === accountId);
+                if (account) {
+                  setSelectedAccount(account);
+                  setShowDetailsDialog(true);
+                }
+              }} 
+            />
           </TabsContent>
 
           {/* Reports */}
