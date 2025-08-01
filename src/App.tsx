@@ -15,6 +15,10 @@ import Inventory from "./pages/Inventory";
 import Purchasing from "./pages/Purchasing";
 import Fleet from "./pages/Fleet";
 import Customers from "./pages/Customers";
+import AddCustomer from "./pages/customers/AddCustomer";
+import CustomerDetails from "./pages/customers/CustomerDetails";
+import EditCustomer from "./pages/customers/EditCustomer";
+import ImportCustomers from "./pages/customers/ImportCustomers";
 import Contracts from "./pages/Contracts";
 import CreateContract from "./pages/contracts/CreateContract";
 import ContractDetails from "./pages/contracts/ContractDetails";
@@ -48,6 +52,10 @@ const App = () => (
           <Route path="/purchasing" element={<Purchasing />} />
           <Route path="/fleet" element={<Fleet />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/customers/new" element={<AddCustomer />} />
+          <Route path="/customers/import" element={<ImportCustomers />} />
+          <Route path="/customers/:id" element={<CustomerDetails />} />
+          <Route path="/customers/:id/edit" element={<EditCustomer />} />
           <Route path="/contracts" element={<Contracts />} />
           <Route path="/contracts/new" element={<CreateContract />} />
           <Route path="/contracts/:id" element={<ContractDetails />} />

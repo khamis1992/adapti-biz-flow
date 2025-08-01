@@ -60,13 +60,13 @@ interface CustomerActivity {
 }
 
 const Customers = () => {
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [activities, setActivities] = useState<CustomerActivity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   // Mock customers data
@@ -569,17 +569,25 @@ const Customers = () => {
                         </div>
                       )}
                     </div>
-                    <div className="flex space-x-2 space-x-reverse mt-4">
-                      <Button variant="ghost" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <MessageSquare className="w-4 h-4" />
-                      </Button>
-                    </div>
+                     <div className="flex space-x-2 space-x-reverse mt-4">
+                       <Button 
+                         variant="ghost" 
+                         size="sm"
+                         onClick={() => navigate(`/customers/${customer.id}`)}
+                       >
+                         <Eye className="w-4 h-4" />
+                       </Button>
+                       <Button 
+                         variant="ghost" 
+                         size="sm"
+                         onClick={() => navigate(`/customers/${customer.id}/edit`)}
+                       >
+                         <Edit className="w-4 h-4" />
+                       </Button>
+                       <Button variant="ghost" size="sm">
+                         <MessageSquare className="w-4 h-4" />
+                       </Button>
+                     </div>
                   </CardContent>
                 </Card>
               ))}
