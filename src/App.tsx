@@ -39,6 +39,7 @@ import HR from "./pages/HR";
 import Attendance from "./pages/Attendance";
 import Leaves from "./pages/Leaves";
 import Payroll from "./pages/Payroll";
+import Payments from "./pages/Payments";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -305,6 +306,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Payroll />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/payments" 
+                  element={
+                    <ProtectedRoute>
+                      <Payments />
                     </ProtectedRoute>
                   } 
                 />
