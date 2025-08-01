@@ -367,7 +367,7 @@ const Contracts = () => {
               <Calendar className="w-4 h-4 mr-2" />
               جميع العقود
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center">
+            <TabsTrigger value="reports" className="flex items-center" onClick={() => navigate('/contracts/reports')}>
               <DollarSign className="w-4 h-4 mr-2" />
               التقارير
             </TabsTrigger>
