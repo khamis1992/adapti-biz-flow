@@ -193,21 +193,21 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="h-20 flex-col">
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/invoices')}>
                 <Users className="w-6 h-6 mb-2" />
-                عقد جديد
-              </Button>
-              <Button variant="outline" className="h-20 flex-col">
-                <Car className="w-6 h-6 mb-2" />
-                إضافة مركبة
-              </Button>
-              <Button variant="outline" className="h-20 flex-col">
-                <DollarSign className="w-6 h-6 mb-2" />
                 فاتورة جديدة
+              </Button>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/accounting')}>
+                <Car className="w-6 h-6 mb-2" />
+                المحاسبة
+              </Button>
+              <Button variant="outline" className="h-20 flex-col" onClick={() => navigate('/financial-reports')}>
+                <DollarSign className="w-6 h-6 mb-2" />
+                التقارير المالية
               </Button>
               <Button variant="outline" className="h-20 flex-col">
                 <BarChart3 className="w-6 h-6 mb-2" />
-                التقارير
+                عقد جديد
               </Button>
             </CardContent>
           </Card>
