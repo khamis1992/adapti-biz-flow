@@ -1,0 +1,46 @@
+import { LucideIcon } from 'lucide-react';
+
+export interface BusinessType {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  icon: LucideIcon;
+  modules: string[];
+  description?: string;
+}
+
+export interface Module {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  description: string;
+  category: ModuleCategory;
+  required?: boolean;
+  businessTypes?: string[];
+  advanced?: boolean;
+}
+
+export interface ModuleCategory {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  icon: LucideIcon;
+  order: number;
+}
+
+export interface OnboardingFormData {
+  companyName: string;
+  currency: string;
+  country: string;
+  needsAccounting: boolean;
+  needsPayroll: boolean;
+  defaultUsers: number;
+}
+
+export interface OnboardingState {
+  currentStep: number;
+  selectedBusinessType: string;
+  selectedModules: string[];
+  formData: OnboardingFormData;
+  isRTL: boolean;
+}
