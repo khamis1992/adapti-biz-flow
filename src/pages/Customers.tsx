@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTenant } from '@/hooks/useTenant';
 
 interface Customer {
   id: string;
@@ -61,6 +62,7 @@ interface CustomerActivity {
 
 const Customers = () => {
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [activities, setActivities] = useState<CustomerActivity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -178,11 +180,15 @@ const Customers = () => {
     // Simulate loading activities
     setTimeout(() => {
       setActivities(mockActivities);
-      setIsLoading(false);
     }, 1000);
-  }, []);
+  }, [tenant]);
 
   const fetchCustomers = async () => {
+    if (!tenant?.id) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('customers')
@@ -194,6 +200,11 @@ const Customers = () => {
       // If no data from database, use mock data
       if (!data || data.length === 0) {
         setCustomers(mockCustomers);
+        toast({
+          title: 'لا توجد بيانات عملاء',
+          description: 'يتم عرض بيانات تجريبية للمعاينة. يمكنك إضافة عملاء جدد.',
+          variant: 'default'
+        });
       } else {
         // Map database data to interface format
         const mappedData = data.map(customer => ({
@@ -207,12 +218,12 @@ const Customers = () => {
         setCustomers(mappedData);
       }
     } catch (error: any) {
-      // Use mock data on error
+      console.error('Error fetching customers:', error);
       setCustomers(mockCustomers);
       toast({
-        title: 'تم استخدام البيانات التجريبية',
-        description: 'يتم عرض بيانات تجريبية للمعاينة',
-        variant: 'default'
+        title: 'خطأ في تحميل البيانات',
+        description: 'تم استخدام البيانات التجريبية. تحقق من الاتصال.',
+        variant: 'destructive'
       });
     } finally {
       setIsLoading(false);

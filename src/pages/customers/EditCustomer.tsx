@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Save, User, Building2, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTenant } from "@/hooks/useTenant";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,6 +40,7 @@ interface Customer {
 const EditCustomer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const [formData, setFormData] = useState<Customer>({
     id: "",
     full_name: "",
@@ -71,20 +73,7 @@ const EditCustomer = () => {
         .single();
 
       if (error) {
-        // Use mock data if fetch fails
-        setFormData({
-          id: id!,
-          full_name: "أحمد محمد الكندري",
-          email: "ahmed.alkandari@email.com",
-          phone: "+965 9876 5432",
-          civil_id: "123456789012",
-          customer_type: "individual",
-          address: "الجابرية، قطعة 1، شارع 103، منزل 45",
-          city: "الكويت",
-          notes: "عميل مميز، يفضل التعامل صباحاً",
-          is_blacklisted: false,
-          blacklist_reason: ""
-        });
+        throw error;
       } else {
         setFormData(data);
       }

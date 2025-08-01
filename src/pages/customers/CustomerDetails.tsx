@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Edit, Phone, Mail, MapPin, CreditCard, FileText, Calendar, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Edit, Phone, Mail, MapPin, CreditCard, FileText, Calendar, AlertTriangle, Plus, MessageSquare } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTenant } from "@/hooks/useTenant";
 
 interface Customer {
   id: string;
@@ -45,6 +46,7 @@ interface Activity {
 const CustomerDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);

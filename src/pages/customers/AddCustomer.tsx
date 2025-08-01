@@ -10,9 +10,11 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Save, User, Building2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTenant } from "@/hooks/useTenant";
 
 const AddCustomer = () => {
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -39,12 +41,16 @@ const AddCustomer = () => {
     setIsLoading(true);
 
     try {
+      if (!tenant?.id) {
+        throw new Error('لا يمكن العثور على معرف المؤسسة');
+      }
+
       const { error } = await supabase
         .from('customers')
         .insert([{
           ...formData,
           customer_type: formData.customer_type as 'individual' | 'company',
-          tenant_id: 'placeholder-tenant-id' // This should come from auth context
+          tenant_id: tenant.id
         }]);
 
       if (error) throw error;

@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Upload, Download, FileSpreadsheet, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useTenant } from "@/hooks/useTenant";
 
 interface ImportResult {
   total: number;
@@ -17,6 +19,7 @@ interface ImportResult {
 
 const ImportCustomers = () => {
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
@@ -55,37 +58,112 @@ const ImportCustomers = () => {
     document.body.removeChild(link);
   };
 
-  const simulateImport = async () => {
-    if (!selectedFile) return;
+  const parseCSV = (csvText: string) => {
+    const lines = csvText.split('\n').filter(line => line.trim());
+    const headers = lines[0].split(',').map(h => h.trim());
+    const customers = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',').map(v => v.trim());
+      if (values.length >= 2 && values[0] && values[2]) { // At least name and phone
+        customers.push({
+          full_name: values[0],
+          email: values[1] || null,
+          phone: values[2],
+          civil_id: values[3] || null,
+          customer_type: values[4] === 'company' ? 'company' : 'individual',
+          address: values[5] || null,
+          city: values[6] || null,
+          notes: values[7] || null,
+          tenant_id: tenant?.id,
+          is_blacklisted: false
+        });
+      }
+    }
+    
+    return customers;
+  };
+
+  const handleImport = async () => {
+    if (!selectedFile || !tenant?.id) {
+      toast({
+        title: "خطأ",
+        description: "يرجى اختيار ملف والتأكد من تسجيل الدخول",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setIsImporting(true);
     setImportProgress(0);
 
-    // Simulate import process
-    for (let i = 0; i <= 100; i += 10) {
-      setImportProgress(i);
-      await new Promise(resolve => setTimeout(resolve, 200));
+    try {
+      const text = await selectedFile.text();
+      const customers = parseCSV(text);
+      
+      if (customers.length === 0) {
+        throw new Error('لم يتم العثور على بيانات صحيحة في الملف');
+      }
+
+      setImportProgress(25);
+
+      const errors: { row: number; error: string; data: any }[] = [];
+      let successCount = 0;
+
+      for (let i = 0; i < customers.length; i++) {
+        const customer = customers[i];
+        
+        setImportProgress(25 + (i / customers.length) * 50);
+
+        try {
+          const { error } = await supabase
+            .from('customers')
+            .insert([customer]);
+
+          if (error) {
+            errors.push({ 
+              row: i + 2, 
+              error: error.message, 
+              data: customer 
+            });
+          } else {
+            successCount++;
+          }
+        } catch (error: any) {
+          errors.push({ 
+            row: i + 2, 
+            error: error.message, 
+            data: customer 
+          });
+        }
+      }
+
+      setImportProgress(100);
+
+      setImportResult({
+        total: customers.length,
+        successful: successCount,
+        failed: errors.length,
+        errors
+      });
+
+      if (successCount > 0) {
+        toast({
+          title: "تم الاستيراد بنجاح",
+          description: `تم إضافة ${successCount} عميل من أصل ${customers.length}`,
+        });
+      }
+
+    } catch (error: any) {
+      console.error('Import error:', error);
+      toast({
+        title: "خطأ في الاستيراد",
+        description: error.message || "حدث خطأ أثناء استيراد البيانات",
+        variant: "destructive"
+      });
+    } finally {
+      setIsImporting(false);
     }
-
-    // Mock import result
-    const mockResult: ImportResult = {
-      total: 25,
-      successful: 22,
-      failed: 3,
-      errors: [
-        { row: 5, error: "رقم الهاتف مطلوب", data: { full_name: "سارة أحمد" } },
-        { row: 12, error: "البريد الإلكتروني غير صحيح", data: { full_name: "محمد علي", email: "invalid-email" } },
-        { row: 18, error: "الاسم مطلوب", data: { email: "test@example.com" } }
-      ]
-    };
-
-    setImportResult(mockResult);
-    setIsImporting(false);
-
-    toast({
-      title: "انتهى الاستيراد",
-      description: `تم استيراد ${mockResult.successful} من ${mockResult.total} عميل بنجاح`
-    });
   };
 
   return (
@@ -164,14 +242,14 @@ const ImportCustomers = () => {
             )}
 
             <div className="flex gap-4">
-              <Button
-                onClick={simulateImport}
-                disabled={!selectedFile || isImporting}
-                className="flex items-center gap-2"
-              >
-                <Upload className="h-4 w-4" />
-                {isImporting ? "جاري الاستيراد..." : "بدء الاستيراد"}
-              </Button>
+            <Button
+              onClick={handleImport}
+              disabled={!selectedFile || isImporting}
+              className="flex items-center gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              {isImporting ? "جاري الاستيراد..." : "بدء الاستيراد"}
+            </Button>
               
               {selectedFile && !isImporting && (
                 <Button
