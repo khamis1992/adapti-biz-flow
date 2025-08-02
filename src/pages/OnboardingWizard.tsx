@@ -186,9 +186,9 @@ export default function OnboardingWizard() {
       const { error, tenantId } = await completeOnboarding(onboardingData);
       
       if (!error && tenantId) {
-        // Give some time for tenant data to be created and then redirect
+        // Give some time for tenant data to be created and then redirect to system setup
         setTimeout(() => {
-          window.location.href = '/dashboard';
+          window.location.href = '/settings';
         }, 1000);
       }
     } catch (error) {

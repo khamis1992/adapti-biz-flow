@@ -15,7 +15,19 @@ import {
   Plus,
   Package,
   ShoppingCart,
-  FolderKanban
+  FolderKanban,
+  Truck,
+  Calculator,
+  UserCheck,
+  CreditCard,
+  Clock,
+  Receipt,
+  Briefcase,
+  Building2,
+  Warehouse,
+  Factory,
+  Shield,
+  Zap
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
