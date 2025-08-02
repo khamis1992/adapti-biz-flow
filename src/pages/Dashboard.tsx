@@ -12,7 +12,9 @@ import {
   ClipboardList,
   TrendingUp,
   BarChart3,
-  Plus
+  Plus,
+  Package,
+  ShoppingCart
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
@@ -37,6 +39,9 @@ export default function Dashboard() {
       case 'attendance': return <Calendar className="h-6 w-6" />;
       case 'leaves': return <ClipboardList className="h-6 w-6" />;
       case 'financial_reports': return <TrendingUp className="h-6 w-6" />;
+      case 'inventory': return <Package className="h-6 w-6" />;
+      case 'purchasing': return <ShoppingCart className="h-6 w-6" />;
+      case 'invoices': return <FileText className="h-6 w-6" />;
       default: return <Settings className="h-6 w-6" />;
     }
   };

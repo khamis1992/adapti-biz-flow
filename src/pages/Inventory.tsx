@@ -1,526 +1,464 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Package, Search, Filter, Plus, AlertTriangle, TrendingUp, BarChart3, FileText, ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { 
-  ArrowLeft,
-  Package, 
-  Plus,
-  Search,
-  Filter,
-  Eye,
-  Edit,
-  Trash2,
-  AlertTriangle,
-  TrendingDown,
-  TrendingUp,
-  BarChart3,
-  Box,
-  ShoppingCart,
-  Truck
-} from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
+import { useTenant } from '@/hooks/useTenant';
 import { useToast } from '@/hooks/use-toast';
 
 interface InventoryItem {
   id: string;
-  name: string;
-  category: string;
-  sku: string;
-  quantity: number;
+  item_code: string;
+  name_ar: string;
+  name_en: string;
+  description?: string;
+  category_name?: string;
+  unit_of_measure: string;
+  current_quantity: number;
   min_quantity: number;
-  unit_price: number;
-  supplier: string;
-  location: string;
+  max_quantity?: number;
+  unit_cost: number;
+  total_value: number;
+  location?: string;
+  supplier_name?: string;
   status: 'in_stock' | 'low_stock' | 'out_of_stock';
-  last_updated: string;
 }
 
-const Inventory = () => {
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const navigate = useNavigate();
-  const { toast } = useToast();
+interface InventoryCategory {
+  id: string;
+  name_ar: string;
+  name_en: string;
+}
 
-  // Mock inventory data - في التطبيق الحقيقي سيتم جلبها من قاعدة البيانات
-  const mockInventory: InventoryItem[] = [
-    {
-      id: '1',
-      name: 'إطارات سيارة - ميشلان',
-      category: 'إطارات',
-      sku: 'TIRE-MCH-001',
-      quantity: 45,
-      min_quantity: 20,
-      unit_price: 75.500,
-      supplier: 'شركة الإطارات المتحدة',
-      location: 'مخزن أ - رف 12',
-      status: 'in_stock',
-      last_updated: '2024-01-20T10:30:00Z'
-    },
-    {
-      id: '2',
-      name: 'زيت محرك - كاسترول',
-      category: 'زيوت ومواد التشحيم',
-      sku: 'OIL-CST-002',
-      quantity: 12,
-      min_quantity: 15,
-      unit_price: 8.750,
-      supplier: 'مؤسسة قطع الغيار',
-      location: 'مخزن ب - رف 5',
-      status: 'low_stock',
-      last_updated: '2024-01-18T14:15:00Z'
-    },
-    {
-      id: '3',
-      name: 'فلتر هواء',
-      category: 'فلاتر',
-      sku: 'FLT-AIR-003',
-      quantity: 0,
-      min_quantity: 10,
-      unit_price: 12.250,
-      supplier: 'شركة الفلاتر الحديثة',
-      location: 'مخزن أ - رف 8',
-      status: 'out_of_stock',
-      last_updated: '2024-01-15T09:45:00Z'
-    },
-    {
-      id: '4',
-      name: 'بطارية سيارة - 12 فولت',
-      category: 'بطاريات',
-      sku: 'BAT-12V-004',
-      quantity: 28,
-      min_quantity: 10,
-      unit_price: 45.000,
-      supplier: 'مجموعة البطاريات الكويتية',
-      location: 'مخزن ج - رف 3',
-      status: 'in_stock',
-      last_updated: '2024-01-22T16:20:00Z'
-    },
-    {
-      id: '5',
-      name: 'مساحات زجاج أمامي',
-      category: 'قطع غيار خارجية',
-      sku: 'WIP-FRT-005',
-      quantity: 8,
-      min_quantity: 12,
-      unit_price: 15.750,
-      supplier: 'شركة الإكسسوارات',
-      location: 'مخزن ب - رف 10',
-      status: 'low_stock',
-      last_updated: '2024-01-19T11:30:00Z'
-    }
-  ];
+export default function Inventory() {
+  const navigate = useNavigate();
+  const { tenant } = useTenant();
+  const { toast } = useToast();
+  
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [categories, setCategories] = useState<InventoryCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+
+  // Statistics
+  const totalItems = items.length;
+  const totalValue = items.reduce((sum, item) => sum + item.total_value, 0);
+  const lowStockItems = items.filter(item => item.status === 'low_stock').length;
+  const outOfStockItems = items.filter(item => item.status === 'out_of_stock').length;
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setInventoryItems(mockInventory);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    if (tenant?.id) {
+      fetchData();
+    }
+  }, [tenant?.id]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Mock data for now until the database types are updated
+      const mockItems: InventoryItem[] = [
+        {
+          id: '1',
+          item_code: 'ITM-001',
+          name_ar: 'إطارات سيارة ميشلان',
+          name_en: 'Michelin Car Tires',
+          description: 'إطارات عالية الجودة للسيارات',
+          category_name: 'إطارات',
+          unit_of_measure: 'قطعة',
+          current_quantity: 45,
+          min_quantity: 20,
+          max_quantity: 100,
+          unit_cost: 75.500,
+          total_value: 3397.5,
+          location: 'مخزن أ - رف 12',
+          supplier_name: 'شركة الإطارات المتحدة',
+          status: 'in_stock'
+        },
+        {
+          id: '2',
+          item_code: 'ITM-002',
+          name_ar: 'زيت محرك كاسترول',
+          name_en: 'Castrol Engine Oil',
+          description: 'زيت محرك عالي الجودة',
+          category_name: 'زيوت ومواد التشحيم',
+          unit_of_measure: 'لتر',
+          current_quantity: 12,
+          min_quantity: 15,
+          max_quantity: 50,
+          unit_cost: 8.750,
+          total_value: 105,
+          location: 'مخزن ب - رف 5',
+          supplier_name: 'مؤسسة قطع الغيار',
+          status: 'low_stock'
+        },
+        {
+          id: '3',
+          item_code: 'ITM-003',
+          name_ar: 'فلتر هواء',
+          name_en: 'Air Filter',
+          description: 'فلتر هواء للمحرك',
+          category_name: 'فلاتر',
+          unit_of_measure: 'قطعة',
+          current_quantity: 0,
+          min_quantity: 10,
+          max_quantity: 30,
+          unit_cost: 12.250,
+          total_value: 0,
+          location: 'مخزن أ - رف 8',
+          supplier_name: 'شركة الفلاتر الحديثة',
+          status: 'out_of_stock'
+        }
+      ];
+
+      const mockCategories: InventoryCategory[] = [
+        { id: '1', name_ar: 'إطارات', name_en: 'Tires' },
+        { id: '2', name_ar: 'زيوت ومواد التشحيم', name_en: 'Oils and Lubricants' },
+        { id: '3', name_ar: 'فلاتر', name_en: 'Filters' },
+        { id: '4', name_ar: 'بطاريات', name_en: 'Batteries' },
+        { id: '5', name_ar: 'قطع غيار خارجية', name_en: 'External Parts' }
+      ];
+
+      setItems(mockItems);
+      setCategories(mockCategories);
+    } catch (error) {
+      console.error('Error fetching inventory data:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ في تحميل بيانات المخزون",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter items based on search and filters
+  const filteredItems = items.filter(item => {
+    const matchesSearch = 
+      item.name_ar.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.item_code.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === 'all' || item.category_name === selectedCategory;
+    const matchesStatus = selectedStatus === 'all' || item.status === selectedStatus;
+    
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
 
   const getStatusColor = (status: string) => {
-    const colors = {
-      in_stock: 'bg-green-100 text-green-800',
-      low_stock: 'bg-yellow-100 text-yellow-800',
-      out_of_stock: 'bg-red-100 text-red-800'
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    switch (status) {
+      case 'in_stock': return 'default';
+      case 'low_stock': return 'secondary';
+      case 'out_of_stock': return 'destructive';
+      default: return 'default';
+    }
   };
 
   const getStatusLabel = (status: string) => {
-    const labels = {
-      in_stock: 'متوفر',
-      low_stock: 'مخزون منخفض',
-      out_of_stock: 'نفد المخزون'
-    };
-    return labels[status as keyof typeof labels] || status;
-  };
-
-  const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'in_stock':
-        return <TrendingUp className="w-4 h-4 text-green-600" />;
-      case 'low_stock':
-        return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
-      case 'out_of_stock':
-        return <TrendingDown className="w-4 h-4 text-red-600" />;
-      default:
-        return <Package className="w-4 h-4" />;
+      case 'in_stock': return 'متوفر';
+      case 'low_stock': return 'مخزون منخفض';
+      case 'out_of_stock': return 'غير متوفر';
+      default: return status;
     }
   };
-
-  const filteredItems = inventoryItems.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.supplier.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
-    const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ar-KW', {
       style: 'currency',
-      currency: 'KWD'
+      currency: 'KWD',
+      minimumFractionDigits: 3
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ar-SA');
-  };
-
-  // Statistics
-  const totalItems = inventoryItems.length;
-  const totalValue = inventoryItems.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-  const lowStockItems = inventoryItems.filter(item => item.status === 'low_stock').length;
-  const outOfStockItems = inventoryItems.filter(item => item.status === 'out_of_stock').length;
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Package className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-          <p className="text-muted-foreground">جاري تحميل المخزون...</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center space-x-2">
+          <Package className="h-8 w-8 animate-spin text-primary" />
+          <span className="text-lg">جاري تحميل بيانات المخزون...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="container mx-auto px-4 py-6 space-y-6">
       {/* Header */}
-      <header className="border-b bg-card shadow-soft">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 space-x-reverse">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/dashboard')}
-                className="mr-4"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                العودة
-              </Button>
-              <Package className="w-8 h-8 text-primary" />
-              <div>
-                <h1 className="text-xl font-bold">إدارة المخزون</h1>
-                <p className="text-sm text-muted-foreground">مراقبة وإدارة مخزون قطع الغيار والمواد</p>
-              </div>
-            </div>
-            <div className="flex space-x-2 space-x-reverse">
-              <Button variant="outline" onClick={() => navigate('/inventory/purchase-order')}>
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                طلب شراء
-              </Button>
-              <Button onClick={() => navigate('/inventory/new-item')}>
-                <Plus className="w-4 h-4 mr-2" />
-                صنف جديد
-              </Button>
-            </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Button variant="ghost" onClick={() => navigate('/dashboard')}>
+            <ArrowLeft className="h-4 w-4 ml-2" />
+            العودة للرئيسية
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">إدارة المخزون</h1>
+            <p className="text-muted-foreground">إدارة المواد والأصناف والكميات</p>
           </div>
         </div>
-      </header>
+        <div className="flex items-center space-x-2">
+          <Button onClick={() => navigate('/inventory/new-item')}>
+            <Plus className="h-4 w-4 ml-2" />
+            إضافة صنف جديد
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/inventory/purchase-orders')}>
+            <FileText className="h-4 w-4 ml-2" />
+            أوامر الشراء
+          </Button>
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview" className="flex items-center">
-              <Package className="w-4 h-4 mr-2" />
-              نظرة عامة
-            </TabsTrigger>
-            <TabsTrigger value="items" className="flex items-center">
-              <Box className="w-4 h-4 mr-2" />
-              الأصناف
-            </TabsTrigger>
-            <TabsTrigger value="movements" className="flex items-center">
-              <Truck className="w-4 h-4 mr-2" />
-              حركة المخزون
-            </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              التقارير
-            </TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
+          <TabsTrigger value="items">الأصناف</TabsTrigger>
+          <TabsTrigger value="movements">حركات المخزون</TabsTrigger>
+          <TabsTrigger value="reports">التقارير</TabsTrigger>
+        </TabsList>
 
-          {/* Overview */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Statistics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2 space-x-reverse">
-                    <Package className="w-8 h-8 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">إجمالي الأصناف</p>
-                      <p className="text-2xl font-bold">{totalItems}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2 space-x-reverse">
-                    <Box className="w-8 h-8 text-green-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">قيمة المخزون</p>
-                      <p className="text-2xl font-bold text-green-600">{formatCurrency(totalValue)}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2 space-x-reverse">
-                    <AlertTriangle className="w-8 h-8 text-yellow-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">مخزون منخفض</p>
-                      <p className="text-2xl font-bold text-yellow-600">{lowStockItems}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2 space-x-reverse">
-                    <TrendingDown className="w-8 h-8 text-red-600" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">نفد المخزون</p>
-                      <p className="text-2xl font-bold text-red-600">{outOfStockItems}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Quick Alerts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-yellow-600">
-                    <AlertTriangle className="w-5 h-5 mr-2" />
-                    تنبيهات المخزون المنخفض
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {inventoryItems.filter(item => item.status === 'low_stock').map(item => (
-                      <div key={item.id} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                        <div>
-                          <p className="font-medium">{item.name}</p>
-                          <p className="text-sm text-muted-foreground">الكمية: {item.quantity} من {item.min_quantity}</p>
-                        </div>
-                        <Button size="sm" variant="outline">
-                          طلب شراء
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-red-600">
-                    <TrendingDown className="w-5 h-5 mr-2" />
-                    أصناف نفد مخزونها
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {inventoryItems.filter(item => item.status === 'out_of_stock').map(item => (
-                      <div key={item.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                        <div>
-                          <p className="font-medium">{item.name}</p>
-                          <p className="text-sm text-muted-foreground">آخر تحديث: {formatDate(item.last_updated)}</p>
-                        </div>
-                        <Button size="sm" variant="outline">
-                          طلب عاجل
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Items List */}
-          <TabsContent value="items" className="space-y-6">
-            {/* Search and Filter */}
+        <TabsContent value="overview" className="space-y-4">
+          {/* Statistics Cards */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="البحث في المخزون..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full md:w-48">
-                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="الفئة" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">جميع الفئات</SelectItem>
-                        <SelectItem value="إطارات">إطارات</SelectItem>
-                        <SelectItem value="زيوت ومواد التشحيم">زيوت ومواد التشحيم</SelectItem>
-                        <SelectItem value="فلاتر">فلاتر</SelectItem>
-                        <SelectItem value="بطاريات">بطاريات</SelectItem>
-                        <SelectItem value="قطع غيار خارجية">قطع غيار خارجية</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="w-full md:w-48">
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="الحالة" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">جميع الحالات</SelectItem>
-                        <SelectItem value="in_stock">متوفر</SelectItem>
-                        <SelectItem value="low_stock">مخزون منخفض</SelectItem>
-                        <SelectItem value="out_of_stock">نفد المخزون</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Items Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredItems.map((item) => (
-                <Card key={item.id} className="hover:shadow-medium transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <Badge className={getStatusColor(item.status)}>
-                        {getStatusLabel(item.status)}
-                      </Badge>
-                      {getStatusIcon(item.status)}
-                    </div>
-                    <CardTitle className="text-lg">{item.name}</CardTitle>
-                    <CardDescription>{item.category}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">رمز الصنف:</span>
-                        <span className="font-mono text-sm">{item.sku}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">الكمية:</span>
-                        <span className="font-medium">{item.quantity}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">سعر الوحدة:</span>
-                        <span className="font-medium">{formatCurrency(item.unit_price)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">المورد:</span>
-                        <span className="text-sm">{item.supplier}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">الموقع:</span>
-                        <span className="text-sm">{item.location}</span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2 space-x-reverse mt-4">
-                      <Button variant="ghost" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Movements */}
-          <TabsContent value="movements">
-            <Card>
-              <CardHeader>
-                <CardTitle>حركة المخزون</CardTitle>
-                <CardDescription>سجل جميع حركات الدخول والخروج للمخزون</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">إجمالي الأصناف</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8">
-                  <Truck className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">لا توجد حركات مخزون مسجلة حتى الآن</p>
-                  <Button className="mt-4" variant="outline">
-                    تسجيل حركة جديدة
-                  </Button>
-                </div>
+                <div className="text-2xl font-bold">{totalItems}</div>
+                <p className="text-xs text-muted-foreground">
+                  صنف في المخزون
+                </p>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* Reports */}
-          <TabsContent value="reports">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="hover:shadow-medium transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg">تقرير حالة المخزون</CardTitle>
-                  <CardDescription>عرض شامل لجميع الأصناف وحالتها</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="hover:shadow-medium transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg">تقرير الأصناف البطيئة الحركة</CardTitle>
-                  <CardDescription>الأصناف التي لم تتحرك لفترة طويلة</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="hover:shadow-medium transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg">تقرير قيمة المخزون</CardTitle>
-                  <CardDescription>القيمة المالية للمخزون حسب الفئات</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="hover:shadow-medium transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg">تقرير حركة الأصناف</CardTitle>
-                  <CardDescription>تحليل حركة دخول وخروج الأصناف</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="hover:shadow-medium transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg">تقرير المردودات</CardTitle>
-                  <CardDescription>الأصناف المردودة والتالفة</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card className="hover:shadow-medium transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg">توقعات إعادة الطلب</CardTitle>
-                  <CardDescription>متى يجب إعادة طلب كل صنف</CardDescription>
-                </CardHeader>
-              </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">إجمالي القيمة</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
+                <p className="text-xs text-muted-foreground">
+                  قيمة المخزون الحالية
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">مخزون منخفض</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-secondary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-secondary">{lowStockItems}</div>
+                <p className="text-xs text-muted-foreground">
+                  صنف يحتاج إعادة تزويد
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">غير متوفر</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-destructive" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-destructive">{outOfStockItems}</div>
+                <p className="text-xs text-muted-foreground">
+                  صنف غير متوفر حالياً
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Alerts */}
+          {(lowStockItems > 0 || outOfStockItems > 0) && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">تنبيهات المخزون</h3>
+              
+              {outOfStockItems > 0 && (
+                <Alert variant="destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    يوجد {outOfStockItems} صنف غير متوفر في المخزون ويحتاج إعادة تزويد فوري
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {lowStockItems > 0 && (
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    يوجد {lowStockItems} صنف بمخزون منخفض ويحتاج إعادة تزويد قريباً
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
-          </TabsContent>
-        </Tabs>
-      </main>
+          )}
+        </TabsContent>
+
+        <TabsContent value="items" className="space-y-4">
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="البحث في الأصناف..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pr-10"
+              />
+            </div>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="الفئة" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع الفئات</SelectItem>
+                {categories.map(category => (
+                  <SelectItem key={category.id} value={category.name_en}>
+                    {category.name_ar}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="الحالة" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع الحالات</SelectItem>
+                <SelectItem value="in_stock">متوفر</SelectItem>
+                <SelectItem value="low_stock">مخزون منخفض</SelectItem>
+                <SelectItem value="out_of_stock">غير متوفر</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Items Grid */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {filteredItems.map(item => (
+              <Card key={item.id} className="hover:shadow-medium transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base">{item.name_ar}</CardTitle>
+                    <Badge variant={getStatusColor(item.status)}>
+                      {getStatusLabel(item.status)}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.name_en}</p>
+                  <p className="text-xs text-muted-foreground">رمز الصنف: {item.item_code}</p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">الكمية الحالية:</span>
+                      <p className="font-medium">{item.current_quantity} {item.unit_of_measure}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">الحد الأدنى:</span>
+                      <p className="font-medium">{item.min_quantity} {item.unit_of_measure}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">سعر الوحدة:</span>
+                      <p className="font-medium">{formatCurrency(item.unit_cost)}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">القيمة الإجمالية:</span>
+                      <p className="font-medium">{formatCurrency(item.total_value)}</p>
+                    </div>
+                  </div>
+                  
+                  {item.category_name && (
+                    <p className="text-xs text-muted-foreground">
+                      الفئة: {item.category_name}
+                    </p>
+                  )}
+                  
+                  {item.location && (
+                    <p className="text-xs text-muted-foreground">
+                      الموقع: {item.location}
+                    </p>
+                  )}
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <Button size="sm" variant="outline" onClick={() => navigate(`/inventory/items/${item.id}`)}>
+                      عرض التفاصيل
+                    </Button>
+                    <Button size="sm" onClick={() => navigate(`/inventory/items/${item.id}/edit`)}>
+                      تعديل
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          {filteredItems.length === 0 && (
+            <div className="text-center py-12">
+              <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">لا توجد أصناف</h3>
+              <p className="text-muted-foreground mb-4">
+                {searchTerm || selectedCategory !== 'all' || selectedStatus !== 'all' 
+                  ? 'لا توجد أصناف تطابق معايير البحث'
+                  : 'لا توجد أصناف في المخزون حالياً'
+                }
+              </p>
+              <Button onClick={() => navigate('/inventory/new-item')}>
+                <Plus className="h-4 w-4 ml-2" />
+                إضافة صنف جديد
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="movements" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="h-5 w-5 ml-2" />
+                حركات المخزون
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-center text-muted-foreground py-8">
+                سيتم تطوير هذا القسم لعرض تفاصيل حركات دخول وخروج المخزون
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="reports" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileText className="h-5 w-5 ml-2" />
+                تقارير المخزون
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-center text-muted-foreground py-8">
+                سيتم تطوير هذا القسم لعرض تقارير شاملة عن المخزون والقيم والحركات
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
-
-export default Inventory;
+}
