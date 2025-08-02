@@ -807,7 +807,7 @@ const AdvancedInventory = () => {
                       </div>
                       <div className="text-left">
                         <p className="font-bold text-blue-600">{supplier.totalValue.toLocaleString()} ر.س</p>
-                        <Badge className={getStatusColor(supplier.status)} size="sm">
+                        <Badge className={getStatusColor(supplier.status)}>
                           {supplier.status}
                         </Badge>
                       </div>

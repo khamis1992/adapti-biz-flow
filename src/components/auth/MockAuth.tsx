@@ -18,7 +18,7 @@ export const MockAuth = () => {
     };
 
     // Simulate successful login
-    signIn(mockUser);
+    signIn(mockUser.email, 'password');
     navigate('/dashboard');
   }, [signIn, navigate]);
 

@@ -269,8 +269,8 @@ const AdvancedPayroll = () => {
     }
   };
 
-  const calculateTotalAllowances = (allowances: any) => {
-    return Object.values(allowances).reduce((sum: number, value: any) => sum + value, 0);
+  const calculateTotalAllowances = (allowances: any): number => {
+    return Object.values(allowances).reduce((sum: number, value: any) => sum + (Number(value) || 0), 0) as number;
   };
 
   const calculateTotalDeductions = (deductions: any) => {
@@ -586,7 +586,7 @@ const AdvancedPayroll = () => {
                             <div className="flex justify-between font-medium border-t pt-2">
                               <span>إجمالي الاستحقاقات:</span>
                               <span className="text-green-600">
-                                {(employee.basicSalary + calculateTotalAllowances(employee.allowances) + employee.overtime.amount + employee.bonus).toLocaleString()}
+                                {(Number(employee.basicSalary) + calculateTotalAllowances(employee.allowances) + Number(employee.overtime?.amount || 0) + Number(employee.bonus)).toLocaleString()}
                               </span>
                             </div>
                           </div>
