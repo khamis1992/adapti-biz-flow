@@ -41,7 +41,24 @@ import Leaves from "./pages/Leaves";
 import Payroll from "./pages/Payroll";
 import Payments from "./pages/Payments";
 import WorkOrders from "./pages/WorkOrders";
+import Projects from "./pages/Projects";
+import CreateProject from "./pages/projects/CreateProject";
+import ProjectDetails from "./pages/projects/ProjectDetails";
+import Analytics from "./pages/Analytics";
+import AdvancedAccounting from "./pages/AdvancedAccounting";
+import AdvancedInventory from "./pages/AdvancedInventory";
+import AdvancedSales from "./pages/AdvancedSales";
+import AdvancedCRM from "./pages/AdvancedCRM";
+import AdvancedPOS from "./pages/AdvancedPOS";
+import AdvancedProcurement from "./pages/AdvancedProcurement";
+import Manufacturing from "./pages/Manufacturing";
+import QualityManagement from "./pages/QualityManagement";
+import DocumentManagement from "./pages/DocumentManagement";
+import SystemIntegrations from "./pages/SystemIntegrations";
+import AdvancedHR from "./pages/AdvancedHR";
+import AdvancedPayroll from "./pages/AdvancedPayroll";
 import NotFound from "./pages/NotFound";
+import { MockAuth } from "./components/auth/MockAuth";
 
 const queryClient = new QueryClient();
 
@@ -58,8 +75,9 @@ const App = () => (
                 {/* Public routes - no authentication required */}
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/mock-auth" element={<MockAuth />} />
                 
-                {/* Auth required, no tenant required */}
+                {/* Protected Routes */}
                 <Route 
                   path="/onboarding" 
                   element={
@@ -323,6 +341,134 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <WorkOrders />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/projects" 
+                  element={
+                    <ProtectedRoute>
+                      <Projects />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/projects/new" 
+                  element={
+                    <ProtectedRoute>
+                      <CreateProject />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/projects/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <ProjectDetails />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/analytics" 
+                  element={
+                    <ProtectedRoute>
+                      <Analytics />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-accounting" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedAccounting />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-inventory" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedInventory />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-sales" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedSales />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-crm" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedCRM />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-pos" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedPOS />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-procurement" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedProcurement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/manufacturing" 
+                  element={
+                    <ProtectedRoute>
+                      <Manufacturing />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/quality-management" 
+                  element={
+                    <ProtectedRoute>
+                      <QualityManagement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/document-management" 
+                  element={
+                    <ProtectedRoute>
+                      <DocumentManagement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/system-integrations" 
+                  element={
+                    <ProtectedRoute>
+                      <SystemIntegrations />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-hr" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedHR />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/advanced-payroll" 
+                  element={
+                    <ProtectedRoute>
+                      <AdvancedPayroll />
                     </ProtectedRoute>
                   } 
                 />

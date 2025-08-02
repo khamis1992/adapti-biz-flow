@@ -1,73 +1,157 @@
-# Welcome to your Lovable project
+# adapti-biz-flow ERP System
 
-## Project info
+<div align="center">
+  <h1>🚀 نظام إدارة الأعمال المتكامل</h1>
+  <p>نظام ERP شامل ومتطور لإدارة جميع جوانب الأعمال</p>
+  
+  [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue)](https://gvgtxyiy.manus.space)
+  [![React](https://img.shields.io/badge/React-18.0+-61DAFB?logo=react)](https://reactjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.0+-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+</div>
 
-**URL**: https://lovable.dev/projects/11bc96b9-5d2a-43f3-a038-bd1e6e716c95
+## 🌟 نظرة عامة
 
-## How can I edit this code?
+**adapti-biz-flow** هو نظام إدارة موارد المؤسسات (ERP) شامل ومتطور، مصمم خصيصاً للشركات العربية. يوفر النظام حلولاً متكاملة لإدارة جميع جوانب الأعمال من المحاسبة والمخزون إلى الموارد البشرية وإدارة المشاريع.
 
-There are several ways of editing your application.
+### 🎯 الميزات الرئيسية
 
-**Use Lovable**
+- **🌐 دعم كامل للغة العربية** مع واجهة RTL
+- **📱 تصميم متجاوب** يعمل على جميع الأجهزة
+- **🔒 نظام أمان متقدم** مع إدارة الصلاحيات
+- **📊 تحليلات وتقارير تفاعلية** في الوقت الفعلي
+- **🔗 تكاملات متقدمة** مع الأنظمة الخارجية
+- **⚡ أداء عالي** مع تحميل سريع
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/11bc96b9-5d2a-43f3-a038-bd1e6e716c95) and start prompting.
+## 🏗️ الوحدات المتاحة (22 وحدة)
 
-Changes made via Lovable will be committed automatically to this repo.
+### 📊 الإدارة والتحكم
+- **لوحة التحكم الرئيسية** - إحصائيات شاملة ومؤشرات الأداء
+- **إدارة المشاريع** - تخطيط وتنفيذ ومتابعة المشاريع
+- **التحليلات المتقدمة** - رسوم بيانية ومؤشرات الأداء
 
-**Use your preferred IDE**
+### 💰 النظام المالي
+- **النظام المحاسبي المتقدم** - دفتر الأستاذ والحسابات
+- **إدارة الفواتير** - إنشاء وتتبع الفواتير
+- **التقارير المالية** - تقارير شاملة ومعتمدة
+- **إدارة المدفوعات** - تتبع المقبوضات والمدفوعات
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📦 المخزون والمشتريات
+- **إدارة المخزون المتقدمة** - تتبع فوري مع الباركود
+- **إدارة المشتريات المتقدمة** - طلبات الشراء والموردين
+- **نظام نقاط البيع (POS)** - واجهة بيع تفاعلية
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🤝 المبيعات وعلاقات العملاء
+- **إدارة العملاء** - قاعدة بيانات شاملة مع التصنيف
+- **إدارة المبيعات المتقدمة** - قمع المبيعات والتوزيع
+- **نظام CRM المتقدم** - إدارة علاقات العملاء الشاملة
+- **إدارة العقود** - نظام عقود متكامل مع القوالب
 
-Follow these steps:
+### 🏭 الوحدات الصناعية
+- **إدارة التصنيع** - أوامر الإنتاج ومراكز العمل
+- **إدارة الجودة** - فحوصات الجودة وشهادات المطابقة
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 👥 الموارد البشرية
+- **الموارد البشرية المتقدمة** - ملفات الموظفين والتقييم
+- **نظام الرواتب المتقدم** - حساب آلي مع البدلات والخصومات
+- **إدارة الحضور والانصراف** - تتبع الحضور والإجازات
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 🚗 إدارة الأصول
+- **إدارة الأسطول** - تتبع المركبات والصيانة
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 📄 الإدارة والتكامل
+- **إدارة الوثائق** - نظام إدارة الملفات مع سير العمل
+- **التكاملات المتقدمة** - ربط مع الأنظمة الخارجية
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## 🚀 البدء السريع
+
+### المتطلبات الأساسية
+
+- Node.js 18.0+ 
+- npm أو yarn أو pnpm
+
+### التثبيت
+
+```bash
+# استنساخ المستودع
+git clone https://github.com/khamis1992/adapti-biz-flow.git
+
+# الانتقال إلى مجلد المشروع
+cd adapti-biz-flow
+
+# تثبيت التبعيات
+npm install
+
+# تشغيل الخادم المحلي
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### البناء للإنتاج
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# بناء المشروع
+npm run build
 
-**Use GitHub Codespaces**
+# معاينة البناء
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🛠️ التقنيات المستخدمة
 
-## What technologies are used for this project?
+### Frontend Framework
+- **React 18** - مكتبة JavaScript للواجهات
+- **TypeScript** - JavaScript مع الأنواع الثابتة
+- **Vite** - أداة بناء سريعة
 
-This project is built with:
+### UI/UX
+- **Tailwind CSS** - إطار عمل CSS المساعد
+- **shadcn/ui** - مكونات UI حديثة
+- **Lucide React** - مجموعة أيقونات متقدمة
+- **Recharts** - مكتبة الرسوم البيانية
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### State Management
+- **React Query** - إدارة حالة الخادم
+- **Context API** - إدارة الحالة المحلية
 
-## How can I deploy this project?
+### Routing
+- **React Router v6** - التنقل بين الصفحات
 
-Simply open [Lovable](https://lovable.dev/projects/11bc96b9-5d2a-43f3-a038-bd1e6e716c95) and click on Share -> Publish.
+## 🌐 العرض المباشر
 
-## Can I connect a custom domain to my Lovable project?
+يمكنك تجربة النظام مباشرة على: **[https://gvgtxyiy.manus.space](https://gvgtxyiy.manus.space)**
 
-Yes, you can!
+## 📖 التوثيق
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+للحصول على دليل مفصل حول استخدام النظام، راجع التوثيق الكامل المرفق مع المشروع.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🤝 المساهمة
+
+نرحب بمساهماتكم! يرجى اتباع الخطوات التالية:
+
+### خطوات المساهمة
+
+1. Fork المستودع
+2. إنشاء فرع جديد (`git checkout -b feature/amazing-feature`)
+3. Commit التغييرات (`git commit -m 'Add amazing feature'`)
+4. Push إلى الفرع (`git push origin feature/amazing-feature`)
+5. فتح Pull Request
+
+## 📄 الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT.
+
+## 📞 التواصل والدعم
+
+للحصول على الدعم أو الاستفسارات، يرجى فتح issue في المستودع.
+
+## 🙏 شكر وتقدير
+
+شكر خاص لجميع المساهمين والمطورين الذين ساعدوا في إنجاز هذا المشروع.
+
+---
+
+<div align="center">
+  <p>صُنع بـ ❤️ للمجتمع العربي</p>
+  <p>© 2025 adapti-biz-flow. جميع الحقوق محفوظة.</p>
+</div>
+

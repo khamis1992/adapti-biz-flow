@@ -14,12 +14,16 @@ import {
   BarChart3,
   Plus,
   Package,
-  ShoppingCart
+  ShoppingCart,
+  FolderKanban
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import { useNavigate } from 'react-router-dom';
 import { PaymentNotifications } from '@/components/invoices/PaymentNotifications';
+import { QuickActions } from '@/components/dashboard/QuickActions';
+import { RecentActivities } from '@/components/dashboard/RecentActivities';
+import { SystemAlerts } from '@/components/dashboard/SystemAlerts';
 
 export default function Dashboard() {
   const { signOut } = useAuth();
@@ -30,56 +34,98 @@ export default function Dashboard() {
   
   const getModuleIcon = (moduleId: string) => {
     switch (moduleId) {
-      case 'fleet_management': return <Car className="h-6 w-6" />;
-      case 'customer_management': return <Users className="h-6 w-6" />;
-      case 'contract_management': return <FileText className="h-6 w-6" />;
-      case 'accounting': return <DollarSign className="h-6 w-6" />;
-      case 'hr_management': return <UserPlus className="h-6 w-6" />;
-      case 'payroll': return <BarChart3 className="h-6 w-6" />;
-      case 'attendance': return <Calendar className="h-6 w-6" />;
-      case 'leaves': return <ClipboardList className="h-6 w-6" />;
-      case 'financial_reports': return <TrendingUp className="h-6 w-6" />;
+      case 'fleet': return <Truck className="h-6 w-6" />;
+      case 'customers': return <Users className="h-6 w-6" />;
+      case 'contracts': return <FileText className="h-6 w-6" />;
+      case 'accounting': return <Calculator className="h-6 w-6" />;
+      case 'hr': return <UserCheck className="h-6 w-6" />;
+      case 'payroll': return <CreditCard className="h-6 w-6" />;
+      case 'attendance': return <Clock className="h-6 w-6" />;
+      case 'leaves': return <Calendar className="h-6 w-6" />;
+      case 'financial-reports': return <TrendingUp className="h-6 w-6" />;
       case 'inventory': return <Package className="h-6 w-6" />;
       case 'purchasing': return <ShoppingCart className="h-6 w-6" />;
-      case 'invoices': return <FileText className="h-6 w-6" />;
+      case 'invoices': return <Receipt className="h-6 w-6" />;
+      case 'projects': return <Briefcase className="h-6 w-6" />;
+      case 'analytics': return <BarChart3 className="h-6 w-6" />;
+      case 'advanced-accounting': return <Building2 className="h-6 w-6" />;
+      case 'advanced-inventory': return <Warehouse className="h-6 w-6" />;
+      case 'advanced-sales': return <TrendingUp className="h-6 w-6" />;
+      case 'advanced-crm': return <Users className="h-6 w-6" />;
+      case 'advanced-pos': return <ShoppingCart className="h-6 w-6" />;
+      case 'advanced-procurement': return <Package className="h-6 w-6" />;
+      case 'manufacturing': return <Factory className="h-6 w-6" />;
+      case 'quality-management': return <Shield className="h-6 w-6" />;
+      case 'document-management': return <FileText className="h-6 w-6" />;
+      case 'system-integrations': return <Zap className="h-6 w-6" />;
+      case 'advanced-hr': return <Users className="h-6 w-6" />;
+      case 'advanced-payroll': return <DollarSign className="h-6 w-6" />;
       default: return <Settings className="h-6 w-6" />;
     }
   };
 
   const getModuleName = (moduleId: string) => {
     const moduleNames: Record<string, string> = {
-      'fleet_management': 'إدارة الأسطول',
-      'customer_management': 'إدارة العملاء',
-      'contract_management': 'إدارة العقود',
+      'fleet': 'إدارة الأسطول',
+      'customers': 'إدارة العملاء',
+      'contracts': 'إدارة العقود',
       'accounting': 'المحاسبة',
-      'hr_management': 'إدارة الموارد البشرية',
+      'hr': 'الموارد البشرية',
       'payroll': 'الرواتب',
       'attendance': 'الحضور والانصراف',
       'leaves': 'إدارة الإجازات',
-      'financial_reports': 'التقارير المالية',
+      'financial-reports': 'التقارير المالية',
       'inventory': 'إدارة المخزون',
       'purchasing': 'المشتريات',
-      'invoices': 'الفواتير'
+      'invoices': 'الفواتير',
+      'projects': 'إدارة المشاريع',
+      'analytics': 'التحليلات والتقارير',
+      'advanced-accounting': 'النظام المحاسبي المتقدم',
+      'advanced-inventory': 'إدارة المخزون المتقدمة',
+      'advanced-sales': 'إدارة المبيعات المتقدمة',
+      'advanced-crm': 'نظام إدارة علاقات العملاء',
+      'advanced-pos': 'نظام نقاط البيع المتقدم',
+      'advanced-procurement': 'إدارة المشتريات المتقدمة',
+      'manufacturing': 'إدارة التصنيع',
+      'quality-management': 'إدارة الجودة',
+      'document-management': 'إدارة الوثائق',
+      'system-integrations': 'التكاملات المتقدمة',
+      'advanced-hr': 'الموارد البشرية المتقدمة',
+      'advanced-payroll': 'نظام الرواتب المتقدم'
     };
     return moduleNames[moduleId] || moduleId;
   };
 
   const getModuleRoute = (moduleId: string) => {
     const routes: Record<string, string> = {
-      'fleet_management': '/fleet',
-      'customer_management': '/customers',
-      'contract_management': '/contracts',
+      'fleet': '/fleet',
+      'customers': '/customers',
+      'contracts': '/contracts',
       'accounting': '/accounting',
-      'hr_management': '/hr',
+      'hr': '/hr',
       'payroll': '/payroll',
       'attendance': '/attendance',
       'leaves': '/leaves',
-      'financial_reports': '/financial-reports',
+      'financial-reports': '/financial-reports',
       'inventory': '/inventory',
       'purchasing': '/purchasing',
-      'invoices': '/invoices'
+      'invoices': '/invoices',
+      'projects': '/projects',
+      'analytics': '/analytics',
+      'advanced-accounting': '/advanced-accounting',
+      'advanced-inventory': '/advanced-inventory',
+      'advanced-sales': '/advanced-sales',
+      'advanced-crm': '/advanced-crm',
+      'advanced-pos': '/advanced-pos',
+      'advanced-procurement': '/advanced-procurement',
+      'manufacturing': '/manufacturing',
+      'quality-management': '/quality-management',
+      'document-management': '/document-management',
+      'system-integrations': '/system-integrations',
+      'advanced-hr': '/advanced-hr',
+      'advanced-payroll': '/advanced-payroll'
     };
-    return routes[moduleId] || '/settings';
+    return routes[moduleId] || `/${moduleId}`;
   };
 
   return (
@@ -186,29 +232,22 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Payment Notifications */}
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <PaymentNotifications />
+        {/* Enhanced Dashboard Components */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left Column - Quick Actions and Alerts */}
+          <div className="space-y-6">
+            <QuickActions />
+            <SystemAlerts />
+          </div>
+          
+          {/* Middle Column - Payment Notifications */}
           <div>
-            <h2 className="text-xl font-bold mb-4">إجراءات سريعة</h2>
-            <div className="grid gap-4 grid-cols-2">
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => navigate('/invoices/new')}
-              >
-                <Plus className="h-6 w-6" />
-                فاتورة جديدة
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => navigate('/contracts')}
-              >
-                <FileText className="h-6 w-6" />
-                عقد جديد
-              </Button>
-            </div>
+            <PaymentNotifications />
+          </div>
+          
+          {/* Right Column - Recent Activities */}
+          <div>
+            <RecentActivities />
           </div>
         </div>
       </div>
