@@ -55,8 +55,12 @@ import Manufacturing from "./pages/Manufacturing";
 import QualityManagement from "./pages/QualityManagement";
 import DocumentManagement from "./pages/DocumentManagement";
 import SystemIntegrations from "./pages/SystemIntegrations";
-import AdvancedHR from "./pages/AdvancedHR";
-import AdvancedPayroll from "./pages/AdvancedPayroll";
+import AdvancedHR from './pages/AdvancedHR';
+import AdvancedPayroll from './pages/AdvancedPayroll';
+import MenuManagement from './pages/MenuManagement';
+import OrderManagement from './pages/OrderManagement';
+import KitchenManagement from './pages/KitchenManagement';
+import DeliveryManagement from './pages/DeliveryManagement';
 import NotFound from "./pages/NotFound";
 import { MockAuth } from "./components/auth/MockAuth";
 
@@ -469,6 +473,38 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <AdvancedPayroll />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/menu-management" 
+                  element={
+                    <ProtectedRoute>
+                      <MenuManagement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/order-management" 
+                  element={
+                    <ProtectedRoute>
+                      <OrderManagement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/kitchen-management" 
+                  element={
+                    <ProtectedRoute>
+                      <KitchenManagement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/delivery-management" 
+                  element={
+                    <ProtectedRoute>
+                      <DeliveryManagement />
                     </ProtectedRoute>
                   } 
                 />

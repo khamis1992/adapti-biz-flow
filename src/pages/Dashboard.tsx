@@ -58,8 +58,12 @@ export default function Dashboard() {
       case 'quality-management': return <Shield className="h-6 w-6" />;
       case 'document-management': return <FileText className="h-6 w-6" />;
       case 'system-integrations': return <Zap className="h-6 w-6" />;
-      case 'advanced-hr': return <Users className="h-6 w-6" />;
-      case 'advanced-payroll': return <DollarSign className="h-6 w-6" />;
+    case 'advanced-hr': return <Users className="h-6 w-6" />;
+    case 'advanced-payroll': return <DollarSign className="h-6 w-6" />;
+    case 'menu-management': return <ChefHat className="h-6 w-6" />;
+    case 'order-management': return <ClipboardList className="h-6 w-6" />;
+    case 'kitchen-management': return <Utensils className="h-6 w-6" />;
+    case 'delivery-management': return <Truck className="h-6 w-6" />;
       default: return <Settings className="h-6 w-6" />;
     }
   };
@@ -91,7 +95,11 @@ export default function Dashboard() {
       'document-management': 'إدارة الوثائق',
       'system-integrations': 'التكاملات المتقدمة',
       'advanced-hr': 'الموارد البشرية المتقدمة',
-      'advanced-payroll': 'نظام الرواتب المتقدم'
+      'advanced-payroll': 'نظام الرواتب المتقدم',
+      'menu-management': 'إدارة المنيو',
+      'order-management': 'إدارة الطلبات',
+      'kitchen-management': 'إدارة المطبخ',
+      'delivery-management': 'إدارة التوصيل'
     };
     return moduleNames[moduleId] || moduleId;
   };
@@ -123,7 +131,11 @@ export default function Dashboard() {
       'document-management': '/document-management',
       'system-integrations': '/system-integrations',
       'advanced-hr': '/advanced-hr',
-      'advanced-payroll': '/advanced-payroll'
+      'advanced-payroll': '/advanced-payroll',
+      'menu-management': '/menu-management',
+      'order-management': '/order-management',
+      'kitchen-management': '/kitchen-management',
+      'delivery-management': '/delivery-management'
     };
     return routes[moduleId] || `/${moduleId}`;
   };
