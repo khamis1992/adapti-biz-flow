@@ -20,11 +20,6 @@ interface ProfessionalHeroSectionProps {
 }
 
 const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSectionProps) => {
-  const stats = [
-    { value: "500+", label: "شركة تثق بنا" },
-    { value: "99.9%", label: "وقت التشغيل" },
-    { value: "24/7", label: "دعم فني" },
-  ];
 
   const features = [
     "إدارة مخزون ذكية",
@@ -192,24 +187,6 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
               </Button>
             </motion.div>
 
-            {/* Stats */}
-            <motion.div
-              className="flex flex-wrap gap-8 pt-8 border-t border-border"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="text-3xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
           </motion.div>
 
           {/* Left Visual (RTL) */}
@@ -320,23 +297,6 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
           </motion.div>
         </div>
 
-        {/* Bottom Rating */}
-        <motion.div
-          className="flex items-center justify-center gap-6 mt-16 pt-8 border-t border-border"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-        >
-          <div className="flex items-center gap-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} className="w-5 h-5 text-warning fill-warning" />
-            ))}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            تقييم <span className="font-semibold text-foreground">4.9/5</span> من أكثر من 
-            <span className="font-semibold text-foreground"> 500 شركة</span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
