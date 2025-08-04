@@ -186,47 +186,6 @@ const ProfessionalFeaturesSection = () => {
           ))}
         </motion.div>
 
-        {/* Additional Features */}
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-3xl font-bold text-primary mb-4">
-            مميزات إضافية تجعل الفرق
-          </h3>
-          <p className="text-muted-foreground text-lg">
-            تقنيات متطورة وخدمات شاملة لضمان نجاح أعمالك
-          </p>
-        </motion.div>
-
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {additionalFeatures.map((feature, index) => (
-            <motion.div
-              key={index}
-              className="group bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/20"
-              variants={itemVariants}
-              whileHover={{ y: -4 }}
-            >
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <feature.icon className="w-6 h-6 text-primary" />
-              </div>
-              <h4 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                {feature.title}
-              </h4>
-              <p className="text-muted-foreground text-sm">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
 
         {/* Bottom CTA */}
         <motion.div
