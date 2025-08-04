@@ -1,74 +1,71 @@
 import { motion } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
 import { 
-  Building2, 
-  Shield, 
+  TrendingUp, 
   Users, 
   BarChart3, 
-  Clock, 
-  Globe,
-  Leaf,
-  Flower,
-  TreePine,
-  Sprout
+  Database, 
+  Shield, 
+  Settings,
+  Building,
+  Briefcase,
+  Target,
+  Lightbulb,
+  Rocket
 } from 'lucide-react';
 
 const OrganicFeaturesSection = () => {
-  const features = [
+  const erpFeatures = [
     {
-      icon: Building2,
-      title: 'متعدد الأنشطة',
-      description: 'نظام ينمو ويتكيف مع جميع أنواع الأعمال من تأجير السيارات واليخوت إلى المطاعم والصالونات',
-      color: 'emerald',
-      position: { x: 0, y: 0 },
-      size: 'large'
+      icon: Database,
+      title: "إدارة المخزون الذكية",
+      description: "تتبع شامل للمخزون مع تنبيهات تلقائية للمستويات المنخفضة وتقارير تفصيلية",
+      color: "primary",
+      size: "large"
     },
     {
-      icon: Shield,
-      title: 'نظام محاسبي متقدم',
-      description: 'دليل حسابات شامل ومراكز تكلفة ذكية تنمو مع نمو أعمالك',
-      color: 'teal',
-      position: { x: 1, y: 0 },
-      size: 'medium'
+      icon: TrendingUp,
+      title: "المحاسبة المتقدمة", 
+      description: "نظام محاسبي متكامل مع إدارة الفواتير والتقارير المالية التلقائية",
+      color: "success",
+      size: "medium"
     },
     {
       icon: Users,
-      title: 'إدارة شاملة ومرنة',
-      description: 'إدارة العملاء والموظفين والأسطول بطريقة طبيعية ومتدفقة',
-      color: 'green',
-      position: { x: 2, y: 0 },
-      size: 'medium'
+      title: "إدارة الموارد البشرية",
+      description: "متابعة شاملة للموظفين، الرواتب، الإجازات والأداء",
+      color: "accent",
+      size: "medium"
     },
     {
       icon: BarChart3,
-      title: 'تحليلات ذكية ونامية',
-      description: 'رؤى عميقة وتقارير تفاعلية تساعدك على اتخاذ قرارات مستنيرة',
-      color: 'lime',
-      position: { x: 0, y: 1 },
-      size: 'medium'
+      title: "تقارير ذكية",
+      description: "لوحات تحكم تفاعلية وتقارير مخصصة لجميع أقسام الشركة",
+      color: "warning",
+      size: "large"
     },
     {
-      icon: Clock,
-      title: 'أتمتة طبيعية',
-      description: 'تبسيط العمليات بطريقة تلقائية وسلسة',
-      color: 'amber',
-      position: { x: 1, y: 1 },
-      size: 'small'
+      icon: Settings,
+      title: "إدارة العمليات",
+      description: "أتمتة العمليات التجارية وتحسين الكفاءة التشغيلية",
+      color: "primary",
+      size: "medium"
     },
     {
-      icon: Globe,
-      title: 'تعدد اللغات',
-      description: 'دعم كامل للعربية والإنجليزية',
-      color: 'orange',
-      position: { x: 2, y: 1 },
-      size: 'small'
+      icon: Shield,
+      title: "الأمان والامتثال",
+      description: "حماية متقدمة للبيانات مع ضمان الامتثال للمعايير المحلية والدولية",
+      color: "destructive",
+      size: "large"
     }
   ];
 
-  const decorativeElements = [
-    { icon: Leaf, color: 'emerald', position: { top: '10%', left: '5%' }, size: 40, delay: 0 },
-    { icon: Flower, color: 'teal', position: { top: '20%', right: '10%' }, size: 35, delay: 1 },
-    { icon: TreePine, color: 'green', position: { bottom: '30%', left: '8%' }, size: 45, delay: 2 },
-    { icon: Sprout, color: 'lime', position: { bottom: '15%', right: '5%' }, size: 30, delay: 3 }
+  const businessElements = [
+    { icon: Building, position: { top: '10%', left: '5%' } },
+    { icon: Briefcase, position: { top: '20%', right: '10%' } },
+    { icon: Target, position: { bottom: '30%', left: '8%' } },
+    { icon: Lightbulb, position: { bottom: '15%', right: '15%' } },
+    { icon: Rocket, position: { top: '50%', left: '3%' } }
   ];
 
   const containerVariants = {
@@ -97,252 +94,194 @@ const OrganicFeaturesSection = () => {
   };
 
   return (
-    <div className="py-24 bg-gradient-to-b from-teal-50 via-emerald-50 to-green-50 relative overflow-hidden">
-      {/* Decorative background elements */}
+    <section className="py-24 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
+      {/* Professional Background Elements */}
       <div className="absolute inset-0">
         <motion.div 
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.1 }}
-          transition={{ duration: 3, ease: "easeOut" }}
-          className="absolute top-0 left-1/4 w-[800px] h-[600px] bg-gradient-to-br from-emerald-300 to-teal-300 rounded-full blur-3xl"
-          style={{
-            clipPath: "ellipse(60% 40% at 40% 60%)"
-          }}
+          animate={{ scale: 1, opacity: 0.05 }}
+          transition={{ duration: 3 }}
+          className="absolute top-0 left-1/4 w-[800px] h-[600px] bg-gradient-to-br from-primary/20 to-success/20 rounded-full blur-3xl"
         />
         <motion.div 
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.08 }}
-          transition={{ duration: 3.5, ease: "easeOut", delay: 0.5 }}
-          className="absolute bottom-0 right-1/4 w-[700px] h-[500px] bg-gradient-to-tl from-green-300 to-lime-300 rounded-full blur-3xl"
-          style={{
-            clipPath: "ellipse(70% 50% at 60% 40%)"
-          }}
+          animate={{ scale: 1, opacity: 0.03 }}
+          transition={{ duration: 3.5, delay: 0.5 }}
+          className="absolute bottom-0 right-1/4 w-[700px] h-[500px] bg-gradient-to-tl from-warning/20 to-accent/20 rounded-full blur-3xl"
         />
       </div>
 
-      {/* Floating decorative icons */}
-      {decorativeElements.map((element, index) => {
-        const Icon = element.icon;
-        return (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, scale: 0, rotate: -180 }}
-            animate={{ 
-              opacity: 0.3, 
-              scale: 1, 
-              rotate: 0,
-              y: [0, -20, 0],
-              x: [0, 10, 0]
-            }}
-            transition={{
-              opacity: { duration: 1, delay: element.delay },
-              scale: { duration: 1, delay: element.delay },
-              rotate: { duration: 1, delay: element.delay },
-              y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: element.delay },
-              x: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: element.delay }
-            }}
-            className={`absolute text-${element.color}-300`}
-            style={element.position}
-          >
-            <Icon size={element.size} />
-          </motion.div>
-        );
-      })}
-
-      <div className="container mx-auto px-6 relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
+      {/* Background Elements */}
+      {businessElements.map(({ icon: Icon, position }, index) => (
+        <motion.div
+          key={index}
+          className="absolute text-primary/10"
+          style={position}
+          initial={{ opacity: 0, scale: 0, rotate: -90 }}
+          animate={{ 
+            opacity: 1, 
+            scale: 1, 
+            rotate: 0,
+            y: [0, -15, 0],
+          }}
+          transition={{
+            delay: index * 0.2,
+            duration: 1,
+            y: {
+              repeat: Infinity,
+              duration: 4,
+              ease: "easeInOut"
+            }
+          }}
         >
-          {/* Badge */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-3 bg-white/70 backdrop-blur-sm border border-emerald-200/60 rounded-full px-6 py-3 mb-8 shadow-lg"
-            style={{
-              boxShadow: "0 8px 32px rgba(16, 185, 129, 0.15)"
-            }}
-          >
-            <Leaf className="w-5 h-5 text-emerald-600" />
-            <span className="text-emerald-700 font-medium">مميزات طبيعية ومتطورة</span>
-          </motion.div>
+          <Icon size={32} />
+        </motion.div>
+      ))}
 
-          <h2 className="text-5xl lg:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">
-              حلول تنمو معك
-            </span>
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div 
+          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0, y: 30 },
+            visible: { opacity: 1, y: 0, transition: { duration: 1 } }
+          }}
+        >
+          <Badge 
+            variant="secondary" 
+            className="mb-4 bg-primary/10 text-primary border-primary/20"
+          >
+            🚀 حلول ERP متطورة
+          </Badge>
+          
+          <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-6">
+            منصة شاملة لإدارة أعمالك
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            اكتشف كيف تتكامل ميزات أدابتي بطريقة طبيعية ومتوازنة لتحقق أقصى استفادة من أعمالك
+          
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            اكتشف قوة نظام ERP المتكامل الذي يجمع جميع عمليات شركتك في منصة واحدة - 
+            من المحاسبة إلى إدارة المخزون والموارد البشرية
           </p>
         </motion.div>
 
-        {/* Features Grid */}
-        <motion.div
+        {/* ERP Features Grid */}
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="max-w-7xl mx-auto"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  whileHover={{ 
-                    scale: 1.05,
-                    rotate: Math.random() > 0.5 ? 2 : -2,
-                    transition: { duration: 0.3 }
-                  }}
-                  className={`
-                    relative overflow-hidden shadow-xl transition-all duration-500 group cursor-pointer
-                    ${feature.size === 'large' ? 'md:col-span-2 lg:col-span-3 p-12' : 
-                      feature.size === 'medium' ? 'p-8' : 'p-6'}
-                    bg-white/80 backdrop-blur-sm border border-white/50
-                  `}
-                  style={{
-                    borderRadius: index % 2 === 0 ? "50px 20px 50px 20px" : "20px 50px 20px 50px",
-                    boxShadow: `0 15px 35px rgba(${
-                      feature.color === 'emerald' ? '16, 185, 129' :
-                      feature.color === 'teal' ? '20, 184, 166' :
-                      feature.color === 'green' ? '34, 197, 94' :
-                      feature.color === 'lime' ? '132, 204, 22' :
-                      feature.color === 'amber' ? '245, 158, 11' :
-                      '249, 115, 22'
-                    }, 0.15)`
-                  }}
-                >
-                  {/* Animated background gradient */}
-                  <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 0.1 }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className={`absolute inset-0 bg-gradient-to-br from-${feature.color}-100 to-${feature.color}-200 group-hover:opacity-20 transition-opacity duration-500`}
-                    style={{
-                      borderRadius: index % 2 === 0 ? "50px 20px 50px 20px" : "20px 50px 20px 50px"
-                    }}
-                  />
-
-                  {/* Floating background icon */}
-                  <div className={`absolute -top-8 -right-8 opacity-5 group-hover:opacity-10 transition-opacity duration-500 text-${feature.color}-500`}>
-                    <Icon size={120} />
-                  </div>
-
-                  <div className="relative z-10">
-                    {/* Icon with organic background */}
-                    <motion.div
-                      whileHover={{ rotate: 360, scale: 1.1 }}
-                      transition={{ duration: 0.8 }}
-                      className={`inline-flex items-center justify-center w-16 h-16 mb-6 bg-gradient-to-br from-${feature.color}-400 to-${feature.color}-600 text-white shadow-lg`}
-                      style={{
-                        borderRadius: "50% 30% 50% 30%"
-                      }}
-                    >
-                      <Icon size={28} />
-                    </motion.div>
-
-                    <h3 className={`text-2xl font-bold mb-4 text-gray-800 group-hover:text-${feature.color}-700 transition-colors duration-300 ${
-                      feature.size === 'large' ? 'text-3xl' : ''
-                    }`}>
-                      {feature.title}
-                    </h3>
-
-                    <p className={`text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300 ${
-                      feature.size === 'large' ? 'text-lg' : 'text-base'
-                    }`}>
-                      {feature.description}
-                    </p>
-
-                    {feature.size === 'large' && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.5 }}
-                        viewport={{ once: true }}
-                        className="mt-8 grid grid-cols-3 gap-6"
-                      >
-                        {[
-                          { value: '+50', label: 'نوع نشاط' },
-                          { value: '24/7', label: 'دعم مستمر' },
-                          { value: '99%', label: 'وقت تشغيل' }
-                        ].map((stat, i) => (
-                          <div key={i} className="text-center">
-                            <div className={`text-2xl font-bold text-${feature.color}-600 mb-1`}>
-                              {stat.value}
-                            </div>
-                            <div className="text-sm text-gray-500">{stat.label}</div>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </div>
-
-                  {/* Organic border animation */}
-                  <motion.div
-                    initial={{ pathLength: 0 }}
-                    whileInView={{ pathLength: 1 }}
-                    transition={{ duration: 2, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    className={`absolute inset-0 pointer-events-none border-2 border-${feature.color}-300 opacity-30`}
-                    style={{
-                      borderRadius: index % 2 === 0 ? "50px 20px 50px 20px" : "20px 50px 20px 50px"
-                    }}
-                  />
-                </motion.div>
-              );
-            })}
-          </div>
+          {erpFeatures.map((feature, index) => {
+            const Icon = feature.icon;
+            
+            return (
+              <motion.div
+                key={index}
+                className={`
+                  group relative p-8 rounded-2xl border border-border
+                  bg-card/50 backdrop-blur-sm
+                  hover:bg-card/80 hover:shadow-elegant hover:border-primary/20
+                  transition-all duration-300
+                  ${feature.size === 'large' ? 'md:col-span-2 lg:col-span-1' : ''}
+                `}
+                variants={itemVariants}
+                whileHover={{ 
+                  y: -8,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                {/* Icon */}
+                <div className={`
+                  inline-flex p-4 rounded-xl mb-6
+                  ${feature.color === 'primary' ? 'bg-primary/10 text-primary' : ''}
+                  ${feature.color === 'success' ? 'bg-success/10 text-success' : ''}
+                  ${feature.color === 'accent' ? 'bg-accent/10 text-accent' : ''}
+                  ${feature.color === 'warning' ? 'bg-warning/10 text-warning' : ''}
+                  ${feature.color === 'destructive' ? 'bg-destructive/10 text-destructive' : ''}
+                  group-hover:scale-110 transition-transform duration-300
+                `}>
+                  <Icon size={28} />
+                </div>
+                
+                {/* Content */}
+                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+                
+                {/* Hover Effect */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.div>
+            );
+          })}
         </motion.div>
 
-        {/* Growth Statistics */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
+        {/* ERP Benefits Statistics */}
+        <motion.div 
+          className="mt-20 p-12 rounded-3xl bg-gradient-to-br from-primary/5 via-transparent to-success/5 border border-primary/10"
+          variants={itemVariants}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
-          className="mt-24 text-center"
         >
-          <div className="bg-white/60 backdrop-blur-lg border border-white/50 shadow-2xl p-12 max-w-4xl mx-auto"
-            style={{
-              borderRadius: "60px 30px 60px 30px",
-              boxShadow: "0 25px 50px rgba(16, 185, 129, 0.1)"
-            }}
-          >
-            <h3 className="text-2xl font-bold text-gray-800 mb-8">نمو طبيعي ومستدام</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { number: '+500', label: 'شركة تنمو معنا', color: 'emerald' },
-                { number: '40%', label: 'زيادة في الكفاءة', color: 'teal' },
-                { number: '60%', label: 'توفير في الوقت', color: 'green' },
-                { number: '99%', label: 'رضا العملاء', color: 'lime' }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="group cursor-pointer"
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-primary mb-4">
+              فوائد نظام ERP
+            </h3>
+            <p className="text-muted-foreground text-lg">
+              أرقام حقيقية تظهر تأثير نظامنا على أداء الشركات
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { number: "40%", label: "تحسن في الكفاءة", color: "success" },
+              { number: "60%", label: "توفير في الوقت", color: "primary" },
+              { number: "25%", label: "تقليل التكاليف", color: "warning" },
+              { number: "99%", label: "دقة البيانات", color: "accent" }
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                className="text-center group"
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <motion.div 
+                  className={`
+                    text-4xl lg:text-5xl font-bold mb-2
+                    ${stat.color === 'success' ? 'text-success' : ''}
+                    ${stat.color === 'primary' ? 'text-primary' : ''}
+                    ${stat.color === 'warning' ? 'text-warning' : ''}
+                    ${stat.color === 'accent' ? 'text-accent' : ''}
+                    group-hover:scale-110 transition-transform duration-300
+                  `}
+                  whileInView={{ 
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ 
+                    delay: index * 0.2 + 0.5,
+                    duration: 0.6 
+                  }}
+                  viewport={{ once: true }}
                 >
-                  <div className={`text-3xl lg:text-4xl font-bold bg-gradient-to-r from-${stat.color}-500 to-${stat.color}-600 bg-clip-text text-transparent mb-2 group-hover:from-${stat.color}-600 group-hover:to-${stat.color}-700 transition-all duration-300`}>
-                    {stat.number}
-                  </div>
-                  <div className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors duration-300">
-                    {stat.label}
-                  </div>
+                  {stat.number}
                 </motion.div>
-              ))}
-            </div>
+                <p className="text-muted-foreground font-medium">
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 

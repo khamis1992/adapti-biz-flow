@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
-import OrganicHeroSection from '@/components/landing/OrganicHeroSection';
+import ERPHeroSection from '@/components/landing/ERPHeroSection';
 import OrganicFeaturesSection from '@/components/landing/OrganicFeaturesSection';
 import OrganicTestimonialsSection from '@/components/landing/OrganicTestimonialsSection';
 import OrganicCTASection from '@/components/landing/OrganicCTASection';
@@ -36,7 +36,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <OrganicHeroSection 
+      <ERPHeroSection 
         onStartFree={handleStartFree}
         onLogin={handleLogin}
       />
