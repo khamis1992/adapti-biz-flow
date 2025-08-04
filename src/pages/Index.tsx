@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
-import BentoHeroSection from '@/components/landing/BentoHeroSection';
-import BentoFeaturesSection from '@/components/landing/BentoFeaturesSection';
-import BentoTestimonialsSection from '@/components/landing/BentoTestimonialsSection';
-import BentoCTASection from '@/components/landing/BentoCTASection';
+import OrganicHeroSection from '@/components/landing/OrganicHeroSection';
+import OrganicFeaturesSection from '@/components/landing/OrganicFeaturesSection';
+import OrganicTestimonialsSection from '@/components/landing/OrganicTestimonialsSection';
+import OrganicCTASection from '@/components/landing/OrganicCTASection';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -36,13 +36,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <BentoHeroSection 
+      <OrganicHeroSection 
         onStartFree={handleStartFree}
         onLogin={handleLogin}
       />
-      <BentoFeaturesSection />
-      <BentoTestimonialsSection />
-      <BentoCTASection 
+      <OrganicFeaturesSection />
+      <OrganicTestimonialsSection />
+      <OrganicCTASection 
         onStartFree={handleStartFree}
         onRequestDemo={handleRequestDemo}
       />
