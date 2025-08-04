@@ -81,15 +81,10 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/mock-auth" element={<MockAuth />} />
                 
+                {/* Onboarding route - accessible without authentication */}
+                <Route path="/onboarding" element={<OnboardingWizard />} />
+                
                 {/* Protected Routes */}
-                <Route 
-                  path="/onboarding" 
-                  element={
-                    <ProtectedRoute requireTenant={false}>
-                      <OnboardingWizard />
-                    </ProtectedRoute>
-                  } 
-                />
                 
                 {/* Protected routes - auth + tenant required */}
                 <Route 

@@ -23,6 +23,8 @@ import {
   Clock,
   Receipt,
   Briefcase,
+  ChefHat,
+  Utensils,
   Building2,
   Warehouse,
   Factory,

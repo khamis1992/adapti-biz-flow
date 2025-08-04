@@ -310,7 +310,7 @@ const EquipmentManagement = () => {
               <div className="grid grid-cols-2 gap-1 text-xs">
                 {Object.entries(item.specifications).map(([key, value]) => (
                   <div key={key} className="bg-gray-50 p-1 rounded">
-                    <span className="font-medium">{value}</span>
+                    <span className="font-medium">{String(value)}</span>
                   </div>
                 ))}
               </div>
@@ -552,7 +552,7 @@ const EquipmentManagement = () => {
             <CardContent>
               <div className="space-y-4">
                 {equipment.map(item => {
-                  const daysUntilMaintenance = Math.ceil((new Date(item.nextMaintenance) - new Date()) / (1000 * 60 * 60 * 24));
+                  const daysUntilMaintenance = Math.ceil((new Date(item.nextMaintenance).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
                   const isOverdue = daysUntilMaintenance < 0;
                   const isUpcoming = daysUntilMaintenance <= 7 && daysUntilMaintenance >= 0;
                   

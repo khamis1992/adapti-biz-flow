@@ -1,4 +1,5 @@
 import { useTenant } from '@/hooks/useTenant';
+import React from 'react';
 
 /**
  * Hook to check if a specific module is enabled for the current tenant
@@ -26,13 +27,15 @@ export const useEnabledModules = () => {
 /**
  * Conditional component that only renders if the module is enabled
  */
-export const ModuleGuard: React.FC<{
+interface ModuleGuardProps {
   moduleId: string;
   children: React.ReactNode;
   fallback?: React.ReactNode;
-}> = ({ moduleId, children, fallback = null }) => {
+}
+
+export const ModuleGuard: React.FC<ModuleGuardProps> = ({ moduleId, children, fallback = null }) => {
   const isEnabled = useModuleEnabled(moduleId);
-  return isEnabled ? <>{children}</> : <>{fallback}</>;
+  return isEnabled ? React.createElement(React.Fragment, {}, children) : React.createElement(React.Fragment, {}, fallback);
 };
 
 /**
@@ -49,21 +52,25 @@ export const withModuleProtection = (
     if (!isEnabled) {
       if (fallbackComponent) {
         const FallbackComponent = fallbackComponent;
-        return <FallbackComponent {...props} />;
+        return React.createElement(FallbackComponent, props);
       }
-      return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">الوحدة غير متاحة</h2>
-            <p className="text-muted-foreground">
-              هذه الوحدة غير مفعلة في خطة الاشتراك الحالية
-            </p>
-          </div>
-        </div>
+      return React.createElement('div', 
+        { className: "flex items-center justify-center min-h-screen" },
+        React.createElement('div', 
+          { className: "text-center" },
+          React.createElement('h2', 
+            { className: "text-2xl font-bold mb-4" },
+            "الوحدة غير متاحة"
+          ),
+          React.createElement('p', 
+            { className: "text-muted-foreground" },
+            "هذه الوحدة غير مفعلة في خطة الاشتراك الحالية"
+          )
+        )
       );
     }
     
-    return <Component {...props} />;
+    return React.createElement(Component, props);
   };
 };
 
@@ -141,4 +148,3 @@ export const getModuleDisplayName = (moduleId: string): string => {
   
   return moduleNames[moduleId] || moduleId;
 };
-
