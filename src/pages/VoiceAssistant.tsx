@@ -3,7 +3,7 @@ import {
   Mic, MicOff, Volume2, VolumeX, Settings, Play, Pause,
   MessageCircle, Brain, Zap, Globe, Clock, User,
   BarChart3, TrendingUp, Calendar, FileText, Search,
-  Phone, Mail, Calculator, MapPin, Weather, Music,
+  Phone, Mail, Calculator, MapPin, Cloud, Music,
   ShoppingCart, Car, Home, Briefcase, Heart, Star
 } from 'lucide-react';
 
@@ -217,7 +217,7 @@ const VoiceAssistant = () => {
             { icon: Search, label: 'بحث سريع', command: 'ابحث في النظام' },
             { icon: Mail, label: 'الرسائل', command: 'عرض الرسائل الجديدة' },
             { icon: Calculator, label: 'حاسبة', command: 'افتح الحاسبة' },
-            { icon: Weather, label: 'الطقس', command: 'كيف الطقس اليوم؟' },
+            { icon: Cloud, label: 'الطقس', command: 'كيف الطقس اليوم؟' },
             { icon: Music, label: 'موسيقى', command: 'شغل موسيقى هادئة' }
           ].map((action, index) => (
             <button 

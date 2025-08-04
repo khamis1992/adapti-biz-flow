@@ -403,7 +403,7 @@ const SocialMediaManagement = () => {
                           <p className="text-sm font-medium text-gray-900 truncate">{post.content}</p>
                           <div className="flex items-center space-x-2 space-x-reverse mt-1">
                             <span className="text-xs text-gray-600">{post.platform}</span>
-                            <Badge className={getStatusColor(post.status)} size="sm">
+                            <Badge className={getStatusColor(post.status)}>
                               {post.status}
                             </Badge>
                           </div>

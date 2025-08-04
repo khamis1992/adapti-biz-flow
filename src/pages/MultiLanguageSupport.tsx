@@ -297,7 +297,7 @@ const MultiLanguageSupport = () => {
       description: 'ترجمة دليل المستخدم والأسئلة الشائعة',
       sourceLanguage: 'ar',
       targetLanguages: ['en', 'fr'],
-      status: 'in_progress',
+      status: 'active',
       progress: 45,
       deadline: '2024-08-30',
       priority: 'medium',
@@ -312,7 +312,7 @@ const MultiLanguageSupport = () => {
       description: 'ترجمة المواد التسويقية والإعلانية',
       sourceLanguage: 'ar',
       targetLanguages: ['en', 'es', 'de', 'zh'],
-      status: 'pending',
+      status: 'paused',
       progress: 0,
       deadline: '2024-09-15',
       priority: 'low',
@@ -466,7 +466,7 @@ const MultiLanguageSupport = () => {
                   {projects.filter(p => p.status === 'active').length}
                 </p>
                 <p className="text-xs text-purple-600">
-                  {projects.filter(p => p.status === 'in_progress').length} قيد التقدم
+                  {projects.filter(p => p.status === 'active').length} قيد التقدم
                 </p>
               </div>
               <FileText className="h-8 w-8 text-purple-600" />
