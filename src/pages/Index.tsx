@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
-import ProfessionalHeroSection from '@/components/landing/ProfessionalHeroSection';
-import ProfessionalFeaturesSection from '@/components/landing/ProfessionalFeaturesSection';
+import EnhancedHeroSection from '@/components/landing/EnhancedHeroSection';
+import EnhancedFeaturesSection from '@/components/landing/EnhancedFeaturesSection';
 import Footer from '@/components/landing/Footer';
 import Header from '@/components/landing/Header';
 
@@ -43,11 +43,11 @@ const Index = () => {
         onLogin={handleLogin}
       />
       <div className="pt-16 lg:pt-20">
-        <ProfessionalHeroSection 
+        <EnhancedHeroSection 
           onStartFree={handleStartFree}
           onLogin={handleLogin}
         />
-        <ProfessionalFeaturesSection />
+        <EnhancedFeaturesSection />
         <Footer />
       </div>
     </div>

@@ -8,21 +8,22 @@
 
 @layer base {
 :root {
-    /* ERP Color System - Professional Business Palette */
-    --background: 0 0% 100%; /* Pure white background */
-    --foreground: 215 28% 17%; /* Main text #1F2937 */
+    /* Deep Purple Gradient System - Modern Design */
+    --background: 240 6% 6%; /* Deep dark background */
+    --foreground: 0 0% 98%; /* Pure white text */
     
-    --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
+    --card: 240 8% 8%; /* Darker card background */
+    --card-foreground: 0 0% 98%;
     
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;
+    --popover: 240 8% 8%;
+    --popover-foreground: 0 0% 98%;
     
-    /* Primary brand colors - Professional navy */
-    --primary: 234 45% 29%; /* Primary #272874 for headings and icons */
-    --primary-foreground: 0 0% 100%; /* White text on primary */
-    --primary-glow: 234 45% 35%; /* Lighter primary for glows */
-    --primary-variant: 234 40% 25%; /* Darker primary variant */
+    /* Primary brand colors - Deep Purple Spectrum */
+    --primary: 263 70% 50%; /* Rich purple primary */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 263 70% 60%; /* Brighter purple for glows */
+    --primary-deep: 263 70% 40%; /* Deeper purple variant */
+    --primary-light: 263 60% 70%; /* Light purple for accents */
     
     /* Success states - Professional green */
     --success: 158 65% 40%; /* Positive buttons #00cc88 */
@@ -46,62 +47,73 @@
     --destructive-light: 0 77% 75%; /* Lighter red */
     --destructive-dark: 0 90% 45%; /* Darker red */
     
-    /* Secondary colors - Professional grays */
-    --secondary: 220 14% 96%; /* Very light gray background */
-    --secondary-foreground: 215 28% 17%; /* Main text color */
+    /* Purple Accent Colors */
+    --secondary: 295 85% 60%; /* Vibrant pink-purple */
+    --secondary-foreground: 0 0% 100%;
     
-    /* Muted colors - Subtle and professional */
-    --muted: 220 14% 96%; /* Light muted background */
-    --muted-foreground: 220 9% 46%; /* Secondary text #9CA3AF */
+    /* Enhanced Muted Colors */
+    --muted: 240 15% 15%; /* Dark muted background */
+    --muted-foreground: 240 10% 70%; /* Light gray text */
     
-    /* Border and input colors */
-    --border: 220 13% 91%; /* Light professional border */
-    --input: 220 13% 91%; /* Input border */
-    --ring: 234 45% 29%; /* Focus ring - matches primary */
+    /* Enhanced Border and Input Colors */
+    --border: 240 20% 20%; /* Subtle dark border */
+    --input: 240 20% 20%; /* Input border */
+    --ring: 263 70% 50%; /* Focus ring - matches primary */
 
-    /* Modern Gradient System */
-    --gradient-primary: linear-gradient(135deg, hsl(230, 45%, 25%) 0%, hsl(230, 55%, 18%) 100%);
-    --gradient-primary-soft: linear-gradient(135deg, hsl(230, 35%, 35%) 0%, hsl(230, 25%, 45%) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(155, 65%, 35%) 0%, hsl(155, 55%, 45%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(230, 45%, 25%) 0%, hsl(200, 85%, 40%) 50%, hsl(155, 65%, 35%) 100%);
-    --gradient-hero-reverse: linear-gradient(315deg, hsl(230, 45%, 25%) 0%, hsl(200, 85%, 40%) 50%, hsl(155, 65%, 35%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(215, 25%, 98%) 100%);
-    --gradient-card-hover: linear-gradient(145deg, hsl(215, 25%, 99%) 0%, hsl(215, 20%, 96%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(215, 15%, 99%) 100%);
-    --gradient-mesh: radial-gradient(ellipse at top left, hsl(230, 45%, 25% / 0.1) 0%, transparent 50%), 
-                     radial-gradient(ellipse at top right, hsl(155, 65%, 35% / 0.1) 0%, transparent 50%),
-                     radial-gradient(ellipse at bottom left, hsl(200, 85%, 40% / 0.1) 0%, transparent 50%);
+    /* Deep Purple Gradient System */
+    --gradient-primary: linear-gradient(135deg, hsl(263, 70%, 50%) 0%, hsl(295, 85%, 60%) 100%);
+    --gradient-primary-glow: linear-gradient(135deg, hsl(263, 70%, 60%) 0%, hsl(295, 85%, 70%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(240, 6%, 6%) 0%, hsl(263, 70%, 30%) 30%, hsl(295, 85%, 40%) 100%);
+    --gradient-hero-reverse: linear-gradient(315deg, hsl(295, 85%, 40%) 0%, hsl(263, 70%, 30%) 70%, hsl(240, 6%, 6%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(240, 8%, 8%) 0%, hsl(240, 10%, 12%) 100%);
+    --gradient-card-hover: linear-gradient(145deg, hsl(240, 10%, 12%) 0%, hsl(240, 12%, 16%) 100%);
+    --gradient-glass: linear-gradient(145deg, hsl(263, 70%, 50% / 0.1) 0%, hsl(295, 85%, 60% / 0.1) 100%);
+    --gradient-mesh: radial-gradient(ellipse at top left, hsl(263, 70%, 50% / 0.2) 0%, transparent 50%), 
+                     radial-gradient(ellipse at top right, hsl(295, 85%, 60% / 0.2) 0%, transparent 50%),
+                     radial-gradient(ellipse at bottom, hsl(340, 75%, 55% / 0.15) 0%, transparent 50%);
 
-    /* Advanced Shadow System */
-    --shadow-soft: 0 1px 3px hsl(220, 15%, 20% / 0.05), 0 1px 2px hsl(220, 15%, 20% / 0.1);
-    --shadow-medium: 0 4px 6px hsl(220, 15%, 20% / 0.07), 0 2px 4px hsl(220, 15%, 20% / 0.06);
-    --shadow-strong: 0 10px 15px hsl(220, 15%, 20% / 0.1), 0 4px 6px hsl(220, 15%, 20% / 0.05);
-    --shadow-elegant: 0 20px 25px hsl(220, 15%, 20% / 0.1), 0 10px 10px hsl(220, 15%, 20% / 0.04);
-    --shadow-glow: 0 0 40px hsl(230, 45%, 60% / 0.15);
-    --shadow-glow-primary: 0 0 60px hsl(230, 45%, 25% / 0.2);
-    --shadow-glow-success: 0 0 40px hsl(155, 65%, 35% / 0.2);
-    --shadow-lift: 0 32px 64px hsl(220, 15%, 20% / 0.12), 0 16px 32px hsl(220, 15%, 20% / 0.08);
-    --shadow-depth: inset 0 1px 0 hsl(0, 0%, 100% / 0.1), 0 1px 3px hsl(220, 15%, 20% / 0.2);
+    /* Color Variations for Charts and Elements */
+    --chart-purple: 263 70% 50%;
+    --chart-pink: 295 85% 60%;
+    --chart-blue: 213 94% 58%;
+    --chart-green: 158 65% 40%;
+    --chart-orange: 24 100% 50%;
+    --chart-red: 0 84% 60%;
+
+    /* Enhanced Shadow System for Dark Theme */
+    --shadow-soft: 0 4px 6px hsl(240, 20%, 0% / 0.3), 0 2px 4px hsl(240, 20%, 0% / 0.2);
+    --shadow-medium: 0 8px 16px hsl(240, 20%, 0% / 0.4), 0 4px 8px hsl(240, 20%, 0% / 0.2);
+    --shadow-strong: 0 16px 32px hsl(240, 20%, 0% / 0.5), 0 8px 16px hsl(240, 20%, 0% / 0.3);
+    --shadow-elegant: 0 24px 48px hsl(240, 20%, 0% / 0.6), 0 12px 24px hsl(240, 20%, 0% / 0.4);
+    --shadow-glow: 0 0 40px hsl(263, 70%, 50% / 0.4);
+    --shadow-glow-primary: 0 0 60px hsl(263, 70%, 50% / 0.6);
+    --shadow-glow-secondary: 0 0 40px hsl(295, 85%, 60% / 0.4);
+    --shadow-glow-success: 0 0 40px hsl(158, 65%, 40% / 0.4);
+    --shadow-lift: 0 32px 64px hsl(240, 20%, 0% / 0.7), 0 16px 32px hsl(240, 20%, 0% / 0.4);
+    --shadow-depth: inset 0 1px 0 hsl(263, 70%, 50% / 0.1), 0 1px 3px hsl(240, 20%, 0% / 0.4);
 
     /* Enhanced Layout & Typography */
-    --radius: 0.75rem;
-    --radius-sm: 0.5rem;
-    --radius-md: 0.625rem;
-    --radius-lg: 1rem;
-    --radius-xl: 1.25rem;
-    --radius-2xl: 1.5rem;
+    --radius: 1rem;
+    --radius-sm: 0.75rem;
+    --radius-md: 0.875rem;
+    --radius-lg: 1.25rem;
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
 
     /* Advanced Animation System */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    --transition-elastic: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --transition-slow: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-spring: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-elastic: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-slow: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-    /* Glassmorphism Variables */
-    --glass-background: hsl(0, 0%, 100% / 0.25);
-    --glass-border: hsl(0, 0%, 100% / 0.18);
-    --glass-backdrop: blur(16px);
+    /* Advanced Glassmorphism Variables */
+    --glass-background: hsl(263, 70%, 50% / 0.08);
+    --glass-background-strong: hsl(263, 70%, 50% / 0.12);
+    --glass-border: hsl(263, 70%, 50% / 0.2);
+    --glass-border-strong: hsl(263, 70%, 50% / 0.3);
+    --glass-backdrop: blur(20px);
+    --glass-backdrop-strong: blur(32px);
 
     /* Neumorphism Variables */
     --neuro-light: 0 8px 32px hsl(0, 0%, 0% / 0.1);
@@ -192,11 +204,35 @@
 }
 
 @layer components {
-  /* Glassmorphism Components */
+  /* Enhanced Glassmorphism Components */
   .glass {
     background: var(--glass-background);
     backdrop-filter: var(--glass-backdrop);
     border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glow);
+    transition: var(--transition-smooth);
+  }
+
+  .glass-strong {
+    background: var(--glass-background-strong);
+    backdrop-filter: var(--glass-backdrop-strong);
+    border: 1px solid var(--glass-border-strong);
+    box-shadow: var(--shadow-glow-primary);
+  }
+
+  .glass-card {
+    background: var(--gradient-glass);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-elegant);
+    transition: var(--transition-smooth);
+  }
+
+  .glass-card:hover {
+    background: var(--glass-background-strong);
+    border-color: var(--glass-border-strong);
+    box-shadow: var(--shadow-glow-primary);
+    transform: translateY(-4px);
   }
 
   /* Neumorphism Components */
