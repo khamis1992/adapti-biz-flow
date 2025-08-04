@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
-import ERPHeroSection from '@/components/landing/ERPHeroSection';
-import OrganicFeaturesSection from '@/components/landing/OrganicFeaturesSection';
-import OrganicTestimonialsSection from '@/components/landing/OrganicTestimonialsSection';
-import OrganicCTASection from '@/components/landing/OrganicCTASection';
+import ProfessionalHeroSection from '@/components/landing/ProfessionalHeroSection';
+import ProfessionalFeaturesSection from '@/components/landing/ProfessionalFeaturesSection';
+import ProfessionalTestimonialsSection from '@/components/landing/ProfessionalTestimonialsSection';
+import ProfessionalCTASection from '@/components/landing/ProfessionalCTASection';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -36,13 +36,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <ERPHeroSection 
+      <ProfessionalHeroSection 
         onStartFree={handleStartFree}
         onLogin={handleLogin}
       />
-      <OrganicFeaturesSection />
-      <OrganicTestimonialsSection />
-      <OrganicCTASection 
+      <ProfessionalFeaturesSection />
+      <ProfessionalTestimonialsSection />
+      <ProfessionalCTASection 
         onStartFree={handleStartFree}
         onRequestDemo={handleRequestDemo}
       />
