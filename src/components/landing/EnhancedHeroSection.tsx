@@ -155,22 +155,73 @@ const EnhancedHeroSection = ({ onStartFree, onLogin }: EnhancedHeroSectionProps)
                     </div>
                   </div>
                   
-                  {/* Simple Chart Visualization */}
-                  <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl p-4 flex items-end justify-between space-x-2 space-x-reverse">
-                    {performanceData.map((data, index) => (
-                      <div 
-                        key={data.month}
-                        className="flex flex-col items-center space-y-2 flex-1"
+                  {/* Key Performance Indicators */}
+                  <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl p-6 flex flex-col justify-center">
+                    <div className="grid grid-cols-2 gap-6 h-full">
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.6 }}
+                        className="flex flex-col items-center justify-center space-y-3"
                       >
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: `${(data.revenue / 12000) * 100}%` }}
-                          transition={{ delay: index * 0.1, duration: 0.8 }}
-                          className="w-full bg-gradient-to-t from-primary to-primary-light rounded-t-lg min-h-[20px]"
-                        />
-                        <span className="text-xs text-muted-foreground">{data.month}</span>
-                      </div>
-                    ))}
+                        <div className="relative">
+                          <TrendingUp className="w-12 h-12 text-green-400" />
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-400">+187%</div>
+                          <div className="text-sm text-muted-foreground">نمو الأرباح</div>
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
+                        className="flex flex-col items-center justify-center space-y-3"
+                      >
+                        <div className="relative">
+                          <Users className="w-12 h-12 text-blue-400" />
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-400 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-blue-400">2,543</div>
+                          <div className="text-sm text-muted-foreground">عميل نشط</div>
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.6, duration: 0.6 }}
+                        className="flex flex-col items-center justify-center space-y-3"
+                      >
+                        <div className="relative">
+                          <Target className="w-12 h-12 text-purple-400" />
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-400 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-purple-400">99.9%</div>
+                          <div className="text-sm text-muted-foreground">دقة البيانات</div>
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.8, duration: 0.6 }}
+                        className="flex flex-col items-center justify-center space-y-3"
+                      >
+                        <div className="relative">
+                          <Clock className="w-12 h-12 text-yellow-400" />
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-yellow-400">75%</div>
+                          <div className="text-sm text-muted-foreground">توفير الوقت</div>
+                        </div>
+                      </motion.div>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-4">
