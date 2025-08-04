@@ -187,39 +187,6 @@ const ProfessionalFeaturesSection = () => {
         </motion.div>
 
 
-        {/* Bottom CTA */}
-        <motion.div
-          className="text-center mt-20"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
-          <div className="bg-gradient-to-br from-primary/5 to-success/5 border border-primary/10 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-primary mb-4">
-              جاهز لتجربة النظام؟
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              ابدأ تجربتك المجانية اليوم واكتشف كيف يمكن لنظامنا تحسين أعمالك
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg"
-                className="bg-success hover:bg-success/90 text-white"
-              >
-                ابدأ التجربة المجانية
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-primary text-primary hover:bg-primary hover:text-white"
-              >
-                احجز عرض توضيحي
-              </Button>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
