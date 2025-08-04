@@ -189,58 +189,68 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
             >
-              <div className="bg-card border border-border rounded-3xl p-8 shadow-elegant backdrop-blur-sm">
+              <div className="relative bg-gradient-to-br from-card via-card/98 to-card/95 border border-border/30 rounded-3xl p-8 shadow-lift backdrop-blur-md overflow-hidden group">
+                {/* Animated background glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-success/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-success/10 to-accent/10 rounded-3xl blur-lg opacity-0 group-hover:opacity-70 transition-opacity duration-700 -z-10" />
+                
                 {/* Dashboard Header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="relative z-10 flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-medium group-hover:shadow-glow-primary transition-all duration-300 group-hover:scale-110">
                       <BarChart3 className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">لوحة التحكم</h3>
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors duration-300">لوحة التحكم</h3>
                       <p className="text-sm text-muted-foreground">إحصائيات مباشرة</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <div className="w-3 h-3 bg-success rounded-full"></div>
-                    <div className="w-3 h-3 bg-warning rounded-full"></div>
-                    <div className="w-3 h-3 bg-destructive rounded-full"></div>
+                    <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-warning rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                    <div className="w-3 h-3 bg-destructive rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
                   </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-primary/5 rounded-xl p-4">
+                <div className="relative z-10 grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-2xl p-4 border border-primary/10 hover:border-primary/20 transition-all duration-300 group/stat hover:shadow-glow-primary">
                     <div className="flex items-center justify-between mb-2">
-                      <TrendingUp className="w-5 h-5 text-primary" />
-                      <span className="text-xs text-success font-medium">+12%</span>
+                      <TrendingUp className="w-5 h-5 text-primary group-hover/stat:scale-110 transition-transform duration-300" />
+                      <span className="text-xs text-success font-medium bg-success/10 px-2 py-1 rounded-full">+12%</span>
                     </div>
-                    <div className="text-2xl font-bold text-primary">₪245K</div>
+                    <div className="text-2xl font-bold text-primary group-hover/stat:text-primary/90 transition-colors">₪245K</div>
                     <div className="text-sm text-muted-foreground">إجمالي المبيعات</div>
                   </div>
                   
-                  <div className="bg-success/5 rounded-xl p-4">
+                  <div className="bg-gradient-to-br from-success/10 via-success/5 to-transparent rounded-2xl p-4 border border-success/10 hover:border-success/20 transition-all duration-300 group/stat hover:shadow-glow-success">
                     <div className="flex items-center justify-between mb-2">
-                      <Users className="w-5 h-5 text-success" />
-                      <span className="text-xs text-primary font-medium">+8%</span>
+                      <Users className="w-5 h-5 text-success group-hover/stat:scale-110 transition-transform duration-300" />
+                      <span className="text-xs text-primary font-medium bg-primary/10 px-2 py-1 rounded-full">+8%</span>
                     </div>
-                    <div className="text-2xl font-bold text-success">1,248</div>
+                    <div className="text-2xl font-bold text-success group-hover/stat:text-success/90 transition-colors">1,248</div>
                     <div className="text-sm text-muted-foreground">عملاء نشطين</div>
                   </div>
                 </div>
 
                 {/* Chart Area */}
-                <div className="bg-muted/30 rounded-xl p-4 h-40 flex items-end justify-center gap-2">
+                <div className="relative z-10 bg-gradient-to-br from-muted/30 via-muted/20 to-transparent rounded-2xl p-4 h-40 flex items-end justify-center gap-2 border border-muted/20 group-hover:border-muted/30 transition-all duration-300">
                   {[45, 70, 55, 85, 65, 90, 75].map((height, i) => (
                     <motion.div
                       key={i}
-                      className="bg-gradient-to-t from-primary to-success rounded-sm"
-                      style={{ width: '12px' }}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${height}%` }}
+                      className="bg-gradient-to-t from-primary via-primary/80 to-success rounded-lg shadow-sm hover:shadow-medium transition-shadow duration-300"
+                      style={{ width: '14px' }}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: `${height}%`, opacity: 1 }}
                       transition={{ delay: 1 + i * 0.1, duration: 0.6 }}
+                      whileHover={{ 
+                        scale: 1.1,
+                        filter: 'brightness(1.2)'
+                      }}
                     />
                   ))}
+                  {/* Chart background glow */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </div>
             </motion.div>
@@ -249,7 +259,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
             {floatingCards.map((card, index) => (
               <motion.div
                 key={index}
-                className="absolute bg-card border border-border rounded-2xl p-4 shadow-lg backdrop-blur-sm"
+                className="absolute bg-gradient-to-br from-card via-card/95 to-card/90 border border-border/30 rounded-2xl p-4 shadow-lift backdrop-blur-md group/float overflow-hidden"
                 style={card.position}
               initial={{ x: -50, opacity: 0 }}
               animate={{ 
@@ -267,15 +277,19 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
                   ease: "easeInOut"
                 }
               }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.1, rotateY: 5 }}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <card.icon className="w-4 h-4 text-primary" />
+                {/* Floating card glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-success/5 opacity-0 group-hover/float:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 to-success/10 opacity-0 group-hover/float:opacity-50 transition-opacity duration-300 rounded-2xl blur-md -z-10" />
+                
+                <div className="relative z-10 flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-primary/15 to-primary/5 rounded-xl flex items-center justify-center shadow-medium group-hover/float:shadow-glow-primary transition-all duration-300 group-hover/float:scale-110">
+                    <card.icon className="w-4 h-4 text-primary group-hover/float:scale-110 transition-transform duration-300" />
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-success">{card.value}</div>
-                    <div className="text-xs text-muted-foreground">{card.title}</div>
+                    <div className="text-lg font-bold text-success group-hover/float:text-success/90 transition-colors">{card.value}</div>
+                    <div className="text-xs text-muted-foreground group-hover/float:text-foreground/60 transition-colors">{card.title}</div>
                   </div>
                 </div>
               </motion.div>
