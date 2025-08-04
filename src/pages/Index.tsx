@@ -4,6 +4,7 @@ import { useTenant } from '@/hooks/useTenant';
 import ProfessionalHeroSection from '@/components/landing/ProfessionalHeroSection';
 import ProfessionalFeaturesSection from '@/components/landing/ProfessionalFeaturesSection';
 import Footer from '@/components/landing/Footer';
+import Header from '@/components/landing/Header';
 
 
 
@@ -37,12 +38,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen" dir="rtl">
-      <ProfessionalHeroSection 
+      <Header 
         onStartFree={handleStartFree}
         onLogin={handleLogin}
       />
-      <ProfessionalFeaturesSection />
-      <Footer />
+      <div className="pt-16 lg:pt-20">
+        <ProfessionalHeroSection 
+          onStartFree={handleStartFree}
+          onLogin={handleLogin}
+        />
+        <ProfessionalFeaturesSection />
+        <Footer />
+      </div>
     </div>
   );
 };
