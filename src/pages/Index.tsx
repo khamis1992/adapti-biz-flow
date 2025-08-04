@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
-import HeroSection from '@/components/landing/HeroSection';
-import FeaturesSection from '@/components/landing/FeaturesSection';
-import TestimonialsSection from '@/components/landing/TestimonialsSection';
-import CTASection from '@/components/landing/CTASection';
+import BentoHeroSection from '@/components/landing/BentoHeroSection';
+import BentoFeaturesSection from '@/components/landing/BentoFeaturesSection';
+import BentoTestimonialsSection from '@/components/landing/BentoTestimonialsSection';
+import BentoCTASection from '@/components/landing/BentoCTASection';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -35,14 +35,14 @@ const Index = () => {
   const handleRequestDemo = () => navigate('/auth');
 
   return (
-    <div className="min-h-screen bg-background">
-      <HeroSection 
+    <div className="min-h-screen">
+      <BentoHeroSection 
         onStartFree={handleStartFree}
         onLogin={handleLogin}
       />
-      <FeaturesSection />
-      <TestimonialsSection />
-      <CTASection 
+      <BentoFeaturesSection />
+      <BentoTestimonialsSection />
+      <BentoCTASection 
         onStartFree={handleStartFree}
         onRequestDemo={handleRequestDemo}
       />
