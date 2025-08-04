@@ -129,76 +129,58 @@ const ProfessionalFeaturesSection = () => {
               variants={itemVariants}
               whileHover={{ y: -8 }}
             >
-              <div className="relative bg-gradient-to-br from-card via-card/95 to-card/90 border border-border/50 rounded-3xl p-8 h-full hover:shadow-lift backdrop-blur-sm transition-all duration-500 hover:border-primary/30 group overflow-hidden">
-                {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-success/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                
-                {/* Animated border glow */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/20 via-success/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
-                
+              <div className="bg-card border border-border rounded-2xl p-8 h-full hover:shadow-elegant transition-all duration-300 hover:border-primary/20">
                 {/* Module Icon & Title */}
-                <div className="relative z-10 flex items-start gap-4 mb-6">
+                <div className="flex items-start gap-4 mb-6">
                   <div className={`
-                    relative w-16 h-16 rounded-2xl flex items-center justify-center shadow-medium group-hover:shadow-glow-primary transition-all duration-500
-                    ${module.color === 'primary' ? 'bg-gradient-to-br from-primary/15 to-primary/5 text-primary' : ''}
-                    ${module.color === 'success' ? 'bg-gradient-to-br from-success/15 to-success/5 text-success' : ''}
-                    ${module.color === 'accent' ? 'bg-gradient-to-br from-accent/15 to-accent/5 text-accent' : ''}
-                    ${module.color === 'warning' ? 'bg-gradient-to-br from-warning/15 to-warning/5 text-warning' : ''}
-                    group-hover:scale-110 group-hover:rotate-3 transform-gpu
+                    w-16 h-16 rounded-xl flex items-center justify-center
+                    ${module.color === 'primary' ? 'bg-primary/10 text-primary' : ''}
+                    ${module.color === 'success' ? 'bg-success/10 text-success' : ''}
+                    ${module.color === 'accent' ? 'bg-accent/10 text-accent' : ''}
+                    ${module.color === 'warning' ? 'bg-warning/10 text-warning' : ''}
+                    group-hover:scale-110 transition-transform duration-300
                   `}>
-                    <module.icon size={28} className="relative z-10" />
-                    {/* Icon background glow */}
-                    <div className={`
-                      absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg
-                      ${module.color === 'primary' ? 'bg-primary/20' : ''}
-                      ${module.color === 'success' ? 'bg-success/20' : ''}
-                      ${module.color === 'accent' ? 'bg-accent/20' : ''}
-                      ${module.color === 'warning' ? 'bg-warning/20' : ''}
-                    `} />
+                    <module.icon size={28} />
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
+                    <h3 className="text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                       {module.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">
+                    <p className="text-muted-foreground leading-relaxed">
                       {module.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Features List */}
-                <div className="relative z-10 space-y-3 mb-6">
+                <div className="space-y-3 mb-6">
                   {module.features.map((feature, featureIndex) => (
                     <motion.div
                       key={featureIndex}
-                      className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/30 transition-colors duration-200"
+                      className="flex items-center gap-3"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: featureIndex * 0.1 }}
                       viewport={{ once: true }}
-                      whileHover={{ x: 5 }}
                     >
-                      <CheckCircle className="w-5 h-5 text-success flex-shrink-0 group-hover:scale-110 transition-transform duration-200" />
-                      <span className="text-foreground group-hover:text-primary transition-colors duration-200">{feature}</span>
+                      <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+                      <span className="text-foreground">{feature}</span>
                     </motion.div>
                   ))}
                 </div>
 
                 {/* Learn More Link */}
-                <div className="relative z-10">
-                  <Button 
-                    variant="ghost" 
-                    className="text-primary hover:text-white hover:bg-gradient-to-r hover:from-primary hover:to-primary/80 p-3 px-4 h-auto font-medium group/btn rounded-xl transition-all duration-300 hover:shadow-glow-primary"
-                  >
-                    تعرف على المزيد
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:-translate-x-1 transition-transform duration-200" />
-                  </Button>
-                </div>
+                <Button 
+                  variant="ghost" 
+                  className="text-primary hover:text-primary hover:bg-primary/5 p-0 h-auto font-medium group/btn"
+                >
+                  تعرف على المزيد
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:-translate-x-1 transition-transform" />
+                </Button>
 
-                {/* Animated particles on hover */}
-                <div className="absolute top-4 right-4 w-2 h-2 bg-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
-                <div className="absolute bottom-8 left-8 w-1 h-1 bg-success/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 animate-pulse" style={{ animationDelay: '0.2s' }} />
+                {/* Hover Effect Overlay */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
             </motion.div>
           ))}
