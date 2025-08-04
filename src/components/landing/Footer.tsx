@@ -74,7 +74,6 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "فيسبوك" },
     { icon: Twitter, href: "#", label: "تويتر" },
     { icon: Instagram, href: "#", label: "إنستغرام" },
     { icon: Linkedin, href: "#", label: "لينكد إن" }
