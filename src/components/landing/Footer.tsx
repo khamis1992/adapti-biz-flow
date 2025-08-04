@@ -176,32 +176,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Trust Badges */}
-        <motion.div
-          className="py-8 border-t border-border"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="grid md:grid-cols-3 gap-6">
-            {trustBadges.map((badge, index) => (
-              <motion.div
-                key={index}
-                className="flex items-center gap-3 p-4 bg-muted/20 rounded-lg"
-                whileHover={{ scale: 1.02 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <badge.icon className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h5 className="font-semibold text-foreground text-sm">{badge.label}</h5>
-                  <p className="text-xs text-muted-foreground">{badge.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Bottom Footer */}
         <motion.div
