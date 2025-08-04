@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Cloud, Server, Database, Shield, Zap, Globe,
   Settings, Monitor, AlertTriangle, CheckCircle,
-  Upload, Download, Sync, Key, Lock, Activity,
+  Upload, Download, RefreshCw as Sync, Key, Lock, Activity,
   BarChart3, Users, DollarSign, Clock, RefreshCw,
   Plus, Edit, Trash2, Eye, Copy, Share2
 } from 'lucide-react';

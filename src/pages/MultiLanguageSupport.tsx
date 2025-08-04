@@ -105,8 +105,8 @@ import {
   PanelBottom,
   Maximize,
   Minimize,
-  FullScreen,
-  ExitFullScreen
+  Maximize as FullScreen,
+  Minimize as ExitFullScreen
 } from 'lucide-react';
 
 interface Language {

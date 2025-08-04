@@ -4,7 +4,7 @@ import {
   Play, Pause, Settings, Download, Upload, Share2,
   BarChart3, TrendingUp, Users, Clock, CheckCircle,
   AlertTriangle, RefreshCw, Plus, Filter, Search,
-  Layers, Box, Cube, Move3D, RotateCcw, ZoomIn
+  Layers, Box, Move3D, RotateCcw, ZoomIn
 } from 'lucide-react';
 
 const AugmentedReality = () => {
@@ -230,7 +230,7 @@ const AugmentedReality = () => {
           <div className="grid grid-cols-3 gap-6 text-center">
             <div>
               <div className="p-3 bg-blue-500/20 rounded-lg mb-2 inline-block">
-                <Cube className="h-8 w-8 text-blue-300" />
+                <Box className="h-8 w-8 text-blue-300" />
               </div>
               <p className="text-sm text-gray-300">النماذج ثلاثية الأبعاد</p>
             </div>
@@ -536,7 +536,7 @@ const AugmentedReality = () => {
                     content.type === 'AR Guides' ? 'bg-purple-100' :
                     'bg-orange-100'
                   }`}>
-                    {content.type === '3D Models' && <Cube className="h-5 w-5 text-blue-600" />}
+                    {content.type === '3D Models' && <Box className="h-5 w-5 text-blue-600" />}
                     {content.type === 'Interactive Videos' && <Play className="h-5 w-5 text-green-600" />}
                     {content.type === 'AR Guides' && <Eye className="h-5 w-5 text-purple-600" />}
                     {content.type === '3D Maps' && <Move3D className="h-5 w-5 text-orange-600" />}
@@ -595,7 +595,7 @@ const AugmentedReality = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="p-3 bg-blue-50 rounded-lg mb-3 inline-block">
-              <Cube className="h-8 w-8 text-blue-600" />
+              <Box className="h-8 w-8 text-blue-600" />
             </div>
             <p className="text-2xl font-bold text-gray-900">313</p>
             <p className="text-sm text-gray-600">إجمالي العناصر</p>
@@ -630,7 +630,7 @@ const AugmentedReality = () => {
     { id: 'overview', name: 'نظرة عامة', icon: Eye },
     { id: 'applications', name: 'التطبيقات', icon: Layers },
     { id: 'devices', name: 'الأجهزة', icon: Glasses },
-    { id: 'content', name: 'المحتوى', icon: Cube },
+    { id: 'content', name: 'المحتوى', icon: Box },
   ];
 
   return (

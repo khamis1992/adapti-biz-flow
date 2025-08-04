@@ -58,8 +58,8 @@ import {
   VolumeX, 
   Maximize, 
   Minimize, 
-  FullScreen, 
-  ExitFullScreen 
+  Maximize as FullScreen, 
+  Minimize as ExitFullScreen
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
