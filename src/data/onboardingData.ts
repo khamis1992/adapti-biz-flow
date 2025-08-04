@@ -23,7 +23,13 @@ import {
   Truck,
   Smartphone,
   Globe,
-  Heart
+  Heart,
+  Factory,
+  CheckCircle,
+  FolderOpen,
+  Link,
+  UserCheck,
+  Calculator
 } from 'lucide-react';
 import { BusinessType, Module, ModuleCategory } from '@/types/onboarding';
 
@@ -79,16 +85,14 @@ export const allModules: Module[] = [
     nameAr: 'إدارة العقود', 
     nameEn: 'Contract Management', 
     description: 'إدارة العقود والاتفاقيات',
-    category: moduleCategories[0],
-    required: true 
+    category: moduleCategories[0]
   },
   { 
     id: 'customers', 
     nameAr: 'إدارة العملاء', 
     nameEn: 'Customer Management', 
     description: 'إدارة بيانات العملاء والتواصل',
-    category: moduleCategories[0],
-    required: true 
+    category: moduleCategories[0]
   },
 
   // Financial System
@@ -97,8 +101,16 @@ export const allModules: Module[] = [
     nameAr: 'النظام المحاسبي الكامل', 
     nameEn: 'Full Accounting System', 
     description: 'نظام محاسبي متكامل مع التقارير المالية',
+    category: moduleCategories[1]
+  },
+  { 
+    id: 'advanced_accounting', 
+    nameAr: 'النظام المحاسبي المتقدم', 
+    nameEn: 'Advanced Accounting System', 
+    description: 'نظام محاسبي متطور مع ميزات متقدمة',
     category: moduleCategories[1],
-    required: true 
+    dependencies: ['accounting'],
+    advanced: true
   },
   { 
     id: 'ledger', 
@@ -132,6 +144,14 @@ export const allModules: Module[] = [
     category: moduleCategories[1],
     dependencies: ['invoicing'],
     advanced: true
+  },
+  { 
+    id: 'financial_reports', 
+    nameAr: 'التقارير المالية', 
+    nameEn: 'Financial Reports', 
+    description: 'تقارير مالية شاملة ومتقدمة',
+    category: moduleCategories[1],
+    dependencies: ['accounting']
   },
 
   // Operations
@@ -197,10 +217,58 @@ export const allModules: Module[] = [
     category: moduleCategories[2]
   },
   { 
+    id: 'advanced_inventory', 
+    nameAr: 'إدارة المخزون المتقدمة', 
+    nameEn: 'Advanced Inventory Management', 
+    description: 'نظام مخزون متطور مع تتبع فوري',
+    category: moduleCategories[2],
+    dependencies: ['inventory'],
+    advanced: true
+  },
+  { 
+    id: 'purchasing', 
+    nameAr: 'إدارة المشتريات', 
+    nameEn: 'Purchasing Management', 
+    description: 'إدارة المشتريات والموردين',
+    category: moduleCategories[2]
+  },
+  { 
+    id: 'advanced_procurement', 
+    nameAr: 'إدارة المشتريات المتقدمة', 
+    nameEn: 'Advanced Procurement', 
+    description: 'نظام مشتريات متطور مع إدارة الموردين',
+    category: moduleCategories[2],
+    dependencies: ['purchasing'],
+    advanced: true
+  },
+  { 
     id: 'supply_chain', 
     nameAr: 'إدارة سلسلة التوريد', 
     nameEn: 'Supply Chain Management', 
     description: 'إدارة الموردين وسلسلة التوريد',
+    category: moduleCategories[2],
+    advanced: true
+  },
+  { 
+    id: 'projects', 
+    nameAr: 'إدارة المشاريع', 
+    nameEn: 'Project Management', 
+    description: 'تخطيط وتنفيذ ومتابعة المشاريع',
+    category: moduleCategories[2]
+  },
+  { 
+    id: 'manufacturing', 
+    nameAr: 'إدارة التصنيع', 
+    nameEn: 'Manufacturing Management', 
+    description: 'إدارة عمليات التصنيع والإنتاج',
+    category: moduleCategories[2],
+    advanced: true
+  },
+  { 
+    id: 'quality_management', 
+    nameAr: 'إدارة الجودة', 
+    nameEn: 'Quality Management', 
+    description: 'نظام إدارة الجودة والفحوصات',
     category: moduleCategories[2],
     advanced: true
   },
@@ -238,12 +306,29 @@ export const allModules: Module[] = [
     advanced: true
   },
   { 
+    id: 'advanced_crm', 
+    nameAr: 'نظام CRM المتقدم', 
+    nameEn: 'Advanced CRM System', 
+    description: 'نظام CRM متطور مع ميزات متقدمة',
+    category: moduleCategories[3],
+    dependencies: ['crm'],
+    advanced: true
+  },
+  { 
     id: 'loyalty', 
     nameAr: 'برنامج الولاء', 
     nameEn: 'Loyalty Program', 
     description: 'برنامج نقاط الولاء ومكافآت العملاء',
     category: moduleCategories[3],
     businessTypes: ['restaurant', 'salon'],
+    advanced: true
+  },
+  { 
+    id: 'advanced_sales', 
+    nameAr: 'إدارة المبيعات المتقدمة', 
+    nameEn: 'Advanced Sales Management', 
+    description: 'نظام مبيعات متطور مع قمع المبيعات',
+    category: moduleCategories[3],
     advanced: true
   },
 
@@ -257,12 +342,32 @@ export const allModules: Module[] = [
     businessTypes: ['restaurant']
   },
   { 
+    id: 'menu_management', 
+    nameAr: 'إدارة المنيو المتقدمة', 
+    nameEn: 'Advanced Menu Management', 
+    description: 'نظام إدارة منيو متطور للمطاعم',
+    category: moduleCategories[2],
+    dependencies: ['menu'],
+    businessTypes: ['restaurant'],
+    advanced: true
+  },
+  { 
     id: 'orders', 
     nameAr: 'إدارة الطلبات', 
     nameEn: 'Order Management', 
     description: 'معالجة وتتبع طلبات العملاء',
     category: moduleCategories[2],
     businessTypes: ['restaurant']
+  },
+  { 
+    id: 'order_management', 
+    nameAr: 'إدارة الطلبات المتقدمة', 
+    nameEn: 'Advanced Order Management', 
+    description: 'نظام طلبات متطور للمطاعم',
+    category: moduleCategories[2],
+    dependencies: ['orders'],
+    businessTypes: ['restaurant'],
+    advanced: true
   },
   { 
     id: 'pos', 
@@ -273,12 +378,31 @@ export const allModules: Module[] = [
     businessTypes: ['restaurant', 'salon']
   },
   { 
+    id: 'advanced_pos', 
+    nameAr: 'نظام نقاط البيع المتقدم', 
+    nameEn: 'Advanced POS System', 
+    description: 'نظام POS متطور مع ميزات متقدمة',
+    category: moduleCategories[2],
+    dependencies: ['pos'],
+    advanced: true
+  },
+  { 
     id: 'kitchen', 
     nameAr: 'إدارة المطبخ', 
     nameEn: 'Kitchen Management', 
     description: 'إدارة عمليات المطبخ والطهي',
     category: moduleCategories[2],
     businessTypes: ['restaurant']
+  },
+  { 
+    id: 'kitchen_management', 
+    nameAr: 'إدارة المطبخ المتقدمة', 
+    nameEn: 'Advanced Kitchen Management', 
+    description: 'نظام إدارة مطبخ متطور',
+    category: moduleCategories[2],
+    dependencies: ['kitchen'],
+    businessTypes: ['restaurant'],
+    advanced: true
   },
   { 
     id: 'delivery', 
@@ -289,6 +413,16 @@ export const allModules: Module[] = [
     businessTypes: ['restaurant']
   },
   { 
+    id: 'delivery_management', 
+    nameAr: 'إدارة التوصيل المتقدمة', 
+    nameEn: 'Advanced Delivery Management', 
+    description: 'نظام توصيل متطور مع تتبع GPS',
+    category: moduleCategories[2],
+    dependencies: ['delivery'],
+    businessTypes: ['restaurant'],
+    advanced: true
+  },
+  { 
     id: 'services', 
     nameAr: 'إدارة الخدمات', 
     nameEn: 'Service Management', 
@@ -297,12 +431,32 @@ export const allModules: Module[] = [
     businessTypes: ['salon', 'yacht_rental']
   },
   { 
+    id: 'salon_services', 
+    nameAr: 'خدمات الصالون', 
+    nameEn: 'Salon Services', 
+    description: 'إدارة خدمات الصالون المتخصصة',
+    category: moduleCategories[2],
+    dependencies: ['services'],
+    businessTypes: ['salon'],
+    advanced: true
+  },
+  { 
     id: 'packages', 
     nameAr: 'إدارة الباقات', 
     nameEn: 'Package Management', 
     description: 'إدارة باقات الخدمات والعروض',
     category: moduleCategories[2],
     businessTypes: ['salon', 'yacht_rental']
+  },
+  { 
+    id: 'salon_appointments', 
+    nameAr: 'مواعيد الصالون', 
+    nameEn: 'Salon Appointments', 
+    description: 'نظام مواعيد متخصص للصالونات',
+    category: moduleCategories[3],
+    dependencies: ['appointments'],
+    businessTypes: ['salon'],
+    advanced: true
   },
   { 
     id: 'crew', 
@@ -320,6 +474,25 @@ export const allModules: Module[] = [
     category: moduleCategories[2],
     businessTypes: ['yacht_rental']
   },
+  { 
+    id: 'yacht_management', 
+    nameAr: 'إدارة اليخوت', 
+    nameEn: 'Yacht Management', 
+    description: 'نظام إدارة اليخوت الشامل',
+    category: moduleCategories[2],
+    dependencies: ['fleet'],
+    businessTypes: ['yacht_rental'],
+    advanced: true
+  },
+  { 
+    id: 'booking_system', 
+    nameAr: 'نظام الحجوزات الشامل', 
+    nameEn: 'Comprehensive Booking System', 
+    description: 'نظام حجوزات متطور لجميع الخدمات',
+    category: moduleCategories[3],
+    dependencies: ['bookings'],
+    advanced: true
+  },
 
   // HR Modules
   { 
@@ -330,11 +503,29 @@ export const allModules: Module[] = [
     category: moduleCategories[4]
   },
   { 
+    id: 'advanced_hr', 
+    nameAr: 'الموارد البشرية المتقدمة', 
+    nameEn: 'Advanced Human Resources', 
+    description: 'نظام موارد بشرية متطور مع ميزات متقدمة',
+    category: moduleCategories[4],
+    dependencies: ['hr'],
+    advanced: true
+  },
+  { 
     id: 'payroll', 
     nameAr: 'إدارة الرواتب', 
     nameEn: 'Payroll Management', 
     description: 'حساب وإدارة رواتب الموظفين',
     category: moduleCategories[4]
+  },
+  { 
+    id: 'advanced_payroll', 
+    nameAr: 'نظام الرواتب المتقدم', 
+    nameEn: 'Advanced Payroll System', 
+    description: 'نظام رواتب متطور مع جميع المكونات',
+    category: moduleCategories[4],
+    dependencies: ['payroll'],
+    advanced: true
   },
   { 
     id: 'attendance', 
@@ -381,6 +572,23 @@ export const allModules: Module[] = [
     nameAr: 'واجهة برمجية', 
     nameEn: 'API Integration', 
     description: 'ربط النظام مع الأنظمة الخارجية',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'system_integrations', 
+    nameAr: 'التكاملات المتقدمة', 
+    nameEn: 'Advanced System Integrations', 
+    description: 'تكاملات متقدمة مع الأنظمة الخارجية',
+    category: moduleCategories[5],
+    dependencies: ['api'],
+    advanced: true
+  },
+  { 
+    id: 'document_management', 
+    nameAr: 'إدارة الوثائق', 
+    nameEn: 'Document Management', 
+    description: 'نظام إدارة الوثائق والملفات',
     category: moduleCategories[5],
     advanced: true
   },
@@ -506,3 +714,4 @@ export const businessTypes: BusinessType[] = [
     description: 'تخصيص النظام حسب احتياجاتك الخاصة'
   }
 ];
+
