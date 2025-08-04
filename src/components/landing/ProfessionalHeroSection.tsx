@@ -96,20 +96,6 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Badge 
-                variant="secondary" 
-                className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm font-medium"
-              >
-                <Building2 className="w-4 h-4 ml-2" />
-                نظام ERP الأكثر تطوراً في المنطقة
-              </Badge>
-            </motion.div>
 
             {/* Main Heading */}
             <motion.div
