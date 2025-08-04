@@ -72,7 +72,7 @@
                      radial-gradient(ellipse at top right, hsl(155, 65%, 35% / 0.1) 0%, transparent 50%),
                      radial-gradient(ellipse at bottom left, hsl(200, 85%, 40% / 0.1) 0%, transparent 50%);
 
-    /* Advanced Shadow System */
+    /* Advanced 3D Shadow System */
     --shadow-soft: 0 1px 3px hsl(220, 15%, 20% / 0.05), 0 1px 2px hsl(220, 15%, 20% / 0.1);
     --shadow-medium: 0 4px 6px hsl(220, 15%, 20% / 0.07), 0 2px 4px hsl(220, 15%, 20% / 0.06);
     --shadow-strong: 0 10px 15px hsl(220, 15%, 20% / 0.1), 0 4px 6px hsl(220, 15%, 20% / 0.05);
@@ -82,6 +82,15 @@
     --shadow-glow-success: 0 0 40px hsl(155, 65%, 35% / 0.2);
     --shadow-lift: 0 32px 64px hsl(220, 15%, 20% / 0.12), 0 16px 32px hsl(220, 15%, 20% / 0.08);
     --shadow-depth: inset 0 1px 0 hsl(0, 0%, 100% / 0.1), 0 1px 3px hsl(220, 15%, 20% / 0.2);
+    
+    /* 3D Effect Shadows */
+    --shadow-3d-soft: 0 2px 4px hsl(220, 15%, 20% / 0.1), 0 8px 16px hsl(220, 15%, 20% / 0.1), 0 16px 32px hsl(220, 15%, 20% / 0.1);
+    --shadow-3d-medium: 0 4px 8px hsl(220, 15%, 20% / 0.12), 0 12px 24px hsl(220, 15%, 20% / 0.12), 0 24px 48px hsl(220, 15%, 20% / 0.12);
+    --shadow-3d-strong: 0 8px 16px hsl(220, 15%, 20% / 0.15), 0 16px 32px hsl(220, 15%, 20% / 0.15), 0 32px 64px hsl(220, 15%, 20% / 0.15);
+    --shadow-3d-floating: 0 12px 24px hsl(220, 15%, 20% / 0.18), 0 24px 48px hsl(220, 15%, 20% / 0.18), 0 48px 96px hsl(220, 15%, 20% / 0.18);
+    --shadow-3d-pressed: inset 0 2px 4px hsl(220, 15%, 20% / 0.2), inset 0 4px 8px hsl(220, 15%, 20% / 0.15);
+    --shadow-3d-embossed: 0 1px 2px hsl(0, 0%, 100% / 0.8), 0 -1px 2px hsl(220, 15%, 20% / 0.3);
+    --shadow-3d-inset: inset 0 2px 8px hsl(220, 15%, 20% / 0.1), inset 0 -2px 8px hsl(0, 0%, 100% / 0.1);
 
     /* Enhanced Layout & Typography */
     --radius: 0.75rem;
@@ -296,6 +305,49 @@
     transform: scale(1.05);
   }
 
+  /* 3D Interactive Elements */
+  .hover-3d {
+    transition: var(--transition-smooth);
+    transform-style: preserve-3d;
+  }
+
+  .hover-3d:hover {
+    transform: translateY(-8px) rotateX(5deg);
+    box-shadow: var(--shadow-3d-floating);
+  }
+
+  .tilt-3d {
+    transition: var(--transition-spring);
+    transform-style: preserve-3d;
+  }
+
+  .tilt-3d:hover {
+    transform: perspective(1000px) rotateX(10deg) rotateY(5deg) translateZ(20px);
+  }
+
+  .floating-3d {
+    animation: float3d 3s ease-in-out infinite;
+    transform-style: preserve-3d;
+  }
+
+  .depth-layer {
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  .depth-layer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    transform: translateZ(-10px);
+    opacity: 0.5;
+    filter: blur(2px);
+  }
+
   /* Container Queries */
   .container-responsive {
     container-type: inline-size;
@@ -315,6 +367,29 @@
   .shadow-glow-success { box-shadow: var(--shadow-glow-success); }
   .shadow-lift { box-shadow: var(--shadow-lift); }
   .shadow-depth { box-shadow: var(--shadow-depth); }
+
+  /* 3D Shadow Utilities */
+  .shadow-3d-soft { box-shadow: var(--shadow-3d-soft); }
+  .shadow-3d-medium { box-shadow: var(--shadow-3d-medium); }
+  .shadow-3d-strong { box-shadow: var(--shadow-3d-strong); }
+  .shadow-3d-floating { box-shadow: var(--shadow-3d-floating); }
+  .shadow-3d-pressed { box-shadow: var(--shadow-3d-pressed); }
+  .shadow-3d-embossed { box-shadow: var(--shadow-3d-embossed); }
+  .shadow-3d-inset { box-shadow: var(--shadow-3d-inset); }
+
+  /* 3D Transform Utilities */
+  .transform-3d { transform-style: preserve-3d; }
+  .perspective { perspective: 1000px; }
+  .perspective-lg { perspective: 1500px; }
+  .perspective-xl { perspective: 2000px; }
+  .rotate-x-3 { transform: rotateX(3deg); }
+  .rotate-x-6 { transform: rotateX(6deg); }
+  .rotate-y-3 { transform: rotateY(3deg); }
+  .rotate-y-6 { transform: rotateY(6deg); }
+  .-rotate-x-3 { transform: rotateX(-3deg); }
+  .-rotate-x-6 { transform: rotateX(-6deg); }
+  .-rotate-y-3 { transform: rotateY(-3deg); }
+  .-rotate-y-6 { transform: rotateY(-6deg); }
 
   /* Border Radius Utilities */
   .rounded-xl { border-radius: var(--radius-xl); }
@@ -406,5 +481,48 @@
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+/* 3D Animation Keyframes */
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0) rotateX(0deg) rotateY(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotateX(5deg) rotateY(2deg);
+  }
+  66% {
+    transform: translateY(-5px) rotateX(-3deg) rotateY(-2deg);
+  }
+}
+
+@keyframes tilt3d {
+  0%, 100% {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  }
+  25% {
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+  }
+  50% {
+    transform: perspective(1000px) rotateX(0deg) rotateY(10deg);
+  }
+  75% {
+    transform: perspective(1000px) rotateX(-5deg) rotateY(5deg);
+  }
+}
+
+@keyframes depth3d {
+  0% {
+    transform: translateZ(0px);
+    box-shadow: var(--shadow-3d-soft);
+  }
+  50% {
+    transform: translateZ(20px);
+    box-shadow: var(--shadow-3d-floating);
+  }
+  100% {
+    transform: translateZ(0px);
+    box-shadow: var(--shadow-3d-soft);
   }
 }

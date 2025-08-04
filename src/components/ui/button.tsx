@@ -5,22 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transform perspective-lg",
   {
     variants: {
       variant: {
-        default: "bg-gradient-primary text-primary-foreground hover:shadow-glow hover:scale-[1.02] active:scale-[0.98]",
+        default: "bg-gradient-primary text-primary-foreground shadow-3d-medium hover:shadow-3d-strong hover:-translate-y-1 hover:rotate-x-3 active:shadow-3d-pressed active:translate-y-0 active:rotate-x-0",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-medium",
+          "bg-destructive text-destructive-foreground shadow-3d-medium hover:shadow-3d-strong hover:-translate-y-1 hover:rotate-x-3 active:shadow-3d-pressed active:translate-y-0",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:shadow-soft",
+          "border border-input bg-background shadow-3d-soft hover:shadow-3d-medium hover:bg-accent hover:text-accent-foreground hover:-translate-y-1 hover:rotate-x-3 active:shadow-3d-inset active:translate-y-0",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-soft",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-gradient-success text-success-foreground hover:shadow-glow hover:scale-[1.02]",
-        warning: "bg-warning text-warning-foreground hover:bg-warning/90 hover:shadow-medium",
-        professional: "bg-gradient-card border border-border text-foreground hover:shadow-medium hover:bg-accent",
+          "bg-secondary text-secondary-foreground shadow-3d-soft hover:shadow-3d-medium hover:-translate-y-1 hover:rotate-x-3 active:shadow-3d-pressed active:translate-y-0",
+        ghost: "hover:bg-accent hover:text-accent-foreground hover:shadow-3d-soft hover:-translate-y-0.5",
+        link: "text-primary underline-offset-4 hover:underline hover:-translate-y-0.5",
+        success: "bg-gradient-success text-success-foreground shadow-3d-medium hover:shadow-3d-strong hover:-translate-y-1 hover:rotate-x-3 active:shadow-3d-pressed",
+        warning: "bg-warning text-warning-foreground shadow-3d-medium hover:shadow-3d-strong hover:-translate-y-1 hover:rotate-x-3 active:shadow-3d-pressed",
+        professional: "bg-gradient-card border border-border text-foreground shadow-3d-soft hover:shadow-3d-medium hover:bg-accent hover:-translate-y-1 hover:rotate-x-3",
       },
       size: {
         default: "h-10 px-4 py-2",
