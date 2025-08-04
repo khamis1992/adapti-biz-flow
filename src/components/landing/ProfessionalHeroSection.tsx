@@ -38,7 +38,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
       icon: TrendingUp,
       title: "زيادة المبيعات",
       value: "+45%",
-      position: { top: "15%", right: "25%" }
+      position: { top: "15%", right: "35%" }
     },
     {
       icon: Shield,
