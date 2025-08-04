@@ -61,11 +61,7 @@ export default function OnboardingWizard() {
     return categoryMap;
   }, []);
 
-  // Redirect to auth if not logged in
-  if (!loading && !user) {
-    return <Navigate to="/auth" replace />;
-  }
-
+  // Show loading spinner while checking authentication
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
