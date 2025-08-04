@@ -61,8 +61,8 @@ export default function OnboardingWizard() {
     return categoryMap;
   }, []);
 
-  // Show loading spinner while checking authentication
-  if (loading) {
+  // Show loading spinner only if user is authenticated and loading
+  if (user && loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -163,6 +163,13 @@ export default function OnboardingWizard() {
   const handleCreateSystem = async () => {
     if (!state.formData.companyName.trim()) {
       alert('يرجى إدخال اسم الشركة');
+      return;
+    }
+    
+    // If user is not authenticated, redirect to auth page first
+    if (!user) {
+      alert('يرجى تسجيل الدخول أولاً لإكمال الإعداد');
+      window.location.href = '/auth';
       return;
     }
     
