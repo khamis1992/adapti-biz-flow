@@ -4,7 +4,7 @@ import { useTenant } from '@/hooks/useTenant';
 import ProfessionalHeroSection from '@/components/landing/ProfessionalHeroSection';
 import ProfessionalFeaturesSection from '@/components/landing/ProfessionalFeaturesSection';
 
-import ProfessionalCTASection from '@/components/landing/ProfessionalCTASection';
+
 
 const Index = () => {
   const navigate = useNavigate();
@@ -42,10 +42,6 @@ const Index = () => {
       />
       <ProfessionalFeaturesSection />
       
-      <ProfessionalCTASection 
-        onStartFree={handleStartFree}
-        onRequestDemo={handleRequestDemo}
-      />
     </div>
   );
 };
