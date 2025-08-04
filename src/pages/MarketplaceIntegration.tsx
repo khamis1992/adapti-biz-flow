@@ -20,7 +20,7 @@ import {
   XCircle, 
   AlertCircle, 
   Settings, 
-  Sync, 
+  RefreshCw as Sync, 
   Upload, 
   Download, 
   Link, 
@@ -63,10 +63,10 @@ import {
   MoreHorizontal, 
   MoreVertical, 
   Info, 
-  Help, 
+  HelpCircle as Help, 
   HelpCircle, 
-  Question, 
-  Warning, 
+  HelpCircle as Question, 
+  AlertTriangle as Warning,
   Check, 
   X, 
   Minus, 
@@ -454,7 +454,7 @@ const MarketplaceIntegration = () => {
                           <p className="font-medium text-green-600">
                             {(marketplace.revenue / 1000).toFixed(0)}K ريال
                           </p>
-                          <Badge className={getStatusColor(marketplace.status)} size="sm">
+                          <Badge className={getStatusColor(marketplace.status)}>
                             {marketplace.status}
                           </Badge>
                         </div>
@@ -488,7 +488,7 @@ const MarketplaceIntegration = () => {
                         </div>
                         <div className="text-left">
                           <p className="font-medium text-gray-900">{order.amount.toLocaleString()} ريال</p>
-                          <Badge className={getStatusColor(order.status)} size="sm">
+                          <Badge className={getStatusColor(order.status)}>
                             {order.status}
                           </Badge>
                         </div>
@@ -673,7 +673,7 @@ const MarketplaceIntegration = () => {
                           <td className="py-3 px-4">
                             <div className="flex flex-wrap gap-1">
                               {product.marketplaces.map((marketplace, index) => (
-                                <Badge key={index} variant="secondary" size="sm">
+                                <Badge key={index} variant="secondary">
                                   {marketplace}
                                 </Badge>
                               ))}

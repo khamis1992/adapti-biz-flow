@@ -22,11 +22,11 @@ import {
   Globe, 
   FileText, 
   BarChart3, 
-  PieChart, 
   LineChart 
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
+  BarChart,
   Bar, 
   XAxis, 
   YAxis, 
@@ -35,6 +35,7 @@ import {
   Legend, 
   ComposedChart, 
   Area, 
+  PieChart,
   Pie, 
   Cell 
 } from 'recharts';

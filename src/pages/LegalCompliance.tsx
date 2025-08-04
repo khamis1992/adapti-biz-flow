@@ -35,7 +35,7 @@ import {
   BookOpen,
   Gavel,
   ScrollText,
-  Certificate,
+  Award as Certificate,
   Lock,
   Key,
   Database,

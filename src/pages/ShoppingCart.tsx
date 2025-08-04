@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { 
-  ShoppingCart, 
+  ShoppingCart as ShoppingCartIcon, 
   Plus, 
   Minus, 
   Trash2, 
@@ -247,7 +247,7 @@ const ShoppingCart = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <ShoppingCart className="h-8 w-8 text-blue-600" />
+            <ShoppingCartIcon className="h-8 w-8 text-blue-600" />
             عربة التسوق
           </h1>
           <p className="text-gray-600 mt-2">
@@ -264,7 +264,7 @@ const ShoppingCart = () => {
         // Empty Cart
         <Card className="text-center py-12">
           <CardContent>
-            <ShoppingCart className="h-24 w-24 text-gray-300 mx-auto mb-4" />
+            <ShoppingCartIcon className="h-24 w-24 text-gray-300 mx-auto mb-4" />
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">عربة التسوق فارغة</h2>
             <p className="text-gray-600 mb-6">ابدأ التسوق واضف المنتجات إلى عربة التسوق</p>
             <Button className="flex items-center gap-2">
