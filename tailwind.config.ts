@@ -22,6 +22,20 @@ export default {
 				'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
 				'serif': ['Playfair Display', 'ui-serif', 'Georgia', 'serif'],
 				'display': ['Playfair Display', 'ui-serif', 'Georgia', 'serif'],
+				'space': ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				'mono': ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+			},
+			fontSize: {
+				'fluid-xs': 'var(--text-xs)',
+				'fluid-sm': 'var(--text-sm)',
+				'fluid-base': 'var(--text-base)',
+				'fluid-lg': 'var(--text-lg)',
+				'fluid-xl': 'var(--text-xl)',
+				'fluid-2xl': 'var(--text-2xl)',
+				'fluid-3xl': 'var(--text-3xl)',
+				'fluid-4xl': 'var(--text-4xl)',
+				'fluid-5xl': 'var(--text-5xl)',
+				'fluid-6xl': 'var(--text-6xl)',
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -94,21 +108,35 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-primary-soft': 'var(--gradient-primary-soft)',
 				'gradient-success': 'var(--gradient-success)',
 				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-hero-reverse': 'var(--gradient-hero-reverse)',
 				'gradient-card': 'var(--gradient-card)',
-				'gradient-subtle': 'var(--gradient-subtle)'
+				'gradient-card-hover': 'var(--gradient-card-hover)',
+				'gradient-subtle': 'var(--gradient-subtle)',
+				'gradient-mesh': 'var(--gradient-mesh)'
 			},
 			boxShadow: {
 				'soft': 'var(--shadow-soft)',
 				'medium': 'var(--shadow-medium)',
 				'strong': 'var(--shadow-strong)',
 				'elegant': 'var(--shadow-elegant)',
-				'glow': 'var(--shadow-glow)'
+				'glow': 'var(--shadow-glow)',
+				'glow-primary': 'var(--shadow-glow-primary)',
+				'glow-success': 'var(--shadow-glow-success)',
+				'lift': 'var(--shadow-lift)',
+				'depth': 'var(--shadow-depth)'
 			},
 			transitionTimingFunction: {
 				'smooth': 'var(--transition-smooth)',
-				'bounce': 'var(--transition-bounce)'
+				'bounce': 'var(--transition-bounce)',
+				'spring': 'var(--transition-spring)',
+				'elastic': 'var(--transition-elastic)',
+				'slow': 'var(--transition-slow)'
+			},
+			backdropFilter: {
+				'glass': 'var(--glass-backdrop)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
