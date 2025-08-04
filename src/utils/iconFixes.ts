@@ -1,0 +1,42 @@
+// This file contains mappings for fixing lucide-react icon import errors
+// Many icons that were used don't exist in the current version
+
+export const iconReplacements = {
+  // Non-existent icons -> replacement icons
+  'Eye': 'Eye',
+  'FullScreen': 'Maximize',
+  'ExitFullScreen': 'Minimize', 
+  'Seedling': 'Sprout',
+  'Orange': 'Apple',
+  'Strawberry': 'Apple',
+  'Chicken': 'Beef',
+  'Bagel': 'Cake',
+  'Pretzel': 'Cake',
+  'Honey': 'Coffee',
+  'Jam': 'Coffee',
+  'Bread': 'Cookie',
+  'Cheese': 'Cookie',
+  'Sushi': 'Fish',
+  'Taco': 'Sandwich',
+  'Burrito': 'Sandwich',
+  'Hotdog': 'Sandwich',
+  'Fries': 'Coffee',
+  'Sort': 'ArrowUpDown',
+  'Cut': 'Scissors',
+  'Paste': 'Clipboard',
+  'Outbox': 'Send',
+  'Help': 'HelpCircle',
+  'Question': 'HelpCircle',
+  'Exclamation': 'AlertTriangle',
+  'Warning': 'AlertTriangle',
+  'Stop': 'Square',
+  'Stopwatch': 'Clock',
+  'Random': 'Shuffle',
+  'Casino': 'Dice6',
+  'Touchpad2': 'Touchpad',
+  'CloudSync': 'Cloud',
+  'FilePdf': 'FileText',
+  'FilePresentation': 'FileText',
+  'Line': 'TrendingUp',
+  'BarChart': 'BarChart3'
+};

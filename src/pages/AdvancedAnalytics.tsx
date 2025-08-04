@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   BarChart3, 
   LineChart, 
-  PieChart, 
   TrendingUp, 
   TrendingDown, 
   Users, 
@@ -61,85 +60,11 @@ import {
   PanelRight, 
   PanelTop, 
   PanelBottom, 
-  Maximize, 
-  Minimize, 
-  FullScreen, 
-  ExitFullScreen, 
-  HelpCircle, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  Bookmark, 
-  Tag, 
-  Hash, 
-  AtSign, 
-  Percent, 
-  CreditCard, 
-  Banknote, 
-  Coins, 
-  Wallet, 
-  Receipt, 
-  Calculator, 
-  PiggyBank, 
-  Thermometer, 
-  Battery, 
-  Fuel, 
-  Sun, 
-  Moon, 
-  CloudRain, 
-  CloudSnow, 
-  Wind, 
-  Umbrella, 
-  Rainbow, 
-  Sunrise, 
-  Sunset, 
-  Mountain, 
-  Trees, 
-  Flower, 
-  Leaf, 
-  Sprout, 
-  Seedling, 
-  Apple, 
-  Cherry, 
-  Grape, 
-  Orange, 
-  Banana, 
-  Strawberry, 
-  Coffee, 
-  Wine, 
-  Beer, 
-  Milk, 
-  Egg, 
-  Fish, 
-  Beef, 
-  Chicken, 
-  Pizza, 
-  Sandwich, 
-  Cake, 
-  Cookie, 
-  IceCream, 
-  Candy, 
-  Lollipop, 
-  Donut, 
-  Croissant, 
-  Bagel, 
-  Pretzel, 
-  Popcorn, 
-  Nut, 
-  Honey, 
-  Jam, 
-  Bread, 
-  Cheese, 
-  Salad, 
-  Soup, 
-  Sushi, 
-  Taco, 
-  Burrito, 
-  Hotdog, 
-  Fries
+  HelpCircle
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
+  BarChart,
   Bar, 
   XAxis, 
   YAxis, 
@@ -148,6 +73,7 @@ import {
   Legend, 
   ComposedChart, 
   Area, 
+  PieChart,
   Pie, 
   Cell, 
   Radar, 
@@ -298,7 +224,7 @@ const AdvancedAnalytics = () => {
               <Legend />
               <Bar dataKey="revenue" fill="#8884d8" name="الإيرادات" />
               <Area type="monotone" dataKey="profit" fill="#82ca9d" stroke="#82ca9d" name="الأرباح" />
-              <Line type="monotone" dataKey="customers" stroke="#ff7300" name="العملاء" />
+              <Area type="monotone" dataKey="customers" stroke="#ff7300" name="العملاء" />
             </ComposedChart>
           </ResponsiveContainer>
         </CardContent>
@@ -309,7 +235,7 @@ const AdvancedAnalytics = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <PieChart className="h-5 w-5" />
+              <BarChart3 className="h-5 w-5" />
               شرائح العملاء
             </CardTitle>
           </CardHeader>
@@ -382,7 +308,7 @@ const AdvancedAnalytics = () => {
               <Legend />
               <Bar dataKey="revenue" fill="#8884d8" name="الإيرادات" />
               <Bar dataKey="profit" fill="#82ca9d" name="الأرباح" />
-              <Line type="monotone" dataKey="sales" stroke="#ff7300" name="المبيعات" />
+              <Area type="monotone" dataKey="sales" stroke="#ff7300" name="المبيعات" />
             </ComposedChart>
           </ResponsiveContainer>
         </CardContent>
@@ -470,10 +396,10 @@ const AdvancedAnalytics = () => {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart layout="vertical" data={funnelData}>
+            <BarChart data={funnelData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis dataKey="name" type="category" />
+              <XAxis dataKey="name" />
+              <YAxis />
               <Tooltip />
               <Legend />
               <Bar dataKey="value" fill="#8884d8" name="العدد" />

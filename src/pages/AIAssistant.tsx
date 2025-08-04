@@ -54,7 +54,8 @@ import {
   Package,
   Users,
   Building,
-  Briefcase
+  Briefcase,
+  Eye
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -553,7 +554,7 @@ const AIAssistant = () => {
                 
                 <div className="flex gap-2 mt-3">
                   <Button variant="outline" size="sm">
-                    <Eye className="h-4 w-4 mr-2" />
+                     <Eye className="h-4 w-4 mr-2" />
                     عرض التفاصيل
                   </Button>
                   <Button variant="outline" size="sm">
