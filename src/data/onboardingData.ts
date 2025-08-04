@@ -622,6 +622,380 @@ export const allModules: Module[] = [
     description: 'إدارة الامتثال للقوانين واللوائح',
     category: moduleCategories[5],
     advanced: true
+  },
+
+  // Additional Advanced Modules (New)
+  { 
+    id: 'complaints_management', 
+    nameAr: 'إدارة الشكاوى', 
+    nameEn: 'Complaints Management', 
+    description: 'نظام إدارة شكاوى العملاء والمتابعة',
+    category: moduleCategories[3],
+    advanced: true
+  },
+  { 
+    id: 'ecommerce_store', 
+    nameAr: 'المتجر الإلكتروني', 
+    nameEn: 'E-commerce Store', 
+    description: 'متجر إلكتروني متكامل للبيع أونلاين',
+    category: moduleCategories[2],
+    advanced: true
+  },
+  { 
+    id: 'customer_shopping', 
+    nameAr: 'تسوق العملاء', 
+    nameEn: 'Customer Shopping', 
+    description: 'واجهة تسوق العملاء في المتجر الإلكتروني',
+    category: moduleCategories[3],
+    dependencies: ['ecommerce_store'],
+    advanced: true
+  },
+  { 
+    id: 'customer_booking', 
+    nameAr: 'حجوزات العملاء', 
+    nameEn: 'Customer Booking', 
+    description: 'نظام حجوزات العملاء المتقدم',
+    category: moduleCategories[3],
+    dependencies: ['bookings'],
+    advanced: true
+  },
+  { 
+    id: 'product_catalog', 
+    nameAr: 'كتالوج المنتجات', 
+    nameEn: 'Product Catalog', 
+    description: 'إدارة كتالوج المنتجات والخدمات',
+    category: moduleCategories[2],
+    advanced: true
+  },
+  { 
+    id: 'product_details', 
+    nameAr: 'تفاصيل المنتجات', 
+    nameEn: 'Product Details', 
+    description: 'عرض تفاصيل المنتجات والمواصفات',
+    category: moduleCategories[2],
+    dependencies: ['product_catalog'],
+    advanced: true
+  },
+  { 
+    id: 'shopping_cart', 
+    nameAr: 'سلة التسوق', 
+    nameEn: 'Shopping Cart', 
+    description: 'نظام سلة التسوق والدفع',
+    category: moduleCategories[2],
+    dependencies: ['ecommerce_store'],
+    advanced: true
+  },
+  { 
+    id: 'checkout', 
+    nameAr: 'إتمام الطلب', 
+    nameEn: 'Checkout', 
+    description: 'نظام إتمام الطلبات والدفع الآمن',
+    category: moduleCategories[2],
+    dependencies: ['shopping_cart'],
+    advanced: true
+  },
+  { 
+    id: 'order_tracking', 
+    nameAr: 'تتبع الطلبات', 
+    nameEn: 'Order Tracking', 
+    description: 'تتبع حالة الطلبات والشحنات',
+    category: moduleCategories[2],
+    dependencies: ['checkout'],
+    advanced: true
+  },
+  { 
+    id: 'ecommerce_product_management', 
+    nameAr: 'إدارة منتجات التجارة الإلكترونية', 
+    nameEn: 'E-commerce Product Management', 
+    description: 'إدارة منتجات المتجر الإلكتروني',
+    category: moduleCategories[2],
+    dependencies: ['ecommerce_store'],
+    advanced: true
+  },
+  { 
+    id: 'ecommerce_order_management', 
+    nameAr: 'إدارة طلبات التجارة الإلكترونية', 
+    nameEn: 'E-commerce Order Management', 
+    description: 'إدارة طلبات المتجر الإلكتروني',
+    category: moduleCategories[2],
+    dependencies: ['ecommerce_store'],
+    advanced: true
+  },
+  { 
+    id: 'cyber_security', 
+    nameAr: 'الأمان السيبراني', 
+    nameEn: 'Cyber Security', 
+    description: 'نظام الحماية والأمان السيبراني',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'ai_assistant', 
+    nameAr: 'المساعد الذكي', 
+    nameEn: 'AI Assistant', 
+    description: 'مساعد ذكي بالذكاء الاصطناعي',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'business_intelligence', 
+    nameAr: 'ذكاء الأعمال', 
+    nameEn: 'Business Intelligence', 
+    description: 'نظام ذكاء الأعمال والتحليلات',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'legal_compliance', 
+    nameAr: 'الامتثال القانوني المتقدم', 
+    nameEn: 'Legal Compliance', 
+    description: 'نظام الامتثال القانوني المتطور',
+    category: moduleCategories[5],
+    dependencies: ['compliance'],
+    advanced: true
+  },
+  { 
+    id: 'customer_behavior_analysis', 
+    nameAr: 'تحليل سلوك العملاء', 
+    nameEn: 'Customer Behavior Analysis', 
+    description: 'تحليل سلوك العملاء والتنبؤ',
+    category: moduleCategories[3],
+    advanced: true
+  },
+  { 
+    id: 'multi_language_support', 
+    nameAr: 'الدعم متعدد اللغات', 
+    nameEn: 'Multi-Language Support', 
+    description: 'دعم متعدد اللغات للنظام',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'risk_management', 
+    nameAr: 'إدارة المخاطر', 
+    nameEn: 'Risk Management', 
+    description: 'نظام إدارة وتقييم المخاطر',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'advanced_backup', 
+    nameAr: 'النسخ الاحتياطي المتقدم', 
+    nameEn: 'Advanced Backup', 
+    description: 'نظام النسخ الاحتياطي المتطور',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'performance_monitoring', 
+    nameAr: 'مراقبة الأداء', 
+    nameEn: 'Performance Monitoring', 
+    description: 'مراقبة أداء النظام والخوادم',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'smart_notifications', 
+    nameAr: 'الإشعارات الذكية', 
+    nameEn: 'Smart Notifications', 
+    description: 'نظام إشعارات ذكي ومتقدم',
+    category: moduleCategories[5],
+    dependencies: ['notifications'],
+    advanced: true
+  },
+  { 
+    id: 'advanced_permissions', 
+    nameAr: 'الصلاحيات المتقدمة', 
+    nameEn: 'Advanced Permissions', 
+    description: 'نظام صلاحيات متقدم ومرن',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'geographic_expansion', 
+    nameAr: 'التوسع الجغرافي', 
+    nameEn: 'Geographic Expansion', 
+    description: 'إدارة التوسع الجغرافي والفروع',
+    category: moduleCategories[5],
+    dependencies: ['multi_location'],
+    advanced: true
+  },
+  { 
+    id: 'advanced_analytics_dashboard', 
+    nameAr: 'لوحة التحليلات المتقدمة', 
+    nameEn: 'Advanced Analytics Dashboard', 
+    description: 'لوحة تحليلات متقدمة وتفاعلية',
+    category: moduleCategories[5],
+    dependencies: ['analytics'],
+    advanced: true
+  },
+  { 
+    id: 'partnership_management', 
+    nameAr: 'إدارة الشراكات', 
+    nameEn: 'Partnership Management', 
+    description: 'إدارة الشراكات التجارية',
+    category: moduleCategories[2],
+    advanced: true
+  },
+  { 
+    id: 'loyalty_rewards', 
+    nameAr: 'برنامج المكافآت', 
+    nameEn: 'Loyalty Rewards', 
+    description: 'نظام مكافآت العملاء المتقدم',
+    category: moduleCategories[3],
+    dependencies: ['loyalty'],
+    advanced: true
+  },
+  { 
+    id: 'digital_marketing', 
+    nameAr: 'التسويق الرقمي', 
+    nameEn: 'Digital Marketing', 
+    description: 'أدوات التسويق الرقمي والحملات',
+    category: moduleCategories[3],
+    advanced: true
+  },
+  { 
+    id: 'advanced_content_management', 
+    nameAr: 'إدارة المحتوى المتقدمة', 
+    nameEn: 'Advanced Content Management', 
+    description: 'نظام إدارة محتوى متطور',
+    category: moduleCategories[5],
+    dependencies: ['document_management'],
+    advanced: true
+  },
+  { 
+    id: 'advanced_ecommerce', 
+    nameAr: 'التجارة الإلكترونية المتقدمة', 
+    nameEn: 'Advanced E-commerce', 
+    description: 'ميزات التجارة الإلكترونية المتقدمة',
+    category: moduleCategories[2],
+    dependencies: ['ecommerce_store'],
+    advanced: true
+  },
+  { 
+    id: 'social_media_management', 
+    nameAr: 'إدارة وسائل التواصل الاجتماعي', 
+    nameEn: 'Social Media Management', 
+    description: 'إدارة حسابات وسائل التواصل',
+    category: moduleCategories[3],
+    advanced: true
+  },
+  { 
+    id: 'marketplace_integration', 
+    nameAr: 'تكامل الأسواق الإلكترونية', 
+    nameEn: 'Marketplace Integration', 
+    description: 'التكامل مع الأسواق الإلكترونية',
+    category: moduleCategories[2],
+    dependencies: ['ecommerce_store'],
+    advanced: true
+  },
+  { 
+    id: 'supply_chain_optimization', 
+    nameAr: 'تحسين سلسلة التوريد', 
+    nameEn: 'Supply Chain Optimization', 
+    description: 'تحسين وتطوير سلسلة التوريد',
+    category: moduleCategories[2],
+    dependencies: ['supply_chain'],
+    advanced: true
+  },
+  { 
+    id: 'digital_asset_management', 
+    nameAr: 'إدارة الأصول الرقمية', 
+    nameEn: 'Digital Asset Management', 
+    description: 'إدارة الملفات والأصول الرقمية',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'workflow_automation', 
+    nameAr: 'أتمتة سير العمل', 
+    nameEn: 'Workflow Automation', 
+    description: 'أتمتة العمليات وسير العمل',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'api_management', 
+    nameAr: 'إدارة واجهات البرمجة', 
+    nameEn: 'API Management', 
+    description: 'إدارة واجهات البرمجة والتكاملات',
+    category: moduleCategories[5],
+    dependencies: ['api'],
+    advanced: true
+  },
+  { 
+    id: 'data_visualization', 
+    nameAr: 'تصور البيانات', 
+    nameEn: 'Data Visualization', 
+    description: 'تصور البيانات والتحليلات البصرية',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'mobile_app_management', 
+    nameAr: 'إدارة التطبيقات المحمولة', 
+    nameEn: 'Mobile App Management', 
+    description: 'إدارة التطبيقات المحمولة',
+    category: moduleCategories[5],
+    dependencies: ['mobile_app'],
+    advanced: true
+  },
+  { 
+    id: 'cloud_integration', 
+    nameAr: 'التكامل السحابي', 
+    nameEn: 'Cloud Integration', 
+    description: 'التكامل مع الخدمات السحابية',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'realtime_collaboration', 
+    nameAr: 'التعاون في الوقت الفعلي', 
+    nameEn: 'Realtime Collaboration', 
+    description: 'أدوات التعاون في الوقت الفعلي',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'voice_assistant', 
+    nameAr: 'المساعد الصوتي', 
+    nameEn: 'Voice Assistant', 
+    description: 'مساعد صوتي ذكي للنظام',
+    category: moduleCategories[5],
+    dependencies: ['ai_assistant'],
+    advanced: true
+  },
+  { 
+    id: 'blockchain_integration', 
+    nameAr: 'تكامل البلوك تشين', 
+    nameEn: 'Blockchain Integration', 
+    description: 'التكامل مع تقنيات البلوك تشين',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'iot_management', 
+    nameAr: 'إدارة إنترنت الأشياء', 
+    nameEn: 'IoT Management', 
+    description: 'إدارة أجهزة إنترنت الأشياء',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'quantum_computing', 
+    nameAr: 'الحوسبة الكمية', 
+    nameEn: 'Quantum Computing', 
+    description: 'تقنيات الحوسبة الكمية المتقدمة',
+    category: moduleCategories[5],
+    advanced: true
+  },
+  { 
+    id: 'augmented_reality', 
+    nameAr: 'الواقع المعزز', 
+    nameEn: 'Augmented Reality', 
+    description: 'تقنيات الواقع المعزز للأعمال',
+    category: moduleCategories[5],
+    advanced: true
   }
 ];
 
