@@ -13,7 +13,7 @@ import {
   Target,
   Star
 } from 'lucide-react';
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+// import { LineChart, Line, AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 interface EnhancedHeroSectionProps {
   onStartFree: () => void;
@@ -155,27 +155,22 @@ const EnhancedHeroSection = ({ onStartFree, onLogin }: EnhancedHeroSectionProps)
                     </div>
                   </div>
                   
-                  {/* Revenue Chart */}
-                  <div className="h-48">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={performanceData}>
-                        <defs>
-                          <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="hsl(263, 70%, 50%)" stopOpacity={0.8}/>
-                            <stop offset="95%" stopColor="hsl(263, 70%, 50%)" stopOpacity={0.1}/>
-                          </linearGradient>
-                        </defs>
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: 'hsl(240, 10%, 70%)' }} />
-                        <YAxis hide />
-                        <Area 
-                          type="monotone" 
-                          dataKey="revenue" 
-                          stroke="hsl(263, 70%, 50%)" 
-                          fill="url(#revenueGradient)"
-                          strokeWidth={3}
+                  {/* Simple Chart Visualization */}
+                  <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl p-4 flex items-end justify-between space-x-2 space-x-reverse">
+                    {performanceData.map((data, index) => (
+                      <div 
+                        key={data.month}
+                        className="flex flex-col items-center space-y-2 flex-1"
+                      >
+                        <motion.div
+                          initial={{ height: 0 }}
+                          animate={{ height: `${(data.revenue / 12000) * 100}%` }}
+                          transition={{ delay: index * 0.1, duration: 0.8 }}
+                          className="w-full bg-gradient-to-t from-primary to-primary-light rounded-t-lg min-h-[20px]"
                         />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                        <span className="text-xs text-muted-foreground">{data.month}</span>
+                      </div>
+                    ))}
                   </div>
                   
                   <div className="grid grid-cols-3 gap-4">

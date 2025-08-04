@@ -26,7 +26,7 @@ const coreModules = [
     features: ['تتبع المخزون في الوقت الفعلي', 'تنبيهات نقص المخزون', 'تحليل أداء المنتجات', 'إدارة الموردين'],
     color: 'from-blue-500/20 to-cyan-500/20',
     iconColor: 'text-blue-400',
-    size: 'large'
+    size: 'medium' // Changed from 'large' to 'medium'
   },
   {
     icon: Calculator,
@@ -35,7 +35,7 @@ const coreModules = [
     features: ['القيود المحاسبية الآلية', 'التقارير المالية', 'إدارة الفواتير', 'متابعة المدفوعات'],
     color: 'from-purple-500/20 to-pink-500/20',
     iconColor: 'text-purple-400',
-    size: 'large'
+    size: 'medium' // Changed from 'large' to 'medium'
   },
   {
     icon: Users,
