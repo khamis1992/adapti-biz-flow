@@ -94,10 +94,10 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
 
       <div className="relative z-10 container mx-auto px-4 py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen">
-          {/* Left Content */}
+          {/* Right Content (RTL) */}
           <motion.div
-            className="space-y-8"
-            initial={{ opacity: 0, x: -50 }}
+            className="space-y-8 order-2 lg:order-1"
+            initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
@@ -111,7 +111,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
                 variant="secondary" 
                 className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm font-medium"
               >
-                <Building2 className="w-4 h-4 mr-2" />
+                <Building2 className="w-4 h-4 ml-2" />
                 نظام ERP الأكثر تطوراً في المنطقة
               </Badge>
             </motion.div>
@@ -178,7 +178,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
                 onClick={onStartFree}
               >
                 ابدأ مجاناً الآن
-                <ArrowRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:-translate-x-1 transition-transform" />
               </Button>
               
               <Button
@@ -187,7 +187,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
                 className="border-primary text-primary hover:bg-primary hover:text-white px-8 py-6 text-lg group"
                 onClick={onLogin}
               >
-                <PlayCircle className="w-5 h-5 ml-2 group-hover:scale-110 transition-transform" />
+                <PlayCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 شاهد العرض التوضيحي
               </Button>
             </motion.div>
@@ -212,10 +212,10 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
             </motion.div>
           </motion.div>
 
-          {/* Right Visual */}
+          {/* Left Visual (RTL) */}
           <motion.div
-            className="relative h-[600px] flex items-center justify-center"
-            initial={{ opacity: 0, x: 50 }}
+            className="relative h-[600px] flex items-center justify-center order-1 lg:order-2"
+            initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
@@ -288,7 +288,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
                 key={index}
                 className="absolute bg-card border border-border rounded-2xl p-4 shadow-lg backdrop-blur-sm"
                 style={card.position}
-              initial={{ x: 50, opacity: 0 }}
+              initial={{ x: -50, opacity: 0 }}
               animate={{ 
                 x: 0, 
                 opacity: 1,

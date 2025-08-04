@@ -130,7 +130,7 @@ const ProfessionalCTASection = ({ onStartFree, onRequestDemo }: ProfessionalCTAS
             variant="secondary" 
             className="mb-6 bg-success/10 text-success border-success/20 px-4 py-2"
           >
-            <Rocket className="w-4 h-4 mr-2" />
+            <Rocket className="w-4 h-4 ml-2" />
             ابدأ رحلتك الرقمية اليوم
           </Badge>
           
@@ -186,7 +186,7 @@ const ProfessionalCTASection = ({ onStartFree, onRequestDemo }: ProfessionalCTAS
               {option.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                   <Badge className="bg-success text-white border-success">
-                    <Star className="w-3 h-3 mr-1" />
+                    <Star className="w-3 h-3 ml-1" />
                     الأكثر شعبية
                   </Badge>
                 </div>
@@ -241,7 +241,7 @@ const ProfessionalCTASection = ({ onStartFree, onRequestDemo }: ProfessionalCTAS
                   onClick={option.action}
                 >
                   {option.buttonText}
-                  <ArrowRight className="w-5 h-5 mr-2" />
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
 
                 {/* Hover Effect */}

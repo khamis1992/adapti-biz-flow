@@ -100,7 +100,7 @@ const ProfessionalFeaturesSection = () => {
             variant="secondary" 
             className="mb-6 bg-primary/10 text-primary border-primary/20 px-4 py-2"
           >
-            <Settings className="w-4 h-4 mr-2" />
+            <Settings className="w-4 h-4 ml-2" />
             وحدات النظام الأساسية
           </Badge>
           
@@ -176,7 +176,7 @@ const ProfessionalFeaturesSection = () => {
                   className="text-primary hover:text-primary hover:bg-primary/5 p-0 h-auto font-medium group/btn"
                 >
                   تعرف على المزيد
-                  <ArrowRight className="w-4 h-4 mr-2 group-hover/btn:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:-translate-x-1 transition-transform" />
                 </Button>
 
                 {/* Hover Effect Overlay */}
@@ -249,7 +249,7 @@ const ProfessionalFeaturesSection = () => {
                 className="bg-success hover:bg-success/90 text-white"
               >
                 ابدأ التجربة المجانية
-                <ArrowRight className="w-5 h-5 mr-2" />
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button 
                 variant="outline" 

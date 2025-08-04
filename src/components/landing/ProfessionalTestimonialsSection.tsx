@@ -110,7 +110,7 @@ const ProfessionalTestimonialsSection = () => {
             variant="secondary" 
             className="mb-6 bg-success/10 text-success border-success/20 px-4 py-2"
           >
-            <Star className="w-4 h-4 mr-2" />
+            <Star className="w-4 h-4 ml-2" />
             آراء العملاء
           </Badge>
           

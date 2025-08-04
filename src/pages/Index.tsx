@@ -35,7 +35,7 @@ const Index = () => {
   const handleRequestDemo = () => navigate('/auth');
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" dir="rtl">
       <ProfessionalHeroSection 
         onStartFree={handleStartFree}
         onLogin={handleLogin}
