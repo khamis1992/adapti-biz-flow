@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import ProfessionalHeroSection from '@/components/landing/ProfessionalHeroSection';
 import ProfessionalFeaturesSection from '@/components/landing/ProfessionalFeaturesSection';
-import ProfessionalTestimonialsSection from '@/components/landing/ProfessionalTestimonialsSection';
+
 import ProfessionalCTASection from '@/components/landing/ProfessionalCTASection';
 
 const Index = () => {
@@ -41,7 +41,7 @@ const Index = () => {
         onLogin={handleLogin}
       />
       <ProfessionalFeaturesSection />
-      <ProfessionalTestimonialsSection />
+      
       <ProfessionalCTASection 
         onStartFree={handleStartFree}
         onRequestDemo={handleRequestDemo}
