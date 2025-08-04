@@ -143,134 +143,177 @@ const EnhancedHeroSection = ({ onStartFree, onLogin }: EnhancedHeroSectionProps)
           >
             <div className="space-y-6">
               
-              {/* Main Dashboard Card */}
-              <Card className="glass-strong p-6 rounded-2xl border-primary/20">
-                <div className="space-y-6">
+              {/* Enhanced Main Dashboard Card */}
+              <Card className="glass-strong p-8 rounded-3xl border-primary/30 relative overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
+                  <div className="absolute top-4 right-4 w-32 h-32 bg-primary/10 rounded-full blur-2xl" />
+                  <div className="absolute bottom-4 left-4 w-24 h-24 bg-secondary/10 rounded-full blur-xl" />
+                </div>
+                
+                <div className="relative z-10 space-y-8">
+                  {/* Header with Status Indicators */}
                   <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-foreground">لوحة المؤشرات الرئيسية</h3>
-                    <div className="flex space-x-2 space-x-reverse">
-                      <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                      <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                      <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground mb-2">لوحة المؤشرات الرئيسية</h3>
+                      <p className="text-sm text-muted-foreground">تحديث مباشر - آخر تحديث منذ دقيقتين</p>
+                    </div>
+                    <div className="flex items-center space-x-3 space-x-reverse">
+                      <motion.div 
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="w-3 h-3 bg-green-400 rounded-full shadow-glow-success"
+                      />
+                      <span className="text-sm text-green-400 font-medium">متصل</span>
                     </div>
                   </div>
                   
-                  {/* Key Performance Indicators */}
-                  <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl p-6 flex flex-col justify-center">
-                    <div className="grid grid-cols-2 gap-6 h-full">
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.6 }}
-                        className="flex flex-col items-center justify-center space-y-3"
-                      >
-                        <div className="relative">
-                          <TrendingUp className="w-12 h-12 text-green-400" />
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                  {/* Performance Chart with Better Design */}
+                  <div className="glass p-6 rounded-2xl">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-lg font-semibold text-foreground">نمو الإيرادات الشهرية</h4>
+                      <div className="flex items-center space-x-2 space-x-reverse text-green-400">
+                        <TrendingUp className="w-4 h-4" />
+                        <span className="text-sm font-medium">+187%</span>
+                      </div>
+                    </div>
+                    <div className="h-40 bg-gradient-to-br from-background/50 to-background/80 rounded-xl p-4 flex items-end justify-between space-x-2 space-x-reverse">
+                      {performanceData.map((data, index) => (
+                        <div 
+                          key={data.month}
+                          className="flex flex-col items-center space-y-2 flex-1"
+                        >
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ 
+                              height: `${(data.revenue / 12000) * 80 + 20}%`,
+                              opacity: 1 
+                            }}
+                            transition={{ 
+                              delay: index * 0.15, 
+                              duration: 0.8,
+                              ease: [0.25, 0.46, 0.45, 0.94]
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                            className="w-full bg-gradient-to-t from-primary via-primary-light to-secondary rounded-t-lg min-h-[20px] shadow-glow cursor-pointer relative"
+                          >
+                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity">
+                              <div className="glass px-2 py-1 rounded-lg text-xs text-foreground">
+                                ${(data.revenue / 1000).toFixed(1)}K
+                              </div>
+                            </div>
+                          </motion.div>
+                          <span className="text-xs text-muted-foreground font-medium">{data.month}</span>
                         </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-green-400">+187%</div>
-                          <div className="text-sm text-muted-foreground">نمو الأرباح</div>
-                        </div>
-                      </motion.div>
-                      
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.4, duration: 0.6 }}
-                        className="flex flex-col items-center justify-center space-y-3"
-                      >
-                        <div className="relative">
-                          <Users className="w-12 h-12 text-blue-400" />
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-400 rounded-full animate-pulse"></div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-blue-400">2,543</div>
-                          <div className="text-sm text-muted-foreground">عميل نشط</div>
-                        </div>
-                      </motion.div>
-                      
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.6, duration: 0.6 }}
-                        className="flex flex-col items-center justify-center space-y-3"
-                      >
-                        <div className="relative">
-                          <Target className="w-12 h-12 text-purple-400" />
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-400 rounded-full animate-pulse"></div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-400">99.9%</div>
-                          <div className="text-sm text-muted-foreground">دقة البيانات</div>
-                        </div>
-                      </motion.div>
-                      
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.8, duration: 0.6 }}
-                        className="flex flex-col items-center justify-center space-y-3"
-                      >
-                        <div className="relative">
-                          <Clock className="w-12 h-12 text-yellow-400" />
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-yellow-400">75%</div>
-                          <div className="text-sm text-muted-foreground">توفير الوقت</div>
-                        </div>
-                      </motion.div>
+                      ))}
                     </div>
                   </div>
                   
+                  {/* Enhanced Stats Grid */}
                   <div className="grid grid-cols-3 gap-4">
                     <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="glass p-4 rounded-xl text-center"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className="glass p-5 rounded-2xl text-center relative overflow-hidden group"
                     >
-                      <DollarSign className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                      <div className="text-lg font-bold text-green-400">$12.4K</div>
-                      <div className="text-sm text-muted-foreground">الإيرادات الشهرية</div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative z-10">
+                        <div className="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                          <DollarSign className="w-6 h-6 text-green-400" />
+                        </div>
+                        <div className="text-2xl font-bold text-green-400 mb-1">$12.4K</div>
+                        <div className="text-sm text-muted-foreground">الإيرادات الشهرية</div>
+                        <div className="text-xs text-green-400 mt-1">+23% هذا الشهر</div>
+                      </div>
                     </motion.div>
+                    
                     <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="glass p-4 rounded-xl text-center"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className="glass p-5 rounded-2xl text-center relative overflow-hidden group"
                     >
-                      <Users className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                      <div className="text-lg font-bold text-blue-400">2,543</div>
-                      <div className="text-sm text-muted-foreground">العملاء النشطون</div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative z-10">
+                        <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                          <Users className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <div className="text-2xl font-bold text-blue-400 mb-1">2,543</div>
+                        <div className="text-sm text-muted-foreground">العملاء النشطون</div>
+                        <div className="text-xs text-blue-400 mt-1">+156 جديد</div>
+                      </div>
                     </motion.div>
+                    
                     <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="glass p-4 rounded-xl text-center"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className="glass p-5 rounded-2xl text-center relative overflow-hidden group"
                     >
-                      <BarChart3 className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-                      <div className="text-lg font-bold text-purple-400">99%</div>
-                      <div className="text-sm text-muted-foreground">معدل الكفاءة</div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative z-10">
+                        <div className="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                          <BarChart3 className="w-6 h-6 text-purple-400" />
+                        </div>
+                        <div className="text-2xl font-bold text-purple-400 mb-1">99.8%</div>
+                        <div className="text-sm text-muted-foreground">معدل الكفاءة</div>
+                        <div className="text-xs text-purple-400 mt-1">ممتاز</div>
+                      </div>
                     </motion.div>
+                  </div>
+                  
+                  {/* Quick Actions */}
+                  <div className="flex space-x-3 space-x-reverse pt-2">
+                    <Button 
+                      size="sm" 
+                      className="flex-1 glass-strong hover:bg-primary/20 border-primary/30"
+                    >
+                      <BarChart3 className="w-4 h-4 ml-2" />
+                      عرض التقرير الكامل
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1 glass border-primary/30 hover:bg-primary/10"
+                    >
+                      تصدير البيانات
+                    </Button>
                   </div>
                 </div>
               </Card>
               
-              {/* Floating Feature Cards */}
+              {/* Enhanced Floating Feature Cards */}
               <div className="grid grid-cols-2 gap-4">
                 <motion.div
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="glass-card p-4 rounded-xl"
+                  className="glass-card p-6 rounded-2xl relative overflow-hidden group"
                 >
-                  <Shield className="w-8 h-8 text-primary mb-3" />
-                  <h4 className="font-semibold text-foreground mb-1">أمان متقدم</h4>
-                  <p className="text-sm text-muted-foreground">حماية عالمية للبيانات</p>
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center mb-4">
+                      <Shield className="w-6 h-6 text-primary" />
+                    </div>
+                    <h4 className="font-bold text-foreground mb-2">أمان متقدم</h4>
+                    <p className="text-sm text-muted-foreground mb-3">حماية عالمية للبيانات مع تشفير 256-bit</p>
+                    <div className="flex items-center space-x-2 space-x-reverse text-green-400">
+                      <CheckCircle className="w-4 h-4" />
+                      <span className="text-xs">محمي بالكامل</span>
+                    </div>
+                  </div>
                 </motion.div>
                 
                 <motion.div
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="glass-card p-4 rounded-xl"
+                  className="glass-card p-6 rounded-2xl relative overflow-hidden group"
                 >
-                  <Zap className="w-8 h-8 text-secondary mb-3" />
-                  <h4 className="font-semibold text-foreground mb-1">أتمتة ذكية</h4>
-                  <p className="text-sm text-muted-foreground">AI لتحسين العمليات</p>
+                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 bg-secondary/20 rounded-2xl flex items-center justify-center mb-4">
+                      <Zap className="w-6 h-6 text-secondary" />
+                    </div>
+                    <h4 className="font-bold text-foreground mb-2">أتمتة ذكية</h4>
+                    <p className="text-sm text-muted-foreground mb-3">ذكاء اصطناعي لتحسين جميع العمليات</p>
+                    <div className="flex items-center space-x-2 space-x-reverse text-blue-400">
+                      <Zap className="w-4 h-4" />
+                      <span className="text-xs">AI متقدم</span>
+                    </div>
+                  </div>
                 </motion.div>
               </div>
             </div>
