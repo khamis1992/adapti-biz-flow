@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import ProfessionalHeroSection from '@/components/landing/ProfessionalHeroSection';
 import ProfessionalFeaturesSection from '@/components/landing/ProfessionalFeaturesSection';
+import Footer from '@/components/landing/Footer';
 
 
 
@@ -41,7 +42,7 @@ const Index = () => {
         onLogin={handleLogin}
       />
       <ProfessionalFeaturesSection />
-      
+      <Footer />
     </div>
   );
 };
