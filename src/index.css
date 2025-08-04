@@ -8,40 +8,40 @@
 
 @layer base {
   :root {
-    /* Enhanced Color Palette with Modern Variants */
-    --background: 0 0% 99%; /* Off-white for warmth #FCFCFC */
-    --foreground: 220 15% 20%; /* Refined text #323B47 */
+    /* ERP Business Color System */
+    --background: 0 0% 100%; /* Pure white background #FFFFFF */
+    --foreground: 220 13% 18%; /* Main text #1F2937 */
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 20%;
+    --card-foreground: 220 13% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 20%;
+    --popover-foreground: 220 13% 18%;
 
-    /* Enhanced Primary Palette - Deep Professional Blue */
-    --primary: 230 45% 25%; /* #1E3A5F */
+    /* Primary ERP Blue */
+    --primary: 244 47% 31%; /* #272874 for headings and icons */
     --primary-foreground: 0 0% 100%;
-    --primary-light: 230 35% 35%; /* #2B4F7A */
-    --primary-dark: 230 55% 18%; /* #162B42 */
-    --primary-accent: 230 25% 45%; /* #4A6B8A */
-    --primary-glow: 230 45% 60%; /* For glow effects */
-    --primary-variant: 210 40% 30%; /* Complementary variant */
+    --primary-light: 244 47% 40%; /* Lighter variant */
+    --primary-dark: 244 47% 25%; /* Darker variant */
+    --primary-accent: 244 37% 35%; /* Subtle accent */
+    --primary-glow: 244 47% 45%; /* For glow effects */
+    --primary-variant: 244 40% 28%; /* Complementary variant */
 
-    /* Elegant Success - Professional Green */
-    --success: 155 65% 35%; /* #1F7A54 */
+    /* Success Green - Positive buttons */
+    --success: 158 64% 52%; /* #00cc88 */
     --success-foreground: 0 0% 100%;
-    --success-light: 155 55% 45%; /* #2E8B62 */
-    --success-subtle: 155 30% 92%; /* #E8F5F0 */
-    --success-glow: 155 65% 50%; /* For animations */
+    --success-light: 158 100% 42%; /* #00d084 for active elements */
+    --success-subtle: 158 64% 95%; /* Light background */
+    --success-glow: 158 64% 60%; /* For animations */
 
-    /* Sophisticated Active State */
-    --active: 200 85% 40%; /* #0E7490 */
+    /* Active State */
+    --active: 158 100% 42%; /* #00d084 for active elements */
     --active-foreground: 0 0% 100%;
 
-    /* Refined Warning */
-    --warning: 25 95% 50%; /* #F59E0B */
-    --warning-foreground: 220 15% 20%;
-    --warning-light: 25 85% 60%;
+    /* Orange Accent */
+    --warning: 25 95% 53%; /* Orange accent color */
+    --warning-foreground: 0 0% 0%;
+    --warning-light: 25 95% 63%;
     --warning-subtle: 25 100% 95%;
 
     /* Error States */
@@ -50,13 +50,13 @@
     --error-subtle: 0 100% 97%;
 
     /* Advanced Neutral Palette */
-    --secondary: 215 25% 97%; /* #F8FAFC */
-    --secondary-foreground: 220 15% 20%;
-    --secondary-accent: 215 20% 94%; /* Subtle variant */
+    --secondary: 220 13% 91%; /* Light background tint */
+    --secondary-foreground: 220 13% 18%;
+    --secondary-accent: 220 13% 95%; /* Subtle variant */
 
-    --muted: 215 15% 95%; /* #F1F5F9 */
-    --muted-foreground: 220 10% 50%; /* #64748B */
-    --muted-soft: 215 10% 98%; /* Ultra subtle */
+    --muted: 220 13% 91%; /* Light backgrounds */
+    --muted-foreground: 220 9% 46%; /* Secondary text #9CA3AF */
+    --muted-soft: 220 13% 98%; /* Ultra subtle */
 
     --accent: 215 25% 97%;
     --accent-foreground: 220 15% 20%;
