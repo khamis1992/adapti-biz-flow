@@ -640,7 +640,88 @@ export default function OnboardingWizard() {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" dir={state.isRTL ? 'rtl' : 'ltr'}>
+                  {/* Company Information */}
+                  <Card className="p-6 bg-gradient-subtle border-border/50">
+                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      {state.isRTL ? 'معلومات الشركة' : 'Company Information'}
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="companyName" className="text-sm font-medium">
+                          {state.isRTL ? 'اسم الشركة' : 'Company Name'}
+                        </Label>
+                        <Input
+                          id="companyName"
+                          value={state.formData.companyName}
+                          onChange={(e) => updateFormData({ companyName: e.target.value })}
+                          placeholder={state.isRTL ? 'أدخل اسم الشركة' : 'Enter company name'}
+                          className="h-12"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currency" className="text-sm font-medium">
+                          {state.isRTL ? 'العملة' : 'Currency'}
+                        </Label>
+                        <Select value={state.formData.currency} onValueChange={(value) => updateFormData({ currency: value })}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="KWD">
+                              {state.isRTL ? 'دينار كويتي (KWD)' : 'Kuwaiti Dinar (KWD)'}
+                            </SelectItem>
+                            <SelectItem value="USD">
+                              {state.isRTL ? 'دولار أمريكي (USD)' : 'US Dollar (USD)'}
+                            </SelectItem>
+                            <SelectItem value="EUR">
+                              {state.isRTL ? 'يورو (EUR)' : 'Euro (EUR)'}
+                            </SelectItem>
+                            <SelectItem value="SAR">
+                              {state.isRTL ? 'ريال سعودي (SAR)' : 'Saudi Riyal (SAR)'}
+                            </SelectItem>
+                            <SelectItem value="AED">
+                              {state.isRTL ? 'درهم إماراتي (AED)' : 'UAE Dirham (AED)'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="country" className="text-sm font-medium">
+                          {state.isRTL ? 'البلد' : 'Country'}
+                        </Label>
+                        <Select value={state.formData.country} onValueChange={(value) => updateFormData({ country: value })}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="KW">
+                              {state.isRTL ? 'الكويت' : 'Kuwait'}
+                            </SelectItem>
+                            <SelectItem value="SA">
+                              {state.isRTL ? 'السعودية' : 'Saudi Arabia'}
+                            </SelectItem>
+                            <SelectItem value="AE">
+                              {state.isRTL ? 'الإمارات' : 'UAE'}
+                            </SelectItem>
+                            <SelectItem value="QA">
+                              {state.isRTL ? 'قطر' : 'Qatar'}
+                            </SelectItem>
+                            <SelectItem value="BH">
+                              {state.isRTL ? 'البحرين' : 'Bahrain'}
+                            </SelectItem>
+                            <SelectItem value="OM">
+                              {state.isRTL ? 'عُمان' : 'Oman'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </Card>
+
                   {/* System Preferences */}
                   <Card className="p-6 bg-gradient-subtle border-border/50">
                     <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
@@ -698,87 +779,6 @@ export default function OnboardingWizard() {
                         <p className="text-xs text-muted-foreground">
                           {state.isRTL ? 'يمكنك تعديل هذا العدد لاحقاً' : 'You can modify this later'}
                         </p>
-                      </div>
-                    </div>
-                  </Card>
-
-                  {/* Company Information */}
-                  <Card className="p-6 bg-gradient-subtle border-border/50">
-                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-primary"></div>
-                      {state.isRTL ? 'معلومات الشركة' : 'Company Information'}
-                    </h3>
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="companyName" className="text-sm font-medium">
-                          {state.isRTL ? 'اسم الشركة' : 'Company Name'}
-                        </Label>
-                        <Input
-                          id="companyName"
-                          value={state.formData.companyName}
-                          onChange={(e) => updateFormData({ companyName: e.target.value })}
-                          placeholder={state.isRTL ? 'أدخل اسم الشركة' : 'Enter company name'}
-                          className="h-12"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="currency" className="text-sm font-medium">
-                          {state.isRTL ? 'العملة' : 'Currency'}
-                        </Label>
-                        <Select value={state.formData.currency} onValueChange={(value) => updateFormData({ currency: value })}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="KWD">
-                              {state.isRTL ? 'دينار كويتي (KWD)' : 'Kuwaiti Dinar (KWD)'}
-                            </SelectItem>
-                            <SelectItem value="USD">
-                              {state.isRTL ? 'دولار أمريكي (USD)' : 'US Dollar (USD)'}
-                            </SelectItem>
-                            <SelectItem value="EUR">
-                              {state.isRTL ? 'يورو (EUR)' : 'Euro (EUR)'}
-                            </SelectItem>
-                            <SelectItem value="SAR">
-                              {state.isRTL ? 'ريال سعودي (SAR)' : 'Saudi Riyal (SAR)'}
-                            </SelectItem>
-                            <SelectItem value="AED">
-                              {state.isRTL ? 'درهم إماراتي (AED)' : 'UAE Dirham (AED)'}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="country" className="text-sm font-medium">
-                          {state.isRTL ? 'الدولة' : 'Country'}
-                        </Label>
-                        <Select value={state.formData.country} onValueChange={(value) => updateFormData({ country: value })}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="KW">
-                              {state.isRTL ? 'الكويت' : 'Kuwait'}
-                            </SelectItem>
-                            <SelectItem value="SA">
-                              {state.isRTL ? 'السعودية' : 'Saudi Arabia'}
-                            </SelectItem>
-                            <SelectItem value="AE">
-                              {state.isRTL ? 'الإمارات' : 'UAE'}
-                            </SelectItem>
-                            <SelectItem value="QA">
-                              {state.isRTL ? 'قطر' : 'Qatar'}
-                            </SelectItem>
-                            <SelectItem value="BH">
-                              {state.isRTL ? 'البحرين' : 'Bahrain'}
-                            </SelectItem>
-                            <SelectItem value="OM">
-                              {state.isRTL ? 'عمان' : 'Oman'}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
                     </div>
                   </Card>
