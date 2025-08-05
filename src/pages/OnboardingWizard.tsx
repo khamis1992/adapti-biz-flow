@@ -564,7 +564,7 @@ export default function OnboardingWizard() {
 
                 {/* Selection Summary */}
                 {state.selectedModules.length > 0 && (
-                  <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">
+                  <div className={`bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20 ${state.isRTL ? 'rtl' : 'ltr'}`}>
                     <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                       {state.isRTL ? 'ملخص الاختيارات' : 'Selection Summary'}
