@@ -248,10 +248,7 @@ export default function OnboardingWizard() {
       </div>
 
       {/* Header */}
-      <OnboardingHeader 
-        isRTL={state.isRTL} 
-        onLanguageToggle={() => setState(prev => ({ ...prev, isRTL: !prev.isRTL }))} 
-      />
+      <OnboardingHeader />
 
       {/* Progress Bar */}
       <OnboardingProgress 
