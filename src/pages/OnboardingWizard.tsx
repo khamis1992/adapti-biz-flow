@@ -406,17 +406,17 @@ export default function OnboardingWizard() {
                 {/* Tabs Navigation */}
                 <Tabs defaultValue="recommended" className="w-full">
                   <TabsList className={`grid w-full grid-cols-4 ${state.isRTL ? 'rtl [&>*]:flex-row-reverse' : ''}`}>
-                    <TabsTrigger value="recommended" className="text-sm">
-                      {state.isRTL ? 'المُوصى بها' : 'Recommended'}
-                    </TabsTrigger>
-                    <TabsTrigger value="core" className="text-sm">
-                      {state.isRTL ? 'الأساسية' : 'Core'}
+                    <TabsTrigger value="advanced" className="text-sm">
+                      {state.isRTL ? 'متقدمة' : 'Advanced'}
                     </TabsTrigger>
                     <TabsTrigger value="business" className="text-sm">
                       {state.isRTL ? 'تجارية' : 'Business'}
                     </TabsTrigger>
-                    <TabsTrigger value="advanced" className="text-sm">
-                      {state.isRTL ? 'متقدمة' : 'Advanced'}
+                    <TabsTrigger value="core" className="text-sm">
+                      {state.isRTL ? 'الأساسية' : 'Core'}
+                    </TabsTrigger>
+                    <TabsTrigger value="recommended" className="text-sm">
+                      {state.isRTL ? 'المُوصى بها' : 'Recommended'}
                     </TabsTrigger>
                   </TabsList>
 
