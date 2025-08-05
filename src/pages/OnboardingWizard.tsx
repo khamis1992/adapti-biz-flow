@@ -587,7 +587,7 @@ export default function OnboardingWizard() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-12 mt-8 border-t border-border/20">
+            <div className={`flex justify-between pt-12 mt-8 border-t border-border/20 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
               <Button 
                 variant="outline" 
                 onClick={prevStep} 
