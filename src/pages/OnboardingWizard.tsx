@@ -580,16 +580,14 @@ export default function OnboardingWizard() {
                         
                         return (
                           <div key={category.id} className="space-y-2">
-                            <div className={`flex items-center justify-between ${state.isRTL ? 'flex-row-reverse' : ''}`}>
-                              <div className="flex items-center gap-2">
-                                <category.icon className="w-4 h-4 text-primary" />
-                                <span className="text-sm font-medium">
-                                  {state.isRTL ? category.nameAr : category.nameEn}
-                                </span>
-                              </div>
+                            <div className={`flex items-center justify-between ${state.isRTL ? '' : 'flex-row-reverse'}`}>
                               <Badge variant="secondary" className="text-xs">
                                 {selectedInCategory.length}
                               </Badge>
+                              <span className="text-sm font-medium">
+                                {state.isRTL ? category.nameAr : category.nameEn}
+                              </span>
+                              <category.icon className="w-4 h-4 text-primary" />
                             </div>
                             <div className={`space-y-1 ${state.isRTL ? 'pr-6' : 'pl-6'}`}>
                               {selectedInCategory.slice(0, 3).map(module => (
