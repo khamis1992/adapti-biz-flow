@@ -32,7 +32,7 @@ const Index = () => {
     }
   }
 
-  const handleStartFree = () => navigate('/auth');
+  const handleStartFree = () => navigate('/auth?tab=signup');
   const handleLogin = () => navigate('/auth');
   const handleRequestDemo = () => navigate('/auth');
 
