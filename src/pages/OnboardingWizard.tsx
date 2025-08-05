@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { OnboardingState, OnboardingFormData } from '@/types/onboarding';
 import { businessTypes, allModules, moduleCategories } from '@/data/onboardingData';
@@ -309,42 +310,178 @@ export default function OnboardingWizard() {
               </div>
             )}
 
-            {/* Step 2: Module Selection */}
+            {/* Step 2: Enhanced Module Selection */}
             {state.currentStep === 2 && (
               <div className="space-y-8">
-                <div className="text-center">
-                  <p className="text-lg text-muted-foreground mb-4">
-                    {state.isRTL 
-                      ? 'اختر الوحدات التي تحتاجها لإدارة عملك بفعالية'
-                      : 'Select the modules you need to manage your business effectively'
-                    }
-                  </p>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                    <span>{state.selectedModules.length}</span>
-                    <span>{state.isRTL ? 'وحدة مختارة' : 'modules selected'}</span>
+                {/* Header Section with Statistics */}
+                <div className="text-center space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">
+                      {state.isRTL ? 'اختر وحدات النظام' : 'Choose System Modules'}
+                    </h2>
+                    <p className="text-lg text-muted-foreground">
+                      {state.isRTL 
+                        ? 'اختر الوحدات التي تحتاجها لإدارة عملك بفعالية'
+                        : 'Select the modules you need to manage your business effectively'
+                      }
+                    </p>
+                  </div>
+                  
+                  {/* Enhanced Statistics Dashboard */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                    <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-4 border border-primary/20">
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        {state.selectedModules.length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {state.isRTL ? 'وحدة مختارة' : 'Selected Modules'}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-success/10 to-success/5 rounded-xl p-4 border border-success/20">
+                      <div className="text-2xl font-bold text-success mb-1">
+                        {availableModules.length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {state.isRTL ? 'وحدة متاحة' : 'Available Modules'}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl p-4 border border-accent/20">
+                      <div className="text-2xl font-bold text-accent mb-1">
+                        {moduleCategories.length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {state.isRTL ? 'فئة رئيسية' : 'Categories'}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Quick Actions */}
+                  <div className={`flex items-center justify-center gap-3 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Select all core modules
+                        const coreModules = availableModules.filter(m => 
+                          m.category.id === 'core' || m.required
+                        ).map(m => m.id);
+                        state.selectedModules.forEach(id => {
+                          if (!coreModules.includes(id)) {
+                            handleModuleToggle(id);
+                          }
+                        });
+                        coreModules.forEach(id => {
+                          if (!state.selectedModules.includes(id)) {
+                            handleModuleToggle(id);
+                          }
+                        });
+                      }}
+                      className="text-xs"
+                    >
+                      {state.isRTL ? 'اختر الأساسيات فقط' : 'Select Essentials Only'}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Clear all selections
+                        state.selectedModules.forEach(id => {
+                          const module = availableModules.find(m => m.id === id);
+                          if (!module?.required) {
+                            handleModuleToggle(id);
+                          }
+                        });
+                      }}
+                      className="text-xs"
+                    >
+                      {state.isRTL ? 'إلغاء جميع الاختيارات' : 'Clear All'}
+                    </Button>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                {/* Module Categories Grid */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
                   {moduleCategories
                     .sort((a, b) => a.order - b.order)
-                    .map((category, index) => (
-                      <div 
-                        key={category.id}
-                        className="animate-fade-in-up"
-                        style={{ animationDelay: `${index * 100}ms` }}
-                      >
-                        <ModuleSelectionCard
-                          category={category}
-                          modules={modulesByCategory.get(category.id) || []}
-                          selectedModules={state.selectedModules}
-                          onModuleToggle={handleModuleToggle}
-                          isRTL={state.isRTL}
-                          availableModules={availableModules}
-                          allModules={allModules}
-                        />
-                      </div>
-                    ))}
+                    .map((category, index) => {
+                      const categoryModules = modulesByCategory.get(category.id) || [];
+                      const availableCategoryModules = categoryModules.filter(module => 
+                        availableModules.some(availableModule => availableModule.id === module.id)
+                      );
+                      
+                      if (availableCategoryModules.length === 0) return null;
+                      
+                      return (
+                        <div 
+                          key={category.id}
+                          className="animate-fade-in"
+                          style={{ animationDelay: `${index * 100}ms` }}
+                        >
+                          <ModuleSelectionCard
+                            category={category}
+                            modules={categoryModules}
+                            selectedModules={state.selectedModules}
+                            onModuleToggle={handleModuleToggle}
+                            isRTL={state.isRTL}
+                            availableModules={availableModules}
+                            allModules={allModules}
+                          />
+                        </div>
+                      );
+                    })}
                 </div>
+
+                {/* Selection Summary */}
+                {state.selectedModules.length > 0 && (
+                  <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      {state.isRTL ? 'ملخص الاختيارات' : 'Selection Summary'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {moduleCategories.map(category => {
+                        const categoryModules = modulesByCategory.get(category.id) || [];
+                        const selectedInCategory = categoryModules.filter(m => 
+                          state.selectedModules.includes(m.id)
+                        );
+                        
+                        if (selectedInCategory.length === 0) return null;
+                        
+                        return (
+                          <div key={category.id} className="space-y-2">
+                            <div className={`flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+                              <category.icon className="w-4 h-4 text-primary" />
+                              <span className="text-sm font-medium">
+                                {state.isRTL ? category.nameAr : category.nameEn}
+                              </span>
+                              <Badge variant="secondary" className="text-xs">
+                                {selectedInCategory.length}
+                              </Badge>
+                            </div>
+                            <div className="space-y-1">
+                              {selectedInCategory.slice(0, 3).map(module => (
+                                <div key={module.id} className="text-xs text-muted-foreground">
+                                  • {state.isRTL ? module.nameAr : module.nameEn}
+                                </div>
+                              ))}
+                              {selectedInCategory.length > 3 && (
+                                <div className="text-xs text-muted-foreground">
+                                  {state.isRTL 
+                                    ? `+ ${selectedInCategory.length - 3} أخرى` 
+                                    : `+ ${selectedInCategory.length - 3} more`
+                                  }
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
