@@ -564,12 +564,12 @@ export default function OnboardingWizard() {
 
                 {/* Selection Summary */}
                 {state.selectedModules.length > 0 && (
-                  <div className={`bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20 ${state.isRTL ? 'rtl' : 'ltr'}`} dir={state.isRTL ? 'rtl' : 'ltr'}>
-                    <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className={`bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20`} dir={state.isRTL ? 'rtl' : 'ltr'}>
+                    <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse justify-end' : 'justify-start'}`}>
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                       {state.isRTL ? 'ملخص الاختيارات' : 'Selection Summary'}
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${state.isRTL ? 'text-right' : 'text-left'}`}>
                       {moduleCategories.map(category => {
                         const categoryModules = modulesByCategory.get(category.id) || [];
                         const selectedInCategory = categoryModules.filter(m => 
@@ -579,24 +579,24 @@ export default function OnboardingWizard() {
                         if (selectedInCategory.length === 0) return null;
                         
                         return (
-                          <div key={category.id} className={`space-y-2 ${state.isRTL ? 'text-right' : 'text-left'}`}>
-                            <div className={`flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse justify-start' : 'justify-start'}`}>
-                              <category.icon className="w-4 h-4 text-primary flex-shrink-0" />
-                              <span className="text-sm font-medium flex-1">
-                                {state.isRTL ? category.nameAr : category.nameEn}
-                              </span>
-                              <Badge variant="secondary" className="text-xs flex-shrink-0">
+                          <div key={category.id} className="space-y-2">
+                            <div className={`flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+                              <Badge variant="secondary" className="text-xs">
                                 {selectedInCategory.length}
                               </Badge>
+                              <span className="text-sm font-medium">
+                                {state.isRTL ? category.nameAr : category.nameEn}
+                              </span>
+                              <category.icon className="w-4 h-4 text-primary" />
                             </div>
                             <div className={`space-y-1 ${state.isRTL ? 'pr-6' : 'pl-6'}`}>
                               {selectedInCategory.slice(0, 3).map(module => (
-                                <div key={module.id} className={`text-xs text-muted-foreground ${state.isRTL ? 'text-right' : 'text-left'}`}>
-                                  {state.isRTL ? '•' : '•'} {state.isRTL ? module.nameAr : module.nameEn}
+                                <div key={module.id} className="text-xs text-muted-foreground">
+                                  • {state.isRTL ? module.nameAr : module.nameEn}
                                 </div>
                               ))}
                               {selectedInCategory.length > 3 && (
-                                <div className={`text-xs text-muted-foreground ${state.isRTL ? 'text-right' : 'text-left'}`}>
+                                <div className="text-xs text-muted-foreground">
                                   {state.isRTL 
                                     ? `+ ${selectedInCategory.length - 3} أخرى` 
                                     : `+ ${selectedInCategory.length - 3} more`
