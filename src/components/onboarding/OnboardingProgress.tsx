@@ -26,10 +26,13 @@ export default function OnboardingProgress({ currentStep, totalSteps, isRTL }: O
           </div>
         </div>
         
-        {/* Enhanced Progress Bar */}
+        {/* Enhanced Progress Bar - RTL Direction */}
         <div className="relative">
-          <Progress value={progress} className="h-3 bg-secondary/50" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-success opacity-20 rounded-full"></div>
+          <Progress 
+            value={progress} 
+            className={`h-3 bg-secondary/50 ${isRTL ? 'progress-rtl' : ''}`} 
+          />
+          <div className={`absolute inset-0 bg-gradient-to-${isRTL ? 'l' : 'r'} from-primary via-accent to-success opacity-20 rounded-full`}></div>
         </div>
         
         {/* Step Indicators */}
