@@ -5,11 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import logoRukn from '@/assets/logo_rukn_1-removebg-preview.png';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import { 
-  Building2,
   ArrowLeft,
   Mail,
   Lock,
@@ -78,8 +78,12 @@ export default function Auth() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-              <Building2 className="w-8 h-8 text-white" />
+            <div className="w-20 h-20 flex items-center justify-center">
+              <img 
+                src={logoRukn} 
+                alt="ركن - شعار الشركة" 
+                className="w-full h-full object-contain"
+              />
             </div>
           </motion.div>
 
