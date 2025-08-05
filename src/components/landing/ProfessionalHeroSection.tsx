@@ -104,12 +104,8 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
               transition={{ delay: 0.3 }}
             >
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-                <span className="text-primary">أدر أعمالك</span>
-                <br />
-                <span className="text-foreground">بذكاء وكفاءة</span>
-                <br />
-                <span className="bg-gradient-to-r from-success to-accent bg-clip-text text-transparent">
-                  لا مثيل لها
+                <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+                  ركن، شريكك في إدارة احترافية
                 </span>
               </h1>
             </motion.div>
