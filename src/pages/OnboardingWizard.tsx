@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CheckCircle2, ChevronRight, ChevronLeft, Building2, Settings, Users, Rocket } from 'lucide-react';
+import { CheckCircle2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { OnboardingState, OnboardingFormData } from '@/types/onboarding';
 import { businessTypes, allModules, moduleCategories } from '@/data/onboardingData';
 import OnboardingHeader from '@/components/onboarding/OnboardingHeader';
@@ -16,6 +16,8 @@ import BusinessTypeCard from '@/components/onboarding/BusinessTypeCard';
 import ModuleSelectionCard from '@/components/onboarding/ModuleSelectionCard';
 import { getAvailableModules, handleModuleSelection } from '@/utils/moduleDependencies';
 import { toast } from 'sonner';
+
+// All interfaces and data are now imported from separate files
 
 export default function OnboardingWizard() {
   const { user, loading, completeOnboarding } = useAuth();
@@ -62,11 +64,8 @@ export default function OnboardingWizard() {
   // Show loading spinner only if user is authenticated and loading
   if (user && loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-mesh">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/30 border-t-primary mx-auto"></div>
-          <p className="text-muted-foreground font-medium">جاري التحميل...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -109,22 +108,30 @@ export default function OnboardingWizard() {
     if (result.autoAddedModules.length > 0) {
       const moduleNames = result.autoAddedModules.map(id => {
         const module = allModules.find(m => m.id === id);
-        return module ? module.nameAr : id;
+        return module ? (state.isRTL ? module.nameAr : module.nameEn) : id;
       }).join(', ');
       
-      toast.info(`تم إضافة الوحدات المطلوبة تلقائياً: ${moduleNames}`);
+      toast.info(
+        state.isRTL 
+          ? `تم إضافة الوحدات المطلوبة تلقائياً: ${moduleNames}`
+          : `Auto-added required modules: ${moduleNames}`
+      );
     }
 
     // Show notification for auto-removed dependent modules
-    if (result.autoRemovedModules.length > 1) {
+    if (result.autoRemovedModules.length > 1) { // More than just the module being removed
       const removedDependents = result.autoRemovedModules.filter(id => id !== moduleId);
       if (removedDependents.length > 0) {
         const moduleNames = removedDependents.map(id => {
           const module = allModules.find(m => m.id === id);
-          return module ? module.nameAr : id;
+          return module ? (state.isRTL ? module.nameAr : module.nameEn) : id;
         }).join(', ');
         
-        toast.info(`تم إزالة الوحدات التابعة تلقائياً: ${moduleNames}`);
+        toast.info(
+          state.isRTL 
+            ? `تم إزالة الوحدات التابعة تلقائياً: ${moduleNames}`
+            : `Auto-removed dependent modules: ${moduleNames}`
+        );
       }
     }
 
@@ -155,13 +162,13 @@ export default function OnboardingWizard() {
 
   const handleCreateSystem = async () => {
     if (!state.formData.companyName.trim()) {
-      toast.error('يرجى إدخال اسم الشركة');
+      alert('يرجى إدخال اسم الشركة');
       return;
     }
     
     // If user is not authenticated, redirect to auth page first
     if (!user) {
-      toast.error('يرجى تسجيل الدخول أولاً لإكمال الإعداد');
+      alert('يرجى تسجيل الدخول أولاً لإكمال الإعداد');
       window.location.href = '/signin';
       return;
     }
@@ -182,7 +189,6 @@ export default function OnboardingWizard() {
       const { error, tenantId } = await completeOnboarding(onboardingData);
       
       if (!error && tenantId) {
-        toast.success('تم إنشاء النظام بنجاح!');
         // Give some time for tenant data to be created and then redirect to system setup
         setTimeout(() => {
           window.location.href = '/settings';
@@ -190,436 +196,441 @@ export default function OnboardingWizard() {
       }
     } catch (error) {
       console.error('Error creating system:', error);
-      toast.error('حدث خطأ أثناء إنشاء النظام');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const getStepIcon = (step: number) => {
-    switch(step) {
-      case 1: return Building2;
-      case 2: return Settings; 
-      case 3: return Users;
-      case 4: return Rocket;
-      default: return Building2;
-    }
-  };
-
-  const getStepData = () => {
-    const steps = [
-      {
-        title: 'اختيار نوع النشاط',
-        description: 'حدد نوع عملك التجاري لتخصيص النظام المناسب',
-        color: 'from-blue-500 to-cyan-500'
-      },
-      {
-        title: 'تحديد الوحدات',
-        description: 'اختر الوحدات التي تحتاجها لإدارة عملك',
-        color: 'from-purple-500 to-pink-500'
-      },
-      {
-        title: 'الإعدادات العامة',
-        description: 'أدخل المعلومات الأساسية لشركتك',
-        color: 'from-green-500 to-emerald-500'
-      },
-      {
-        title: 'ملخص الإعداد',
-        description: 'راجع إعداداتك قبل إنشاء النظام',
-        color: 'from-orange-500 to-red-500'
-      }
-    ];
-    return steps[state.currentStep - 1];
-  };
-
-  const currentStepData = getStepData();
-  const StepIcon = getStepIcon(state.currentStep);
-
-  const canProceedToNext = () => {
+  const getCurrentStepData = () => {
     switch (state.currentStep) {
-      case 1: return state.selectedBusinessType !== '';
-      case 2: return state.selectedModules.length > 0;
-      case 3: return state.formData.companyName.trim() !== '';
-      default: return true;
+      case 1:
+        return {
+          titleAr: 'اختيار نوع النشاط',
+          titleEn: 'Select Business Type',
+          descriptionAr: 'اختر نوع النشاط التجاري لشركتك لتخصيص النظام وفقاً لاحتياجاتك',
+          descriptionEn: 'Choose your business type to customize the system according to your needs'
+        };
+      case 2:
+        return {
+          titleAr: 'تحديد الوحدات',
+          titleEn: 'Select Modules', 
+          descriptionAr: 'اختر الوحدات التي تريد تفعيلها في نظامك (مرتبة حسب الفئات)',
+          descriptionEn: 'Choose the modules you want to activate in your system (organized by categories)'
+        };
+      case 3:
+        return {
+          titleAr: 'الإعدادات العامة',
+          titleEn: 'General Settings',
+          descriptionAr: 'أدخل البيانات الأساسية لشركتك وتفضيلات النظام',
+          descriptionEn: 'Enter your company basic information and system preferences'
+        };
+      case 4:
+        return {
+          titleAr: 'ملخص الإعداد',
+          titleEn: 'Setup Summary',
+          descriptionAr: 'راجع إعداداتك قبل إنشاء النظام',
+          descriptionEn: 'Review your settings before creating the system'
+        };
+      default:
+        return { titleAr: '', titleEn: '', descriptionAr: '', descriptionEn: '' };
     }
   };
+
+  const stepData = getCurrentStepData();
 
   return (
-    <div className="min-h-screen bg-gradient-mesh relative overflow-hidden" dir="rtl">
-      {/* Enhanced animated background */}
+    <div className={`min-h-screen bg-gradient-mesh relative overflow-hidden ${state.isRTL ? 'rtl' : 'ltr'}`}>
+      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-br from-secondary/20 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-3xl animate-pulse delay-2000"></div>
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-primary rounded-full opacity-10 animate-pulse"></div>
+        <div className="absolute top-1/4 -right-20 w-60 h-60 bg-gradient-success rounded-full opacity-10 animate-pulse delay-1000"></div>
+        <div className="absolute -bottom-20 left-1/4 w-80 h-80 bg-gradient-hero rounded-full opacity-10 animate-pulse delay-2000"></div>
       </div>
 
       {/* Header */}
       <OnboardingHeader />
 
-      {/* Enhanced Progress Bar */}
-      <div className="container mx-auto px-6 py-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-2">
-            {[1, 2, 3, 4].map((step) => {
-              const Icon = getStepIcon(step);
-              const isActive = step === state.currentStep;
-              const isCompleted = step < state.currentStep;
-              
-              return (
-                <div key={step} className="flex items-center">
-                  <div className={`
-                    relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300
-                    ${isActive 
-                      ? 'border-primary bg-primary text-primary-foreground shadow-lg scale-110' 
-                      : isCompleted 
-                        ? 'border-primary bg-primary text-primary-foreground' 
-                        : 'border-muted bg-muted text-muted-foreground'
-                    }
-                  `}>
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-6 h-6" />
-                    ) : (
-                      <Icon className="w-6 h-6" />
-                    )}
-                    {isActive && (
-                      <div className="absolute inset-0 rounded-full bg-primary/20 animate-pulse"></div>
-                    )}
-                  </div>
-                  {step < 4 && (
-                    <div className={`
-                      w-24 h-1 mx-2 transition-all duration-300
-                      ${step < state.currentStep ? 'bg-primary' : 'bg-muted'}
-                    `}></div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          
-          {/* Step indicator */}
-          <div className="text-center">
-            <span className="text-sm text-muted-foreground">
-              الخطوة {state.currentStep} من {totalSteps}
-            </span>
-          </div>
-        </div>
-      </div>
+      {/* Progress Bar */}
+      <OnboardingProgress 
+        currentStep={state.currentStep} 
+        totalSteps={totalSteps} 
+        isRTL={state.isRTL} 
+      />
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 pb-12 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          {/* Enhanced Step Header */}
-          <div className="text-center mb-12 space-y-6">
-            <div className={`
-              inline-flex items-center justify-center w-20 h-20 rounded-3xl 
-              bg-gradient-to-br ${currentStepData.color} 
-              text-white shadow-2xl mb-6 animate-bounce
-            `}>
-              <StepIcon className="w-10 h-10" />
+      <div className="container mx-auto px-6 py-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Step Header */}
+          <div className="text-center mb-12 space-y-4">
+            <div className="inline-block p-3 rounded-2xl bg-gradient-primary text-white shadow-glow-primary mb-4 animate-scale-in">
+              {state.currentStep === 1 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">1</div>}
+              {state.currentStep === 2 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">2</div>}
+              {state.currentStep === 3 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">3</div>}
+              {state.currentStep === 4 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">4</div>}
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-display font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-fade-in-down">
-              {currentStepData.title}
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-4 animate-fade-in-down">
+              {state.isRTL ? stepData.titleAr : stepData.titleEn}
             </h1>
-            
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up">
-              {currentStepData.description}
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up">
+              {state.isRTL ? stepData.descriptionAr : stepData.descriptionEn}
             </p>
           </div>
 
-          {/* Enhanced Content Card */}
-          <Card className="backdrop-blur-xl bg-card/95 border-0 shadow-2xl rounded-3xl overflow-hidden animate-scale-in">
+          {/* Content Card */}
+          <Card className="backdrop-blur-xl bg-card/90 border-0 shadow-3d-soft hover:shadow-3d-medium transition-all duration-500 animate-scale-in">
             <CardContent className="p-8 md:p-12">
-              
-              {/* Step 1: Business Type Selection */}
-              {state.currentStep === 1 && (
-                <div className="space-y-10">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-semibold mb-4 text-foreground">ما نوع عملك؟</h3>
-                    <p className="text-lg text-muted-foreground">
-                      اختر نوع نشاطك التجاري لنقوم بإعداد النظام المثالي لاحتياجاتك
-                    </p>
+            {/* Step 1: Business Type Selection */}
+            {state.currentStep === 1 && (
+              <div className="space-y-8">
+                <div className="text-center">
+                  <p className="text-lg text-muted-foreground mb-8">
+                    {state.isRTL 
+                      ? 'اختر نوع عملك لنقوم بتخصيص النظام المناسب لك'
+                      : 'Choose your business type to customize the perfect system for you'
+                    }
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                  {businessTypes.map((type, index) => (
+                    <div 
+                      key={type.id} 
+                      className="animate-fade-in-up"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <BusinessTypeCard
+                        businessType={type}
+                        isSelected={state.selectedBusinessType === type.id}
+                        onSelect={() => handleBusinessTypeSelect(type.id)}
+                        isRTL={state.isRTL}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Module Selection */}
+            {state.currentStep === 2 && (
+              <div className="space-y-8">
+                <div className="text-center">
+                  <p className="text-lg text-muted-foreground mb-4">
+                    {state.isRTL 
+                      ? 'اختر الوحدات التي تحتاجها لإدارة عملك بفعالية'
+                      : 'Select the modules you need to manage your business effectively'
+                    }
+                  </p>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                    <span>{state.selectedModules.length}</span>
+                    <span>{state.isRTL ? 'وحدة مختارة' : 'modules selected'}</span>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-                    {businessTypes.map((type, index) => (
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {moduleCategories
+                    .sort((a, b) => a.order - b.order)
+                    .map((category, index) => (
                       <div 
-                        key={type.id} 
-                        className="animate-fade-in-up hover:scale-105 transition-transform duration-300"
-                        style={{ animationDelay: `${index * 150}ms` }}
+                        key={category.id}
+                        className="animate-fade-in-up"
+                        style={{ animationDelay: `${index * 100}ms` }}
                       >
-                        <BusinessTypeCard
-                          businessType={type}
-                          isSelected={state.selectedBusinessType === type.id}
-                          onSelect={() => handleBusinessTypeSelect(type.id)}
+                        <ModuleSelectionCard
+                          category={category}
+                          modules={modulesByCategory.get(category.id) || []}
+                          selectedModules={state.selectedModules}
+                          onModuleToggle={handleModuleToggle}
                           isRTL={state.isRTL}
+                          availableModules={availableModules}
+                          allModules={allModules}
                         />
                       </div>
                     ))}
-                  </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Step 2: Module Selection */}
-              {state.currentStep === 2 && (
-                <div className="space-y-10">
-                  <div className="text-center space-y-4">
-                    <h3 className="text-2xl font-semibold text-foreground">أي الوحدات تحتاج؟</h3>
-                    <p className="text-lg text-muted-foreground">
-                      اختر الوحدات التي تريد استخدامها في نظامك - يمكنك إضافة المزيد لاحقاً
-                    </p>
-                    
-                    <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-primary/10 text-primary border border-primary/20">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold">
-                        {state.selectedModules.length}
+            {/* Step 3: General Settings */}
+            {state.currentStep === 3 && (
+              <div className="space-y-8">
+                <div className="text-center">
+                  <p className="text-lg text-muted-foreground mb-8">
+                    {state.isRTL 
+                      ? 'قم بإعداد المعلومات الأساسية لشركتك'
+                      : 'Set up your company basic information'
+                    }
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Company Information */}
+                  <Card className="p-6 bg-gradient-subtle border-border/50">
+                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      {state.isRTL ? 'معلومات الشركة' : 'Company Information'}
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="companyName" className="text-sm font-medium">
+                          {state.isRTL ? 'اسم الشركة' : 'Company Name'}
+                        </Label>
+                        <Input
+                          id="companyName"
+                          value={state.formData.companyName}
+                          onChange={(e) => updateFormData({ companyName: e.target.value })}
+                          placeholder={state.isRTL ? 'أدخل اسم الشركة' : 'Enter company name'}
+                          className="h-12"
+                        />
                       </div>
-                      <span className="font-medium">وحدة مختارة</span>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currency" className="text-sm font-medium">
+                          {state.isRTL ? 'العملة' : 'Currency'}
+                        </Label>
+                        <Select value={state.formData.currency} onValueChange={(value) => updateFormData({ currency: value })}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="KWD">
+                              {state.isRTL ? 'دينار كويتي (KWD)' : 'Kuwaiti Dinar (KWD)'}
+                            </SelectItem>
+                            <SelectItem value="USD">
+                              {state.isRTL ? 'دولار أمريكي (USD)' : 'US Dollar (USD)'}
+                            </SelectItem>
+                            <SelectItem value="EUR">
+                              {state.isRTL ? 'يورو (EUR)' : 'Euro (EUR)'}
+                            </SelectItem>
+                            <SelectItem value="SAR">
+                              {state.isRTL ? 'ريال سعودي (SAR)' : 'Saudi Riyal (SAR)'}
+                            </SelectItem>
+                            <SelectItem value="AED">
+                              {state.isRTL ? 'درهم إماراتي (AED)' : 'UAE Dirham (AED)'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="country" className="text-sm font-medium">
+                          {state.isRTL ? 'الدولة' : 'Country'}
+                        </Label>
+                        <Select value={state.formData.country} onValueChange={(value) => updateFormData({ country: value })}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="KW">
+                              {state.isRTL ? 'الكويت' : 'Kuwait'}
+                            </SelectItem>
+                            <SelectItem value="SA">
+                              {state.isRTL ? 'السعودية' : 'Saudi Arabia'}
+                            </SelectItem>
+                            <SelectItem value="AE">
+                              {state.isRTL ? 'الإمارات' : 'UAE'}
+                            </SelectItem>
+                            <SelectItem value="QA">
+                              {state.isRTL ? 'قطر' : 'Qatar'}
+                            </SelectItem>
+                            <SelectItem value="BH">
+                              {state.isRTL ? 'البحرين' : 'Bahrain'}
+                            </SelectItem>
+                            <SelectItem value="OM">
+                              {state.isRTL ? 'عمان' : 'Oman'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {moduleCategories
-                      .sort((a, b) => a.order - b.order)
-                      .map((category, index) => (
-                        <div 
-                          key={category.id}
-                          className="animate-fade-in-up hover:scale-105 transition-transform duration-300"
-                          style={{ animationDelay: `${index * 100}ms` }}
-                        >
-                          <ModuleSelectionCard
-                            category={category}
-                            modules={modulesByCategory.get(category.id) || []}
-                            selectedModules={state.selectedModules}
-                            onModuleToggle={handleModuleToggle}
-                            isRTL={state.isRTL}
-                            availableModules={availableModules}
-                            allModules={allModules}
+                  </Card>
+
+                  {/* System Preferences */}
+                  <Card className="p-6 bg-gradient-subtle border-border/50">
+                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-accent"></div>
+                      {state.isRTL ? 'تفضيلات النظام' : 'System Preferences'}
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                        <div className="flex items-center space-x-3">
+                          <Checkbox
+                            checked={state.formData.needsAccounting}
+                            onCheckedChange={(checked) => updateFormData({ needsAccounting: !!checked })}
                           />
+                          <div className="flex-1">
+                            <Label className="text-sm font-medium cursor-pointer">
+                              {state.isRTL ? 'نظام المحاسبة' : 'Accounting System'}
+                            </Label>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {state.isRTL ? 'إدارة الحسابات والتقارير المالية' : 'Manage accounts and financial reports'}
+                            </p>
+                          </div>
                         </div>
-                      ))}
-                  </div>
-                </div>
-              )}
+                      </div>
 
-              {/* Step 3: Company Settings */}
-              {state.currentStep === 3 && (
-                <div className="space-y-10">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-semibold mb-4 text-foreground">معلومات شركتك</h3>
-                    <p className="text-lg text-muted-foreground">
-                      أدخل البيانات الأساسية لشركتك لإعداد النظام
-                    </p>
-                  </div>
-                  
-                  <div className="max-w-2xl mx-auto">
-                    <Card className="p-8 bg-gradient-to-br from-card to-muted/50 border border-border/50 shadow-lg">
-                      <div className="space-y-8">
-                        {/* Company Name */}
-                        <div className="space-y-3">
-                          <Label htmlFor="companyName" className="text-base font-medium flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-primary"></div>
-                            اسم الشركة *
-                          </Label>
-                          <Input
-                            id="companyName"
-                            value={state.formData.companyName}
-                            onChange={(e) => updateFormData({ companyName: e.target.value })}
-                            placeholder="أدخل اسم شركتك"
-                            className="h-14 text-lg bg-background/50 backdrop-blur-sm"
+                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                        <div className="flex items-center space-x-3">
+                          <Checkbox
+                            checked={state.formData.needsPayroll}
+                            onCheckedChange={(checked) => updateFormData({ needsPayroll: !!checked })}
                           />
-                        </div>
-                        
-                        {/* Currency and Country */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="space-y-3">
-                            <Label className="text-base font-medium flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full bg-secondary"></div>
-                              العملة
+                          <div className="flex-1">
+                            <Label className="text-sm font-medium cursor-pointer">
+                              {state.isRTL ? 'نظام الرواتب' : 'Payroll System'}
                             </Label>
-                            <Select value={state.formData.currency} onValueChange={(value) => updateFormData({ currency: value })}>
-                              <SelectTrigger className="h-14 text-lg bg-background/50 backdrop-blur-sm">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="KWD">دينار كويتي (KWD)</SelectItem>
-                                <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
-                                <SelectItem value="EUR">يورو (EUR)</SelectItem>
-                                <SelectItem value="SAR">ريال سعودي (SAR)</SelectItem>
-                                <SelectItem value="AED">درهم إماراتي (AED)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div className="space-y-3">
-                            <Label className="text-base font-medium flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full bg-accent"></div>
-                              الدولة
-                            </Label>
-                            <Select value={state.formData.country} onValueChange={(value) => updateFormData({ country: value })}>
-                              <SelectTrigger className="h-14 text-lg bg-background/50 backdrop-blur-sm">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="KW">الكويت</SelectItem>
-                                <SelectItem value="SA">السعودية</SelectItem>
-                                <SelectItem value="AE">الإمارات</SelectItem>
-                                <SelectItem value="QA">قطر</SelectItem>
-                                <SelectItem value="BH">البحرين</SelectItem>
-                                <SelectItem value="OM">عمان</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-
-                        {/* Additional Settings */}
-                        <div className="space-y-6 pt-6 border-t border-border">
-                          <h4 className="text-lg font-medium">إعدادات إضافية</h4>
-                          
-                          <div className="space-y-4">
-                            <div className="flex items-center space-x-3 space-x-reverse">
-                              <Checkbox 
-                                id="accounting" 
-                                checked={state.formData.needsAccounting}
-                                onCheckedChange={(checked) => updateFormData({ needsAccounting: !!checked })}
-                              />
-                              <Label htmlFor="accounting" className="text-sm">
-                                تفعيل وحدة المحاسبة المتقدمة
-                              </Label>
-                            </div>
-                            
-                            <div className="flex items-center space-x-3 space-x-reverse">
-                              <Checkbox 
-                                id="payroll" 
-                                checked={state.formData.needsPayroll}
-                                onCheckedChange={(checked) => updateFormData({ needsPayroll: !!checked })}
-                              />
-                              <Label htmlFor="payroll" className="text-sm">
-                                تفعيل وحدة الرواتب والموارد البشرية
-                              </Label>
-                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {state.isRTL ? 'إدارة رواتب الموظفين والمزايا' : 'Manage employee salaries and benefits'}
+                            </p>
                           </div>
                         </div>
                       </div>
-                    </Card>
-                  </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="defaultUsers" className="text-sm font-medium">
+                          {state.isRTL ? 'عدد المستخدمين الافتراضي' : 'Default number of users'}
+                        </Label>
+                        <Input
+                          id="defaultUsers"
+                          type="number"
+                          value={state.formData.defaultUsers}
+                          onChange={(e) => updateFormData({ defaultUsers: parseInt(e.target.value) || 5 })}
+                          min="1"
+                          max="100"
+                          className="h-12"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {state.isRTL ? 'يمكنك تعديل هذا العدد لاحقاً' : 'You can modify this later'}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Step 4: Summary */}
-              {state.currentStep === 4 && (
-                <div className="space-y-10">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-semibold mb-4 text-foreground">كل شيء جاهز!</h3>
-                    <p className="text-lg text-muted-foreground">
-                      راجع إعداداتك قبل إنشاء نظامك الجديد
-                    </p>
-                  </div>
-                  
-                  <div className="max-w-3xl mx-auto space-y-6">
-                    {/* Company Info Summary */}
-                    <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5">
-                      <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-primary" />
-                        معلومات الشركة
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <span className="font-medium text-muted-foreground">اسم الشركة:</span>
-                          <p className="font-semibold">{state.formData.companyName}</p>
-                        </div>
-                        <div>
-                          <span className="font-medium text-muted-foreground">العملة:</span>
-                          <p className="font-semibold">{state.formData.currency}</p>
-                        </div>
-                        <div>
-                          <span className="font-medium text-muted-foreground">الدولة:</span>
-                          <p className="font-semibold">{state.formData.country}</p>
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/* Business Type Summary */}
-                    <Card className="p-6 bg-gradient-to-br from-secondary/5 to-accent/5">
-                      <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Settings className="w-5 h-5 text-secondary" />
-                        نوع النشاط التجاري
-                      </h4>
-                      <p className="font-semibold">
-                        {businessTypes.find(t => t.id === state.selectedBusinessType)?.nameAr || 'غير محدد'}
-                      </p>
-                    </Card>
-
-                    {/* Modules Summary */}
-                    <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5">
-                      <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Users className="w-5 h-5 text-accent" />
-                        الوحدات المختارة ({state.selectedModules.length})
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {state.selectedModules.map(moduleId => {
-                          const module = allModules.find(m => m.id === moduleId);
-                          return module ? (
-                            <div key={moduleId} className="flex items-center gap-2 text-sm">
-                              <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              <span>{module.nameAr}</span>
+            {/* Step 4: Summary */}
+            {state.currentStep === 4 && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">
+                        {state.isRTL ? 'نوع النشاط المختار' : 'Selected Business Type'}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {state.selectedBusinessType && (() => {
+                        const selectedType = businessTypes.find(t => t.id === state.selectedBusinessType);
+                        return selectedType && (
+                          <div className="flex items-center gap-3">
+                            <selectedType.icon className="w-8 h-8" />
+                            <div>
+                              <div className="font-medium">
+                                {state.isRTL ? selectedType.nameAr : selectedType.nameEn}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {selectedType.description}
+                              </div>
                             </div>
-                          ) : null;
-                        })}
-                      </div>
-                    </Card>
-                  </div>
+                          </div>
+                        );
+                      })()}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">
+                        {state.isRTL ? 'الإعدادات العامة' : 'General Settings'}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p><strong>{state.isRTL ? 'اسم الشركة:' : 'Company:'}</strong> {state.formData.companyName}</p>
+                      <p><strong>{state.isRTL ? 'العملة:' : 'Currency:'}</strong> {state.formData.currency}</p>
+                      <p><strong>{state.isRTL ? 'الدولة:' : 'Country:'}</strong> {state.formData.country}</p>
+                      <p><strong>{state.isRTL ? 'المستخدمين:' : 'Users:'}</strong> {state.formData.defaultUsers}</p>
+                    </CardContent>
+                  </Card>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {moduleCategories
+                    .sort((a, b) => a.order - b.order)
+                    .map((category) => {
+                      const categoryModules = state.selectedModules
+                        .map(moduleId => allModules.find(m => m.id === moduleId))
+                        .filter(module => module && module.category.id === category.id);
+                      
+                      if (categoryModules.length === 0) return null;
+                      
+                      return (
+                        <Card key={category.id}>
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <category.icon className="w-5 h-5" />
+                              {state.isRTL ? category.nameAr : category.nameEn}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-2">
+                              {categoryModules.map(module => module && (
+                                <div key={module.id} className="flex items-center gap-2 text-sm">
+                                  <CheckCircle2 className="w-3 h-3 text-success flex-shrink-0" />
+                                  <span>{state.isRTL ? module.nameAr : module.nameEn}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between pt-12 mt-8 border-t border-border/20">
+              <Button 
+                variant="outline" 
+                onClick={prevStep} 
+                disabled={state.currentStep === 1}
+                className="flex items-center gap-2 px-8 py-3 h-auto border-2 hover:border-primary/50 transition-all duration-300"
+              >
+                {!state.isRTL && <ChevronLeft className="w-5 h-5" />}
+                <span className="font-medium">
+                  {state.isRTL ? 'السابق' : 'Previous'}
+                </span>
+                {state.isRTL && <ChevronRight className="w-5 h-5" />}
+              </Button>
+
+              {state.currentStep < totalSteps ? (
+                <Button 
+                  onClick={nextStep} 
+                  disabled={state.currentStep === 1 && !state.selectedBusinessType}
+                  className="flex items-center gap-2 px-8 py-3 h-auto bg-gradient-primary hover:shadow-glow-primary transition-all duration-300"
+                >
+                  <span className="font-medium">
+                    {state.isRTL ? 'التالي' : 'Next'}
+                  </span>
+                  {!state.isRTL && <ChevronRight className="w-5 h-5" />}
+                  {state.isRTL && <ChevronLeft className="w-5 h-5" />}
+                </Button>
+              ) : (
+                <Button 
+                  className="flex items-center gap-2 px-8 py-3 h-auto bg-gradient-success hover:shadow-glow-success transition-all duration-300 text-white font-semibold"
+                  onClick={handleCreateSystem}
+                  disabled={isSubmitting}
+                >
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>
+                    {isSubmitting 
+                      ? (state.isRTL ? 'جاري الإعداد...' : 'Setting up...')
+                      : (state.isRTL ? 'إنشاء النظام' : 'Create System')
+                    }
+                  </span>
+                </Button>
               )}
+            </div>
             </CardContent>
           </Card>
-
-          {/* Enhanced Navigation */}
-          <div className="flex items-center justify-between mt-12">
-            <Button
-              variant="outline"
-              onClick={prevStep}
-              disabled={state.currentStep === 1}
-              className="px-8 py-4 h-auto text-lg disabled:opacity-50 bg-background/50 backdrop-blur-sm border-border/50 hover:bg-background/80"
-            >
-              <ChevronRight className="w-5 h-5 ml-2" />
-              السابق
-            </Button>
-
-            <div className="flex-1 text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 text-muted-foreground text-sm">
-                <span>الخطوة {state.currentStep} من {totalSteps}</span>
-              </div>
-            </div>
-
-            {state.currentStep < totalSteps ? (
-              <Button
-                onClick={nextStep}
-                disabled={!canProceedToNext()}
-                className="px-8 py-4 h-auto text-lg bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg disabled:opacity-50"
-              >
-                التالي
-                <ChevronLeft className="w-5 h-5 mr-2" />
-              </Button>
-            ) : (
-              <Button
-                onClick={handleCreateSystem}
-                disabled={isSubmitting || !canProceedToNext()}
-                className="px-8 py-4 h-auto text-lg bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white ml-2"></div>
-                    جاري الإنشاء...
-                  </>
-                ) : (
-                  <>
-                    <Rocket className="w-5 h-5 ml-2" />
-                    إنشاء النظام
-                  </>
-                )}
-              </Button>
-            )}
-          </div>
         </div>
       </div>
     </div>
