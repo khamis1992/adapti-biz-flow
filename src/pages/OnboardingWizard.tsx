@@ -239,7 +239,14 @@ export default function OnboardingWizard() {
   const stepData = getCurrentStepData();
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-background via-secondary/20 to-accent/30 ${state.isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`min-h-screen bg-gradient-mesh relative overflow-hidden ${state.isRTL ? 'rtl' : 'ltr'}`}>
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-primary rounded-full opacity-10 animate-pulse"></div>
+        <div className="absolute top-1/4 -right-20 w-60 h-60 bg-gradient-success rounded-full opacity-10 animate-pulse delay-1000"></div>
+        <div className="absolute -bottom-20 left-1/4 w-80 h-80 bg-gradient-hero rounded-full opacity-10 animate-pulse delay-2000"></div>
+      </div>
+
       {/* Header */}
       <OnboardingHeader 
         isRTL={state.isRTL} 
@@ -254,162 +261,250 @@ export default function OnboardingWizard() {
       />
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
-        <Card className="max-w-6xl mx-auto">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl">
+      <div className="container mx-auto px-6 py-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Step Header */}
+          <div className="text-center mb-12 space-y-4">
+            <div className="inline-block p-3 rounded-2xl bg-gradient-primary text-white shadow-glow-primary mb-4 animate-scale-in">
+              {state.currentStep === 1 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">1</div>}
+              {state.currentStep === 2 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">2</div>}
+              {state.currentStep === 3 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">3</div>}
+              {state.currentStep === 4 && <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">4</div>}
+            </div>
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-4 animate-fade-in-down">
               {state.isRTL ? stepData.titleAr : stepData.titleEn}
-            </CardTitle>
-            <CardDescription className="text-lg">
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up">
               {state.isRTL ? stepData.descriptionAr : stepData.descriptionEn}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+            </p>
+          </div>
+
+          {/* Content Card */}
+          <Card className="backdrop-blur-xl bg-card/90 border-0 shadow-3d-soft hover:shadow-3d-medium transition-all duration-500 animate-scale-in">
+            <CardContent className="p-8 md:p-12">
             {/* Step 1: Business Type Selection */}
             {state.currentStep === 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {businessTypes.map((type) => (
-                  <BusinessTypeCard
-                    key={type.id}
-                    businessType={type}
-                    isSelected={state.selectedBusinessType === type.id}
-                    onSelect={() => handleBusinessTypeSelect(type.id)}
-                    isRTL={state.isRTL}
-                  />
-                ))}
+              <div className="space-y-8">
+                <div className="text-center">
+                  <p className="text-lg text-muted-foreground mb-8">
+                    {state.isRTL 
+                      ? 'اختر نوع عملك لنقوم بتخصيص النظام المناسب لك'
+                      : 'Choose your business type to customize the perfect system for you'
+                    }
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                  {businessTypes.map((type, index) => (
+                    <div 
+                      key={type.id} 
+                      className="animate-fade-in-up"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <BusinessTypeCard
+                        businessType={type}
+                        isSelected={state.selectedBusinessType === type.id}
+                        onSelect={() => handleBusinessTypeSelect(type.id)}
+                        isRTL={state.isRTL}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Step 2: Module Selection */}
             {state.currentStep === 2 && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {moduleCategories
-                  .sort((a, b) => a.order - b.order)
-                  .map((category) => (
-                     <ModuleSelectionCard
-                       key={category.id}
-                       category={category}
-                       modules={modulesByCategory.get(category.id) || []}
-                       selectedModules={state.selectedModules}
-                       onModuleToggle={handleModuleToggle}
-                       isRTL={state.isRTL}
-                       availableModules={availableModules}
-                       allModules={allModules}
-                     />
-                  ))}
+              <div className="space-y-8">
+                <div className="text-center">
+                  <p className="text-lg text-muted-foreground mb-4">
+                    {state.isRTL 
+                      ? 'اختر الوحدات التي تحتاجها لإدارة عملك بفعالية'
+                      : 'Select the modules you need to manage your business effectively'
+                    }
+                  </p>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                    <span>{state.selectedModules.length}</span>
+                    <span>{state.isRTL ? 'وحدة مختارة' : 'modules selected'}</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {moduleCategories
+                    .sort((a, b) => a.order - b.order)
+                    .map((category, index) => (
+                      <div 
+                        key={category.id}
+                        className="animate-fade-in-up"
+                        style={{ animationDelay: `${index * 100}ms` }}
+                      >
+                        <ModuleSelectionCard
+                          category={category}
+                          modules={modulesByCategory.get(category.id) || []}
+                          selectedModules={state.selectedModules}
+                          onModuleToggle={handleModuleToggle}
+                          isRTL={state.isRTL}
+                          availableModules={availableModules}
+                          allModules={allModules}
+                        />
+                      </div>
+                    ))}
+                </div>
               </div>
             )}
 
             {/* Step 3: General Settings */}
             {state.currentStep === 3 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="companyName">
-                      {state.isRTL ? 'اسم الشركة' : 'Company Name'}
-                    </Label>
-                    <Input
-                      id="companyName"
-                      value={state.formData.companyName}
-                      onChange={(e) => updateFormData({ companyName: e.target.value })}
-                      placeholder={state.isRTL ? 'أدخل اسم الشركة' : 'Enter company name'}
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="currency">
-                      {state.isRTL ? 'العملة' : 'Currency'}
-                    </Label>
-                    <Select value={state.formData.currency} onValueChange={(value) => updateFormData({ currency: value })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="KWD">
-                          {state.isRTL ? 'دينار كويتي (KWD)' : 'Kuwaiti Dinar (KWD)'}
-                        </SelectItem>
-                        <SelectItem value="USD">
-                          {state.isRTL ? 'دولار أمريكي (USD)' : 'US Dollar (USD)'}
-                        </SelectItem>
-                        <SelectItem value="EUR">
-                          {state.isRTL ? 'يورو (EUR)' : 'Euro (EUR)'}
-                        </SelectItem>
-                        <SelectItem value="SAR">
-                          {state.isRTL ? 'ريال سعودي (SAR)' : 'Saudi Riyal (SAR)'}
-                        </SelectItem>
-                        <SelectItem value="AED">
-                          {state.isRTL ? 'درهم إماراتي (AED)' : 'UAE Dirham (AED)'}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="country">
-                      {state.isRTL ? 'الدولة' : 'Country'}
-                    </Label>
-                    <Select value={state.formData.country} onValueChange={(value) => updateFormData({ country: value })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="KW">
-                          {state.isRTL ? 'الكويت' : 'Kuwait'}
-                        </SelectItem>
-                        <SelectItem value="SA">
-                          {state.isRTL ? 'السعودية' : 'Saudi Arabia'}
-                        </SelectItem>
-                        <SelectItem value="AE">
-                          {state.isRTL ? 'الإمارات' : 'UAE'}
-                        </SelectItem>
-                        <SelectItem value="QA">
-                          {state.isRTL ? 'قطر' : 'Qatar'}
-                        </SelectItem>
-                        <SelectItem value="BH">
-                          {state.isRTL ? 'البحرين' : 'Bahrain'}
-                        </SelectItem>
-                        <SelectItem value="OM">
-                          {state.isRTL ? 'عمان' : 'Oman'}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+              <div className="space-y-8">
+                <div className="text-center">
+                  <p className="text-lg text-muted-foreground mb-8">
+                    {state.isRTL 
+                      ? 'قم بإعداد المعلومات الأساسية لشركتك'
+                      : 'Set up your company basic information'
+                    }
+                  </p>
                 </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Company Information */}
+                  <Card className="p-6 bg-gradient-subtle border-border/50">
+                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      {state.isRTL ? 'معلومات الشركة' : 'Company Information'}
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="companyName" className="text-sm font-medium">
+                          {state.isRTL ? 'اسم الشركة' : 'Company Name'}
+                        </Label>
+                        <Input
+                          id="companyName"
+                          value={state.formData.companyName}
+                          onChange={(e) => updateFormData({ companyName: e.target.value })}
+                          placeholder={state.isRTL ? 'أدخل اسم الشركة' : 'Enter company name'}
+                          className="h-12"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currency" className="text-sm font-medium">
+                          {state.isRTL ? 'العملة' : 'Currency'}
+                        </Label>
+                        <Select value={state.formData.currency} onValueChange={(value) => updateFormData({ currency: value })}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="KWD">
+                              {state.isRTL ? 'دينار كويتي (KWD)' : 'Kuwaiti Dinar (KWD)'}
+                            </SelectItem>
+                            <SelectItem value="USD">
+                              {state.isRTL ? 'دولار أمريكي (USD)' : 'US Dollar (USD)'}
+                            </SelectItem>
+                            <SelectItem value="EUR">
+                              {state.isRTL ? 'يورو (EUR)' : 'Euro (EUR)'}
+                            </SelectItem>
+                            <SelectItem value="SAR">
+                              {state.isRTL ? 'ريال سعودي (SAR)' : 'Saudi Riyal (SAR)'}
+                            </SelectItem>
+                            <SelectItem value="AED">
+                              {state.isRTL ? 'درهم إماراتي (AED)' : 'UAE Dirham (AED)'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={state.formData.needsAccounting}
-                      onCheckedChange={(checked) => updateFormData({ needsAccounting: !!checked })}
-                    />
-                    <Label>
-                      {state.isRTL ? 'هل تحتاج النظام المحاسبي؟' : 'Do you need the accounting system?'}
-                    </Label>
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="country" className="text-sm font-medium">
+                          {state.isRTL ? 'الدولة' : 'Country'}
+                        </Label>
+                        <Select value={state.formData.country} onValueChange={(value) => updateFormData({ country: value })}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="KW">
+                              {state.isRTL ? 'الكويت' : 'Kuwait'}
+                            </SelectItem>
+                            <SelectItem value="SA">
+                              {state.isRTL ? 'السعودية' : 'Saudi Arabia'}
+                            </SelectItem>
+                            <SelectItem value="AE">
+                              {state.isRTL ? 'الإمارات' : 'UAE'}
+                            </SelectItem>
+                            <SelectItem value="QA">
+                              {state.isRTL ? 'قطر' : 'Qatar'}
+                            </SelectItem>
+                            <SelectItem value="BH">
+                              {state.isRTL ? 'البحرين' : 'Bahrain'}
+                            </SelectItem>
+                            <SelectItem value="OM">
+                              {state.isRTL ? 'عمان' : 'Oman'}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </Card>
 
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={state.formData.needsPayroll}
-                      onCheckedChange={(checked) => updateFormData({ needsPayroll: !!checked })}
-                    />
-                    <Label>
-                      {state.isRTL ? 'هل تحتاج وحدة الرواتب؟' : 'Do you need the payroll module?'}
-                    </Label>
-                  </div>
+                  {/* System Preferences */}
+                  <Card className="p-6 bg-gradient-subtle border-border/50">
+                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-accent"></div>
+                      {state.isRTL ? 'تفضيلات النظام' : 'System Preferences'}
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                        <div className="flex items-center space-x-3">
+                          <Checkbox
+                            checked={state.formData.needsAccounting}
+                            onCheckedChange={(checked) => updateFormData({ needsAccounting: !!checked })}
+                          />
+                          <div className="flex-1">
+                            <Label className="text-sm font-medium cursor-pointer">
+                              {state.isRTL ? 'نظام المحاسبة' : 'Accounting System'}
+                            </Label>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {state.isRTL ? 'إدارة الحسابات والتقارير المالية' : 'Manage accounts and financial reports'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                  <div>
-                    <Label htmlFor="defaultUsers">
-                      {state.isRTL ? 'عدد المستخدمين الافتراضي' : 'Default number of users'}
-                    </Label>
-                    <Input
-                      id="defaultUsers"
-                      type="number"
-                      value={state.formData.defaultUsers}
-                      onChange={(e) => updateFormData({ defaultUsers: parseInt(e.target.value) || 5 })}
-                      min="1"
-                      max="100"
-                    />
-                  </div>
+                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                        <div className="flex items-center space-x-3">
+                          <Checkbox
+                            checked={state.formData.needsPayroll}
+                            onCheckedChange={(checked) => updateFormData({ needsPayroll: !!checked })}
+                          />
+                          <div className="flex-1">
+                            <Label className="text-sm font-medium cursor-pointer">
+                              {state.isRTL ? 'نظام الرواتب' : 'Payroll System'}
+                            </Label>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {state.isRTL ? 'إدارة رواتب الموظفين والمزايا' : 'Manage employee salaries and benefits'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="defaultUsers" className="text-sm font-medium">
+                          {state.isRTL ? 'عدد المستخدمين الافتراضي' : 'Default number of users'}
+                        </Label>
+                        <Input
+                          id="defaultUsers"
+                          type="number"
+                          value={state.formData.defaultUsers}
+                          onChange={(e) => updateFormData({ defaultUsers: parseInt(e.target.value) || 5 })}
+                          min="1"
+                          max="100"
+                          className="h-12"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {state.isRTL ? 'يمكنك تعديل هذا العدد لاحقاً' : 'You can modify this later'}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
               </div>
             )}
@@ -495,44 +590,51 @@ export default function OnboardingWizard() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-6">
+            <div className="flex justify-between pt-12 mt-8 border-t border-border/20">
               <Button 
                 variant="outline" 
                 onClick={prevStep} 
                 disabled={state.currentStep === 1}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 px-8 py-3 h-auto border-2 hover:border-primary/50 transition-all duration-300"
               >
-                {!state.isRTL && <ChevronLeft className="w-4 h-4" />}
-                {state.isRTL ? 'السابق' : 'Previous'}
-                {state.isRTL && <ChevronRight className="w-4 h-4" />}
+                {!state.isRTL && <ChevronLeft className="w-5 h-5" />}
+                <span className="font-medium">
+                  {state.isRTL ? 'السابق' : 'Previous'}
+                </span>
+                {state.isRTL && <ChevronRight className="w-5 h-5" />}
               </Button>
 
               {state.currentStep < totalSteps ? (
                 <Button 
                   onClick={nextStep} 
                   disabled={state.currentStep === 1 && !state.selectedBusinessType}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 px-8 py-3 h-auto bg-gradient-primary hover:shadow-glow-primary transition-all duration-300"
                 >
-                  {state.isRTL ? 'التالي' : 'Next'}
-                  {!state.isRTL && <ChevronRight className="w-4 h-4" />}
-                  {state.isRTL && <ChevronLeft className="w-4 h-4" />}
+                  <span className="font-medium">
+                    {state.isRTL ? 'التالي' : 'Next'}
+                  </span>
+                  {!state.isRTL && <ChevronRight className="w-5 h-5" />}
+                  {state.isRTL && <ChevronLeft className="w-5 h-5" />}
                 </Button>
               ) : (
                 <Button 
-                  className="flex items-center gap-2 bg-gradient-primary hover:bg-gradient-primary/90"
+                  className="flex items-center gap-2 px-8 py-3 h-auto bg-gradient-success hover:shadow-glow-success transition-all duration-300 text-white font-semibold"
                   onClick={handleCreateSystem}
                   disabled={isSubmitting}
                 >
-                  <CheckCircle2 className="w-4 h-4" />
-                  {isSubmitting 
-                    ? (state.isRTL ? 'جاري الإعداد...' : 'Setting up...')
-                    : (state.isRTL ? 'إنشاء النظام' : 'Create System')
-                  }
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>
+                    {isSubmitting 
+                      ? (state.isRTL ? 'جاري الإعداد...' : 'Setting up...')
+                      : (state.isRTL ? 'إنشاء النظام' : 'Create System')
+                    }
+                  </span>
                 </Button>
               )}
             </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
