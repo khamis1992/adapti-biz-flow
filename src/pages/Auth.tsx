@@ -68,7 +68,7 @@ export default function Auth() {
       duration: 0.6
     }}>
         {/* Header */}
-        <div className="text-center space-y-6">
+        <div className="text-center space-y-4">
           <motion.div className="flex items-center justify-center" initial={{
           opacity: 0,
           scale: 0.8
