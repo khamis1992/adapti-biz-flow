@@ -105,7 +105,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
             >
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-                  ركن، شريكك في إدارة احترافية
+                  رُكن، شريكك في إدارة احترافية
                 </span>
               </h1>
             </motion.div>

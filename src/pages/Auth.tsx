@@ -79,7 +79,7 @@ export default function Auth() {
           delay: 0.2
         }}>
             <div className="w-32 h-32 flex items-center justify-center">
-              <img src={logoRukn} alt="ركن - شعار الشركة" className="w-full h-full object-contain" />
+              <img src={logoRukn} alt="رُكن - شعار الشركة" className="w-full h-full object-contain" />
             </div>
           </motion.div>
 
@@ -94,7 +94,7 @@ export default function Auth() {
         }}>
             
             <h2 className="text-xl font-semibold text-foreground mb-2">
-              مرحباً بك في منصة ركن
+              مرحباً بك في منصة رُكن
             </h2>
             <p className="text-muted-foreground">
               شريكك في إدارة احترافية لأعمالك
