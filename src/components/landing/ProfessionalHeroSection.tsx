@@ -154,7 +154,7 @@ const ProfessionalHeroSection = ({ onStartFree, onLogin }: ProfessionalHeroSecti
                 className="bg-success hover:bg-success/90 text-white px-8 py-6 text-lg font-semibold group"
                 onClick={onStartFree}
               >
-                ابدأ مجاناً الآن
+                ابدأ الآن
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:-translate-x-1 transition-transform" />
               </Button>
               
