@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -310,7 +311,7 @@ export default function OnboardingWizard() {
               </div>
             )}
 
-            {/* Step 2: Enhanced Module Selection */}
+            {/* Step 2: Enhanced Module Selection with Tabs and Filters */}
             {state.currentStep === 2 && (
               <div className="space-y-8">
                 {/* Header Section with Statistics */}
@@ -402,37 +403,164 @@ export default function OnboardingWizard() {
                   </div>
                 </div>
 
-                {/* Module Categories Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
-                  {moduleCategories
-                    .sort((a, b) => a.order - b.order)
-                    .map((category, index) => {
-                      const categoryModules = modulesByCategory.get(category.id) || [];
-                      const availableCategoryModules = categoryModules.filter(module => 
-                        availableModules.some(availableModule => availableModule.id === module.id)
-                      );
-                      
-                      if (availableCategoryModules.length === 0) return null;
-                      
-                      return (
-                        <div 
-                          key={category.id}
-                          className="animate-fade-in"
-                          style={{ animationDelay: `${index * 100}ms` }}
-                        >
-                          <ModuleSelectionCard
-                            category={category}
-                            modules={categoryModules}
-                            selectedModules={state.selectedModules}
-                            onModuleToggle={handleModuleToggle}
-                            isRTL={state.isRTL}
-                            availableModules={availableModules}
-                            allModules={allModules}
-                          />
-                        </div>
-                      );
-                    })}
-                </div>
+                {/* Tabs Navigation */}
+                <Tabs defaultValue="recommended" className="w-full">
+                  <TabsList className={`grid w-full grid-cols-4 ${state.isRTL ? 'rtl' : ''}`}>
+                    <TabsTrigger value="recommended" className="text-sm">
+                      {state.isRTL ? 'المُوصى بها' : 'Recommended'}
+                    </TabsTrigger>
+                    <TabsTrigger value="core" className="text-sm">
+                      {state.isRTL ? 'الأساسية' : 'Core'}
+                    </TabsTrigger>
+                    <TabsTrigger value="business" className="text-sm">
+                      {state.isRTL ? 'تجارية' : 'Business'}
+                    </TabsTrigger>
+                    <TabsTrigger value="advanced" className="text-sm">
+                      {state.isRTL ? 'متقدمة' : 'Advanced'}
+                    </TabsTrigger>
+                  </TabsList>
+
+                  {/* Recommended Tab */}
+                  <TabsContent value="recommended" className="space-y-6">
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold mb-2">
+                        {state.isRTL ? 'الوحدات المُوصى بها لعملك' : 'Recommended Modules for Your Business'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {state.isRTL 
+                          ? 'بناء على نوع عملك، نوصي بهذه الوحدات للبدء'
+                          : 'Based on your business type, we recommend these modules to get started'
+                        }
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Core Modules */}
+                      {moduleCategories
+                        .filter(cat => ['core', 'financial'].includes(cat.id))
+                        .map(category => {
+                          const categoryModules = modulesByCategory.get(category.id) || [];
+                          const availableCategoryModules = categoryModules.filter(module => 
+                            availableModules.some(availableModule => availableModule.id === module.id)
+                          );
+                          
+                          if (availableCategoryModules.length === 0) return null;
+                          
+                          return (
+                            <ModuleSelectionCard
+                              key={category.id}
+                              category={category}
+                              modules={categoryModules}
+                              selectedModules={state.selectedModules}
+                              onModuleToggle={handleModuleToggle}
+                              isRTL={state.isRTL}
+                              availableModules={availableModules}
+                              allModules={allModules}
+                            />
+                          );
+                        })}
+                    </div>
+                  </TabsContent>
+
+                  {/* Core Tab */}
+                  <TabsContent value="core" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {moduleCategories
+                        .filter(cat => ['core', 'financial'].includes(cat.id))
+                        .map(category => {
+                          const categoryModules = modulesByCategory.get(category.id) || [];
+                          const availableCategoryModules = categoryModules.filter(module => 
+                            availableModules.some(availableModule => availableModule.id === module.id)
+                          );
+                          
+                          if (availableCategoryModules.length === 0) return null;
+                          
+                          return (
+                            <ModuleSelectionCard
+                              key={category.id}
+                              category={category}
+                              modules={categoryModules}
+                              selectedModules={state.selectedModules}
+                              onModuleToggle={handleModuleToggle}
+                              isRTL={state.isRTL}
+                              availableModules={availableModules}
+                              allModules={allModules}
+                            />
+                          );
+                        })}
+                    </div>
+                  </TabsContent>
+
+                  {/* Business Tab */}
+                  <TabsContent value="business" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {moduleCategories
+                        .filter(cat => ['operations', 'customer'].includes(cat.id))
+                        .map(category => {
+                          const categoryModules = modulesByCategory.get(category.id) || [];
+                          const availableCategoryModules = categoryModules.filter(module => 
+                            availableModules.some(availableModule => availableModule.id === module.id)
+                          );
+                          
+                          if (availableCategoryModules.length === 0) return null;
+                          
+                          return (
+                            <ModuleSelectionCard
+                              key={category.id}
+                              category={category}
+                              modules={categoryModules}
+                              selectedModules={state.selectedModules}
+                              onModuleToggle={handleModuleToggle}
+                              isRTL={state.isRTL}
+                              availableModules={availableModules}
+                              allModules={allModules}
+                            />
+                          );
+                        })}
+                    </div>
+                  </TabsContent>
+
+                  {/* Advanced Tab */}
+                  <TabsContent value="advanced" className="space-y-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-lg font-semibold mb-2">
+                        {state.isRTL ? 'الوحدات المتقدمة' : 'Advanced Modules'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {state.isRTL 
+                          ? 'وحدات متقدمة للشركات التي تحتاج ميزات إضافية'
+                          : 'Advanced modules for businesses that need additional features'
+                        }
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {moduleCategories
+                        .filter(cat => ['hr', 'advanced'].includes(cat.id))
+                        .map(category => {
+                          const categoryModules = modulesByCategory.get(category.id) || [];
+                          const availableCategoryModules = categoryModules.filter(module => 
+                            availableModules.some(availableModule => availableModule.id === module.id)
+                          );
+                          
+                          if (availableCategoryModules.length === 0) return null;
+                          
+                          return (
+                            <ModuleSelectionCard
+                              key={category.id}
+                              category={category}
+                              modules={categoryModules}
+                              selectedModules={state.selectedModules}
+                              onModuleToggle={handleModuleToggle}
+                              isRTL={state.isRTL}
+                              availableModules={availableModules}
+                              allModules={allModules}
+                            />
+                          );
+                        })}
+                    </div>
+                  </TabsContent>
+                </Tabs>
 
                 {/* Selection Summary */}
                 {state.selectedModules.length > 0 && (
