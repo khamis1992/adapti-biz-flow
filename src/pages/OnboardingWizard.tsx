@@ -641,9 +641,70 @@ export default function OnboardingWizard() {
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Company Information */}
-                  <Card className="p-6 bg-gradient-subtle border-border/50">
-                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                  {/* System Preferences - Now First */}
+                  <Card className={`p-6 bg-gradient-subtle border-border/50 ${state.isRTL ? 'text-right' : 'text-left'}`}>
+                    <h3 className={`text-lg font-semibold mb-6 flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+                      <div className="w-2 h-2 rounded-full bg-accent"></div>
+                      {state.isRTL ? 'تفضيلات النظام' : 'System Preferences'}
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                        <div className={`flex items-center space-x-3 ${state.isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                          <Checkbox
+                            checked={state.formData.needsAccounting}
+                            onCheckedChange={(checked) => updateFormData({ needsAccounting: !!checked })}
+                          />
+                          <div className="flex-1">
+                            <Label className="text-sm font-medium cursor-pointer">
+                              {state.isRTL ? 'نظام المحاسبة' : 'Accounting System'}
+                            </Label>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {state.isRTL ? 'إدارة الحسابات والتقارير المالية' : 'Manage accounts and financial reports'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                        <div className={`flex items-center space-x-3 ${state.isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                          <Checkbox
+                            checked={state.formData.needsPayroll}
+                            onCheckedChange={(checked) => updateFormData({ needsPayroll: !!checked })}
+                          />
+                          <div className="flex-1">
+                            <Label className="text-sm font-medium cursor-pointer">
+                              {state.isRTL ? 'نظام الرواتب' : 'Payroll System'}
+                            </Label>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {state.isRTL ? 'إدارة رواتب الموظفين والمزايا' : 'Manage employee salaries and benefits'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="defaultUsers" className="text-sm font-medium">
+                          {state.isRTL ? 'عدد المستخدمين الافتراضي' : 'Default number of users'}
+                        </Label>
+                        <Input
+                          id="defaultUsers"
+                          type="number"
+                          value={state.formData.defaultUsers}
+                          onChange={(e) => updateFormData({ defaultUsers: parseInt(e.target.value) || 5 })}
+                          min="1"
+                          max="100"
+                          className="h-12"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {state.isRTL ? 'يمكنك تعديل هذا العدد لاحقاً' : 'You can modify this later'}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Company Information - Now Second */}
+                  <Card className={`p-6 bg-gradient-subtle border-border/50 ${state.isRTL ? 'text-right' : 'text-left'}`}>
+                    <h3 className={`text-lg font-semibold mb-6 flex items-center gap-2 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
                       <div className="w-2 h-2 rounded-full bg-primary"></div>
                       {state.isRTL ? 'معلومات الشركة' : 'Company Information'}
                     </h3>
@@ -722,66 +783,6 @@ export default function OnboardingWizard() {
                     </div>
                   </Card>
 
-                  {/* System Preferences */}
-                  <Card className="p-6 bg-gradient-subtle border-border/50">
-                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-accent"></div>
-                      {state.isRTL ? 'تفضيلات النظام' : 'System Preferences'}
-                    </h3>
-                    <div className="space-y-6">
-                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
-                        <div className="flex items-center space-x-3">
-                          <Checkbox
-                            checked={state.formData.needsAccounting}
-                            onCheckedChange={(checked) => updateFormData({ needsAccounting: !!checked })}
-                          />
-                          <div className="flex-1">
-                            <Label className="text-sm font-medium cursor-pointer">
-                              {state.isRTL ? 'نظام المحاسبة' : 'Accounting System'}
-                            </Label>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {state.isRTL ? 'إدارة الحسابات والتقارير المالية' : 'Manage accounts and financial reports'}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-4 rounded-lg border border-border/50 bg-background/50">
-                        <div className="flex items-center space-x-3">
-                          <Checkbox
-                            checked={state.formData.needsPayroll}
-                            onCheckedChange={(checked) => updateFormData({ needsPayroll: !!checked })}
-                          />
-                          <div className="flex-1">
-                            <Label className="text-sm font-medium cursor-pointer">
-                              {state.isRTL ? 'نظام الرواتب' : 'Payroll System'}
-                            </Label>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {state.isRTL ? 'إدارة رواتب الموظفين والمزايا' : 'Manage employee salaries and benefits'}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="defaultUsers" className="text-sm font-medium">
-                          {state.isRTL ? 'عدد المستخدمين الافتراضي' : 'Default number of users'}
-                        </Label>
-                        <Input
-                          id="defaultUsers"
-                          type="number"
-                          value={state.formData.defaultUsers}
-                          onChange={(e) => updateFormData({ defaultUsers: parseInt(e.target.value) || 5 })}
-                          min="1"
-                          max="100"
-                          className="h-12"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          {state.isRTL ? 'يمكنك تعديل هذا العدد لاحقاً' : 'You can modify this later'}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
                 </div>
               </div>
             )}
