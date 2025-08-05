@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import { 
@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 export default function Auth() {
-  const { user, signIn, signUp, loading: authLoading } = useAuth();
+  const { user, signIn, loading: authLoading } = useAuth();
   const { tenant, loading: tenantLoading } = useTenant();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,26 +47,6 @@ export default function Auth() {
     setIsLoading(false);
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const fullName = formData.get('fullName') as string;
-    
-    const { error } = await signUp(email, password, fullName);
-    
-    if (!error) {
-      // Switch to sign in tab after successful registration
-      const signInTab = document.querySelector('[value="signin"]') as HTMLElement;
-      signInTab?.click();
-    }
-    
-    setIsLoading(false);
-  };
-
   if (authLoading || tenantLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -83,7 +63,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4" dir="rtl">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <motion.div
         className="w-full max-w-md space-y-8"
         initial={{ opacity: 0, y: 20 }}
@@ -140,126 +120,55 @@ export default function Auth() {
         >
           <Card className="border shadow-sm">
             <CardHeader className="text-center pb-6">
-              <CardTitle className="text-xl">ابدأ رحلتك الآن</CardTitle>
+              <CardTitle className="text-xl">تسجيل الدخول</CardTitle>
               <CardDescription>
-                سجل دخولك أو أنشئ حساب جديد للوصول إلى جميع المميزات
+                سجل دخولك للوصول إلى جميع المميزات
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="signin" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-8 bg-muted">
-                  <TabsTrigger value="signin" className="text-sm">تسجيل الدخول</TabsTrigger>
-                  <TabsTrigger value="signup" className="text-sm">إنشاء حساب</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="signin" className="space-y-6 mt-8">
-                  <form onSubmit={handleSignIn} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-email" className="text-sm font-medium text-foreground">
-                        البريد الإلكتروني
-                      </Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signin-email"
-                          name="email"
-                          type="email"
-                          placeholder="example@domain.com"
-                          className="pl-10 h-12 text-left border-border"
-                          required
-                          dir="ltr"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-password" className="text-sm font-medium text-foreground">
-                        كلمة المرور
-                      </Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signin-password"
-                          name="password"
-                          type="password"
-                          placeholder="••••••••"
-                          className="pl-10 h-12 text-left border-border"
-                          required
-                          dir="ltr"
-                        />
-                      </div>
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-success hover:bg-success/90 text-white font-medium h-12 text-base"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
-                    </Button>
-                  </form>
-                </TabsContent>
-                
-                <TabsContent value="signup" className="space-y-6 mt-8">
-                  <form onSubmit={handleSignUp} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name" className="text-sm font-medium text-foreground">
-                        الاسم الكامل
-                      </Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-name"
-                          name="fullName"
-                          type="text"
-                          placeholder="اسمك الكامل"
-                          className="pl-10 h-12 border-border"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-sm font-medium text-foreground">
-                        البريد الإلكتروني
-                      </Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-email"
-                          name="email"
-                          type="email"
-                          placeholder="example@domain.com"
-                          className="pl-10 h-12 text-left border-border"
-                          required
-                          dir="ltr"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password" className="text-sm font-medium text-foreground">
-                        كلمة المرور
-                      </Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-password"
-                          name="password"
-                          type="password"
-                          placeholder="كلمة مرور قوية"
-                          className="pl-10 h-12 text-left border-border"
-                          required
-                          dir="ltr"
-                        />
-                      </div>
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-success hover:bg-success/90 text-white font-medium h-12 text-base"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
+              <form onSubmit={handleSignIn} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="signin-email" className="text-sm font-medium text-foreground">
+                    البريد الإلكتروني
+                  </Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signin-email"
+                      name="email"
+                      type="email"
+                      placeholder="example@domain.com"
+                      className="pl-10 h-12 text-left border-border"
+                      required
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signin-password" className="text-sm font-medium text-foreground">
+                    كلمة المرور
+                  </Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signin-password"
+                      name="password"
+                      type="password"
+                      placeholder="••••••••"
+                      className="pl-10 h-12 text-left border-border"
+                      required
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-success hover:bg-success/90 text-white font-medium h-12 text-base"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </motion.div>
