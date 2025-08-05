@@ -44,8 +44,8 @@ export default function OnboardingProgress({ currentStep, totalSteps, isRTL }: O
         {/* Step Indicators */}
         <div className={`flex ${isRTL ? 'flex-row-reverse' : ''} justify-between mt-4`}>
           {Array.from({ length: totalSteps }, (_, i) => {
-            const stepNumber = isRTL ? totalSteps - i : i + 1;
-            const isCompleted = isRTL ? (totalSteps - i) <= currentStep : (i + 1) <= currentStep;
+            const stepNumber = i + 1;
+            const isCompleted = stepNumber <= currentStep;
             return (
               <div
                 key={i}
