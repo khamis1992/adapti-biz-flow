@@ -9,7 +9,8 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import Index from "./pages/Index";
 import OnboardingWizard from "./pages/OnboardingWizard";
-import Auth from "./pages/Auth";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Accounting from "./pages/Accounting";
@@ -78,7 +79,8 @@ const App = () => (
               <Routes>
                 {/* Public routes - no authentication required */}
                 <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
+                <Route path="/signin" element={<SignIn />} />
+                <Route path="/signup" element={<SignUp />} />
                 <Route path="/mock-auth" element={<MockAuth />} />
                 
                 {/* Onboarding route - accessible without authentication */}

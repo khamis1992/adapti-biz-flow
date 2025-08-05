@@ -32,9 +32,9 @@ const Index = () => {
     }
   }
 
-  const handleStartFree = () => navigate('/auth?tab=signup');
-  const handleLogin = () => navigate('/auth');
-  const handleRequestDemo = () => navigate('/auth');
+  const handleStartFree = () => navigate('/signup');
+  const handleLogin = () => navigate('/signin');
+  const handleRequestDemo = () => navigate('/signin');
 
   return (
     <div className="min-h-screen" dir="rtl">

@@ -58,7 +58,7 @@ const Leaves = () => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        navigate("/auth");
+        navigate("/signin");
         return;
       }
       setUser(session.user);
@@ -69,7 +69,7 @@ const Leaves = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
-        navigate("/auth");
+        navigate("/signin");
       } else {
         setUser(session.user);
       }

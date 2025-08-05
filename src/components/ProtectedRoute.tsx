@@ -16,7 +16,7 @@ export function ProtectedRoute({ children, requireTenant = true }: ProtectedRout
 
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate('/auth');
+      navigate('/signin');
       return;
     }
 

@@ -169,7 +169,7 @@ export default function OnboardingWizard() {
     // If user is not authenticated, redirect to auth page first
     if (!user) {
       alert('يرجى تسجيل الدخول أولاً لإكمال الإعداد');
-      window.location.href = '/auth';
+      window.location.href = '/signin';
       return;
     }
     

@@ -77,7 +77,7 @@ const Settings = () => {
           role: 'admin'
         });
       } else {
-        navigate('/auth');
+        navigate('/signin');
       }
     };
     checkAuth();
