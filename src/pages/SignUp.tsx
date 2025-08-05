@@ -27,7 +27,7 @@ export default function SignUp() {
     if (tenant) {
       return <Navigate to="/dashboard" replace />;
     } else {
-      return <Navigate to="/settings" replace />;
+      return <Navigate to="/onboarding" replace />;
     }
   }
 
