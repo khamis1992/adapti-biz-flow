@@ -580,7 +580,7 @@ export default function OnboardingWizard() {
                         
                         return (
                           <div key={category.id} className="space-y-2">
-                            <div className={`flex items-center justify-between ${state.isRTL ? '' : 'flex-row-reverse'}`}>
+                            <div className={`flex items-center gap-2 ${state.isRTL ? '' : 'flex-row-reverse'}`}>
                               <category.icon className="w-4 h-4 text-primary" />
                               <span className="text-sm font-medium">
                                 {state.isRTL ? category.nameAr : category.nameEn}
