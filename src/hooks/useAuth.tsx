@@ -105,6 +105,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      console.log('Starting onboarding with data:', formData);
+      console.log('Current user:', { id: user.id, email: user.email });
+      
       const { data, error } = await supabase.rpc('complete_onboarding' as any, {
         p_user_id: user.id,
         p_user_email: user.email || '',
@@ -116,7 +119,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         p_selected_modules: formData.selectedModules || []
       });
 
+      console.log('Onboarding RPC response:', { data, error });
+
       if (error) {
+        console.error('Onboarding RPC error:', error);
         toast({
           title: "خطأ في إعداد النظام",
           description: error.message,
@@ -128,12 +134,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Check if the function returned an error in the data
       const result = data as any;
       if (result && !result.success) {
+        console.error('Onboarding failed:', result);
         toast({
           title: "خطأ في إعداد النظام",
           description: result.message || result.error,
           variant: "destructive",
         });
         return { error: result.error };
+      }
+
+      console.log('Onboarding completed successfully:', result);
+      
+      // Force refresh auth state to get updated user data
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.warn('Session refresh warning:', refreshError);
       }
 
       toast({
@@ -143,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return { error: null, tenantId: result?.tenant_id };
     } catch (err: any) {
+      console.error('Error completing onboarding:', err);
       toast({
         title: "خطأ في إعداد النظام",
         description: err.message,

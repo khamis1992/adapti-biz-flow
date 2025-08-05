@@ -50,10 +50,37 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       
-      // Fetch tenant data - use maybeSingle to avoid errors when no tenant exists
+      // First get the user's tenant_id from the users table
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('tenant_id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (userError) {
+        console.error('Error fetching user data:', userError);
+        setTenant(null);
+        setModules([]);
+        setDashboardData(null);
+        setLoading(false);
+        return;
+      }
+
+      // If user has no tenant_id, they haven't completed onboarding
+      if (!userData?.tenant_id) {
+        console.log('User has no tenant_id - onboarding not completed');
+        setTenant(null);
+        setModules([]);
+        setDashboardData(null);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch tenant data using the user's tenant_id
       const { data: tenantData, error: tenantError } = await supabase
         .from('tenants')
         .select('*')
+        .eq('id', userData.tenant_id)
         .maybeSingle();
 
       if (tenantError) {

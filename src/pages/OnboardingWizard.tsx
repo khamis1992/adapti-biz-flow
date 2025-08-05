@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useTenant } from '@/hooks/useTenant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +24,7 @@ import { toast } from 'sonner';
 
 export default function OnboardingWizard() {
   const { user, loading, completeOnboarding } = useAuth();
+  const { refreshTenant } = useTenant();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [state, setState] = useState<OnboardingState>({
     currentStep: 1,
@@ -191,10 +193,16 @@ export default function OnboardingWizard() {
       const { error, tenantId } = await completeOnboarding(onboardingData);
       
       if (!error && tenantId) {
-        // Give some time for tenant data to be created and then redirect to system setup
+        console.log('Onboarding completed, refreshing tenant data...');
+        
+        // Force refresh tenant data to ensure the new tenant is loaded
+        await refreshTenant();
+        
+        // Wait a bit more to ensure all data is properly loaded
         setTimeout(() => {
-          window.location.href = '/settings';
-        }, 1000);
+          console.log('Redirecting to dashboard...');
+          window.location.href = '/dashboard';
+        }, 1500);
       }
     } catch (error) {
       console.error('Error creating system:', error);
