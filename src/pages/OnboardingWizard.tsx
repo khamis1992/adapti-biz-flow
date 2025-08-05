@@ -329,7 +329,7 @@ export default function OnboardingWizard() {
                   </div>
                   
                   {/* Enhanced Statistics Dashboard */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 max-w-5xl mx-auto">
                     <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-4 border border-primary/20">
                       <div className="text-2xl font-bold text-primary mb-1">
                         {state.selectedModules.length}
@@ -348,6 +348,15 @@ export default function OnboardingWizard() {
                       </div>
                     </div>
                     
+                    <div className="bg-gradient-to-br from-warning/10 to-warning/5 rounded-xl p-4 border border-warning/20">
+                      <div className="text-2xl font-bold text-warning mb-1">
+                        {allModules.length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {state.isRTL ? 'إجمالي الوحدات' : 'Total Modules'}
+                      </div>
+                    </div>
+                    
                     <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl p-4 border border-accent/20">
                       <div className="text-2xl font-bold text-accent mb-1">
                         {moduleCategories.length}
@@ -359,12 +368,33 @@ export default function OnboardingWizard() {
                   </div>
                   
                   {/* Quick Actions */}
-                  <div className={`flex items-center justify-center gap-3 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-center justify-center gap-3 flex-wrap ${state.isRTL ? 'flex-row-reverse' : ''}`}>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        // Select all available modules at once
+                        // Select ALL modules (109 total)
+                        const allModuleIds = allModules.map(m => m.id);
+                        setState(prev => ({
+                          ...prev,
+                          selectedModules: allModuleIds
+                        }));
+                        toast.success(
+                          state.isRTL 
+                            ? `تم تحديد جميع الوحدات (${allModules.length})`
+                            : `Selected all modules (${allModules.length})`
+                        );
+                      }}
+                      className="text-xs"
+                    >
+                      {state.isRTL ? `تحديد الكل (${allModules.length})` : `Select All (${allModules.length})`}
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Select only available modules for business type
                         const allAvailableModuleIds = availableModules.map(m => m.id);
                         const allRequiredModules = allModules.filter(m => m.required).map(m => m.id);
                         const allSelectedModules = [...new Set([...allRequiredModules, ...allAvailableModuleIds])];
@@ -373,58 +403,72 @@ export default function OnboardingWizard() {
                           ...prev,
                           selectedModules: allSelectedModules
                         }));
+                        toast.success(
+                          state.isRTL 
+                            ? `تم تحديد الوحدات المتاحة (${allSelectedModules.length})`
+                            : `Selected available modules (${allSelectedModules.length})`
+                        );
                       }}
                       className="text-xs"
                     >
-                      {state.isRTL ? 'تحديد الكل' : 'Select All'}
+                      {state.isRTL ? `تحديد المتاحة (${availableModules.length})` : `Select Available (${availableModules.length})`}
                     </Button>
 
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        // Select all core modules
-                        const coreModules = availableModules.filter(m => 
-                          m.category.id === 'core' || m.required
+                        // Select only essentials (core + financial + required)
+                        const essentialModules = allModules.filter(m => 
+                          m.required || 
+                          m.category.id === 'core' || 
+                          m.category.id === 'financial'
                         ).map(m => m.id);
-                        state.selectedModules.forEach(id => {
-                          if (!coreModules.includes(id)) {
-                            handleModuleToggle(id);
-                          }
-                        });
-                        coreModules.forEach(id => {
-                          if (!state.selectedModules.includes(id)) {
-                            handleModuleToggle(id);
-                          }
-                        });
+                        
+                        setState(prev => ({
+                          ...prev,
+                          selectedModules: essentialModules
+                        }));
+                        toast.success(
+                          state.isRTL 
+                            ? `تم تحديد الوحدات الأساسية (${essentialModules.length})`
+                            : `Selected essential modules (${essentialModules.length})`
+                        );
                       }}
                       className="text-xs"
                     >
-                      {state.isRTL ? 'اختر الأساسيات فقط' : 'Select Essentials Only'}
+                      {state.isRTL ? 'الأساسية فقط' : 'Essentials Only'}
                     </Button>
                     
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        // Clear all selections
-                        state.selectedModules.forEach(id => {
-                          const module = availableModules.find(m => m.id === id);
-                          if (!module?.required) {
-                            handleModuleToggle(id);
-                          }
-                        });
+                        // Clear all non-required selections
+                        const requiredModules = allModules.filter(m => m.required).map(m => m.id);
+                        setState(prev => ({
+                          ...prev,
+                          selectedModules: requiredModules
+                        }));
+                        toast.success(
+                          state.isRTL 
+                            ? 'تم إلغاء جميع الاختيارات ما عدا المطلوبة'
+                            : 'Cleared all selections except required'
+                        );
                       }}
                       className="text-xs"
                     >
-                      {state.isRTL ? 'إلغاء جميع الاختيارات' : 'Clear All'}
+                      {state.isRTL ? 'إلغاء الاختيارات' : 'Clear All'}
                     </Button>
                   </div>
                 </div>
 
                 {/* Tabs Navigation */}
                 <Tabs defaultValue="recommended" className="w-full">
-                  <TabsList className={`grid w-full grid-cols-4 ${state.isRTL ? 'rtl [&>*]:flex-row-reverse' : ''}`}>
+                  <TabsList className={`grid w-full grid-cols-5 ${state.isRTL ? 'rtl [&>*]:flex-row-reverse' : ''}`}>
+                    <TabsTrigger value="all" className="text-sm">
+                      {state.isRTL ? 'جميع الوحدات' : 'All Modules'}
+                    </TabsTrigger>
                     <TabsTrigger value="advanced" className="text-sm">
                       {state.isRTL ? 'متقدمة' : 'Advanced'}
                     </TabsTrigger>
@@ -532,6 +576,44 @@ export default function OnboardingWizard() {
                               onModuleToggle={handleModuleToggle}
                               isRTL={state.isRTL}
                               availableModules={availableModules}
+                              allModules={allModules}
+                            />
+                          );
+                        })}
+                    </div>
+                  </TabsContent>
+
+                  {/* All Modules Tab */}
+                  <TabsContent value="all" className="space-y-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-lg font-semibold mb-2">
+                        {state.isRTL ? 'جميع الوحدات المتاحة' : 'All Available Modules'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {state.isRTL 
+                          ? `عرض جميع الوحدات (${allModules.length}) مُنظمة حسب الفئات`
+                          : `View all modules (${allModules.length}) organized by categories`
+                        }
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {moduleCategories
+                        .sort((a, b) => a.order - b.order)
+                        .map(category => {
+                          const categoryModules = modulesByCategory.get(category.id) || [];
+                          
+                          if (categoryModules.length === 0) return null;
+                          
+                          return (
+                            <ModuleSelectionCard
+                              key={category.id}
+                              category={category}
+                              modules={categoryModules}
+                              selectedModules={state.selectedModules}
+                              onModuleToggle={handleModuleToggle}
+                              isRTL={state.isRTL}
+                              availableModules={allModules} // Show all modules, not just available
                               allModules={allModules}
                             />
                           );
