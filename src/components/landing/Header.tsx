@@ -81,13 +81,6 @@ const Header = ({ onStartFree, onLogin }: HeaderProps) => {
               <ArrowRight className="w-4 h-4 ml-2 group-hover:-translate-x-1 transition-transform" />
             </Button>
             
-            <Button
-              onClick={onStartFree}
-              className="bg-success hover:bg-success/90 text-white group"
-            >
-              ابدأ مجاناً
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:-translate-x-1 transition-transform" />
-            </Button>
           </motion.div>
 
           {/* Mobile Menu Button */}
