@@ -364,6 +364,22 @@ export default function OnboardingWizard() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
+                        // Select all available modules
+                        availableModules.forEach(module => {
+                          if (!state.selectedModules.includes(module.id)) {
+                            handleModuleToggle(module.id);
+                          }
+                        });
+                      }}
+                      className="text-xs"
+                    >
+                      {state.isRTL ? 'تحديد الكل' : 'Select All'}
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
                         // Select all core modules
                         const coreModules = availableModules.filter(m => 
                           m.category.id === 'core' || m.required
