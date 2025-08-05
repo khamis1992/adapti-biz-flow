@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from '@/hooks/useAuth';
 import { TenantProvider } from '@/hooks/useTenant';
+import { ModuleProvider } from '@/contexts/ModuleContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { OnboardingGuard } from '@/components/OnboardingGuard';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -73,7 +74,8 @@ const App = () => (
     <ErrorBoundary>
       <AuthProvider>
         <TenantProvider>
-          <TooltipProvider>
+          <ModuleProvider>
+            <TooltipProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -514,6 +516,7 @@ const App = () => (
               </OnboardingGuard>
             </BrowserRouter>
           </TooltipProvider>
+          </ModuleProvider>
         </TenantProvider>
       </AuthProvider>
     </ErrorBoundary>

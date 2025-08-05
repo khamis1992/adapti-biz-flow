@@ -33,6 +33,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
+import { useModules } from '@/contexts/ModuleContext';
+import { useModuleIntegration } from '@/hooks/useModuleIntegration';
 import { useNavigate } from 'react-router-dom';
 import { PaymentNotifications } from '@/components/invoices/PaymentNotifications';
 import { QuickActions } from '@/components/dashboard/QuickActions';
@@ -42,9 +44,12 @@ import { SystemAlerts } from '@/components/dashboard/SystemAlerts';
 export default function Dashboard() {
   const { signOut } = useAuth();
   const { tenant, modules, loading, dashboardData } = useTenant();
+  const { state: moduleState, isModuleEnabled } = useModules();
+  const moduleIntegration = useModuleIntegration();
   const navigate = useNavigate();
 
-  const enabledModules = modules.filter(m => m.is_enabled);
+  // Filter enabled modules from tenant data
+  const enabledModules = modules.filter(m => m.is_enabled && isModuleEnabled(m.module_id));
   
   const getModuleIcon = (moduleId: string) => {
     switch (moduleId) {
