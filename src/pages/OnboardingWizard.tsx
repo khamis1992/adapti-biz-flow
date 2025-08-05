@@ -405,7 +405,7 @@ export default function OnboardingWizard() {
 
                 {/* Tabs Navigation */}
                 <Tabs defaultValue="recommended" className="w-full">
-                  <TabsList className={`grid w-full grid-cols-4 ${state.isRTL ? 'rtl' : ''}`}>
+                  <TabsList className={`grid w-full grid-cols-4 ${state.isRTL ? 'rtl [&>*]:flex-row-reverse' : ''}`}>
                     <TabsTrigger value="recommended" className="text-sm">
                       {state.isRTL ? 'المُوصى بها' : 'Recommended'}
                     </TabsTrigger>
