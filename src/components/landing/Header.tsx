@@ -43,7 +43,7 @@ const Header = ({
         }} transition={{
           duration: 0.6
         }}>
-            <div className="w-10 h-10 flex items-center justify-center">
+            <div className="w-16 h-16 flex items-center justify-center">
               <img src={logoRukn} alt="رُكن - شعار الشركة" className="w-full h-full object-contain" />
             </div>
             
