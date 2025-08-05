@@ -364,12 +364,11 @@ export default function OnboardingWizard() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        // Select all available modules
-                        availableModules.forEach(module => {
-                          if (!state.selectedModules.includes(module.id)) {
-                            handleModuleToggle(module.id);
-                          }
-                        });
+                        // Select all available modules at once
+                        setState(prev => ({
+                          ...prev,
+                          selectedModules: [...new Set([...prev.selectedModules, ...availableModules.map(m => m.id)])]
+                        }));
                       }}
                       className="text-xs"
                     >
