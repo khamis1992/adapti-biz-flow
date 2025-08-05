@@ -78,7 +78,7 @@ export default function Auth() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="w-20 h-20 flex items-center justify-center">
+            <div className="w-32 h-32 flex items-center justify-center">
               <img 
                 src={logoRukn} 
                 alt="ركن - شعار الشركة" 
