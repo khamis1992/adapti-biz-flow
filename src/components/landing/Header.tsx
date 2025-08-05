@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
-  Building2,
   Menu,
   X,
   ArrowRight,
   Phone,
   Mail
 } from 'lucide-react';
+import logoRukn from '@/assets/logo_rukn_1-removebg-preview.png';
 
 interface HeaderProps {
   onStartFree: () => void;
@@ -40,10 +40,10 @@ const Header = ({ onStartFree, onLogin }: HeaderProps) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img src={logoRukn} alt="رُكن - شعار الشركة" className="w-full h-full object-contain" />
             </div>
-            <h1 className="text-2xl font-bold text-primary">AdaptiBiz</h1>
+            <h1 className="text-2xl font-bold text-primary">رُكن</h1>
           </motion.div>
 
           {/* Desktop Navigation */}
