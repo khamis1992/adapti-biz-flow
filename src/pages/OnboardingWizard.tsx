@@ -365,9 +365,13 @@ export default function OnboardingWizard() {
                       size="sm"
                       onClick={() => {
                         // Select all available modules at once
+                        const allAvailableModuleIds = availableModules.map(m => m.id);
+                        const allRequiredModules = allModules.filter(m => m.required).map(m => m.id);
+                        const allSelectedModules = [...new Set([...allRequiredModules, ...allAvailableModuleIds])];
+                        
                         setState(prev => ({
                           ...prev,
-                          selectedModules: [...new Set([...prev.selectedModules, ...availableModules.map(m => m.id)])]
+                          selectedModules: allSelectedModules
                         }));
                       }}
                       className="text-xs"
