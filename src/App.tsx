@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from '@/hooks/useAuth';
 import { TenantProvider } from '@/hooks/useTenant';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { OnboardingGuard } from '@/components/OnboardingGuard';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import Index from "./pages/Index";
 import OnboardingWizard from "./pages/OnboardingWizard";
@@ -76,7 +77,8 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <Routes>
+              <OnboardingGuard>
+                <Routes>
                 {/* Public routes - no authentication required */}
                 <Route path="/" element={<Index />} />
                 <Route path="/signin" element={<SignIn />} />
@@ -509,6 +511,7 @@ const App = () => (
                 {/* Catch-all route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </OnboardingGuard>
             </BrowserRouter>
           </TooltipProvider>
         </TenantProvider>

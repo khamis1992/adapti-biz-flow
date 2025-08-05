@@ -24,6 +24,7 @@ interface TenantContextType {
   tenant: Tenant | null;
   modules: TenantModule[];
   loading: boolean;
+  error: string | null;
   dashboardData: any;
   refreshTenant: () => Promise<void>;
   refreshDashboard: () => Promise<void>;
@@ -37,18 +38,23 @@ export function TenantProvider({ children }: { children: ReactNode }) {
   const [modules, setModules] = useState<TenantModule[]>([]);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchTenant = async () => {
     if (!user || !session) {
+      console.log('useTenant: No user or session, clearing tenant data');
       setTenant(null);
       setModules([]);
       setDashboardData(null);
+      setError(null);
       setLoading(false);
       return;
     }
 
     try {
       setLoading(true);
+      setError(null);
+      console.log('useTenant: Fetching tenant data for user:', user.id);
       
       // First get the user's tenant_id from the users table
       const { data: userData, error: userError } = await supabase
@@ -58,23 +64,25 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
 
       if (userError) {
-        console.error('Error fetching user data:', userError);
+        console.error('useTenant: Error fetching user data:', userError);
+        setError('Failed to fetch user data');
         setTenant(null);
         setModules([]);
         setDashboardData(null);
-        setLoading(false);
         return;
       }
 
       // If user has no tenant_id, they haven't completed onboarding
       if (!userData?.tenant_id) {
-        console.log('User has no tenant_id - onboarding not completed');
+        console.log('useTenant: User has no tenant_id - onboarding not completed');
         setTenant(null);
         setModules([]);
         setDashboardData(null);
-        setLoading(false);
+        setError(null);
         return;
       }
+
+      console.log('useTenant: User has tenant_id:', userData.tenant_id);
 
       // Fetch tenant data using the user's tenant_id
       const { data: tenantData, error: tenantError } = await supabase
@@ -84,35 +92,42 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
 
       if (tenantError) {
-        console.error('Error fetching tenant:', tenantError);
+        console.error('useTenant: Error fetching tenant:', tenantError);
+        setError('Failed to fetch tenant data');
         setTenant(null);
         setModules([]);
         setDashboardData(null);
-        setLoading(false);
         return;
       }
 
-      setTenant(tenantData);
-
-      if (tenantData) {
-        // Fetch tenant modules - cast to any to handle type mismatch
-        const { data: modulesData, error: modulesError } = await supabase
-          .from('tenant_modules' as any)
-          .select('*')
-          .eq('tenant_id', tenantData.id);
-
-        if (modulesError) {
-          console.error('Error fetching modules:', modulesError);
-          setModules([]);
-        } else {
-          setModules((modulesData as unknown as TenantModule[]) || []);
-        }
-      } else {
+      if (!tenantData) {
+        console.warn('useTenant: No tenant found for id:', userData.tenant_id);
+        setTenant(null);
         setModules([]);
         setDashboardData(null);
+        setError(null);
+        return;
       }
-    } catch (error) {
-      console.error('Error in fetchTenant:', error);
+
+      console.log('useTenant: Tenant loaded successfully:', tenantData.name);
+      setTenant(tenantData);
+
+      // Fetch tenant modules - cast to any to handle type mismatch
+      const { data: modulesData, error: modulesError } = await supabase
+        .from('tenant_modules' as any)
+        .select('*')
+        .eq('tenant_id', tenantData.id);
+
+      if (modulesError) {
+        console.error('useTenant: Error fetching modules:', modulesError);
+        setModules([]);
+      } else {
+        console.log('useTenant: Modules loaded:', modulesData?.length || 0);
+        setModules((modulesData as unknown as TenantModule[]) || []);
+      }
+    } catch (error: any) {
+      console.error('useTenant: Unexpected error in fetchTenant:', error);
+      setError(error.message || 'Unexpected error occurred');
       setTenant(null);
       setModules([]);
       setDashboardData(null);
@@ -161,6 +176,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     tenant,
     modules,
     loading,
+    error,
     dashboardData,
     refreshTenant,
     refreshDashboard,

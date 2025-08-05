@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/hooks/useTenant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +25,9 @@ import { toast } from 'sonner';
 export default function OnboardingWizard() {
   const { user, loading, completeOnboarding } = useAuth();
   const { refreshTenant } = useTenant();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [state, setState] = useState<OnboardingState>({
     currentStep: 1,
     selectedBusinessType: '',
@@ -166,18 +168,20 @@ export default function OnboardingWizard() {
 
   const handleCreateSystem = async () => {
     if (!state.formData.companyName.trim()) {
-      alert('يرجى إدخال اسم الشركة');
+      toast.error(state.isRTL ? 'يرجى إدخال اسم الشركة' : 'Please enter company name');
       return;
     }
     
     // If user is not authenticated, redirect to auth page first
     if (!user) {
-      alert('يرجى تسجيل الدخول أولاً لإكمال الإعداد');
-      window.location.href = '/signin';
+      toast.error(state.isRTL ? 'يرجى تسجيل الدخول أولاً لإكمال الإعداد' : 'Please sign in first to complete setup');
+      navigate('/signin');
       return;
     }
     
     setIsSubmitting(true);
+    console.log('Starting onboarding process...');
+    
     try {
       const onboardingData = {
         selectedBusinessType: state.selectedBusinessType,
@@ -190,22 +194,38 @@ export default function OnboardingWizard() {
         defaultUsers: state.formData.defaultUsers
       };
 
+      console.log('Calling completeOnboarding with data:', onboardingData);
       const { error, tenantId } = await completeOnboarding(onboardingData);
       
-      if (!error && tenantId) {
-        console.log('Onboarding completed, refreshing tenant data...');
+      if (error) {
+        console.error('Onboarding failed with error:', error);
+        toast.error(state.isRTL ? 'حدث خطأ في إعداد النظام' : 'Error setting up system');
+        return;
+      }
+
+      if (tenantId) {
+        console.log('Onboarding completed successfully, tenantId:', tenantId);
         
-        // Force refresh tenant data to ensure the new tenant is loaded
+        toast.success(state.isRTL ? 'تم إنشاء النظام بنجاح!' : 'System created successfully!');
+        
+        setRedirecting(true);
+        
+        // Refresh tenant data to ensure the new tenant is loaded
+        console.log('Refreshing tenant data...');
         await refreshTenant();
         
-        // Wait a bit more to ensure all data is properly loaded
+        // Use React Router navigation instead of window.location
+        console.log('Navigating to dashboard...');
         setTimeout(() => {
-          console.log('Redirecting to dashboard...');
-          window.location.href = '/dashboard';
-        }, 1500);
+          navigate('/dashboard', { replace: true });
+        }, 1000);
+      } else {
+        console.error('No tenantId returned from onboarding');
+        toast.error(state.isRTL ? 'لم يتم إرجاع معرف المؤسسة' : 'No tenant ID returned');
       }
     } catch (error) {
-      console.error('Error creating system:', error);
+      console.error('Unexpected error in handleCreateSystem:', error);
+      toast.error(state.isRTL ? 'حدث خطأ غير متوقع' : 'An unexpected error occurred');
     } finally {
       setIsSubmitting(false);
     }
@@ -931,13 +951,15 @@ export default function OnboardingWizard() {
                 <Button 
                   className="flex items-center gap-2 px-8 py-3 h-auto bg-gradient-success hover:shadow-glow-success transition-all duration-300 text-white font-semibold"
                   onClick={handleCreateSystem}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || redirecting}
                 >
                   <CheckCircle2 className="w-5 h-5" />
                   <span>
-                    {isSubmitting 
-                      ? (state.isRTL ? 'جاري الإعداد...' : 'Setting up...')
-                      : (state.isRTL ? 'إنشاء النظام' : 'Create System')
+                    {redirecting 
+                      ? (state.isRTL ? 'جاري التوجيه...' : 'Redirecting...')
+                      : isSubmitting 
+                        ? (state.isRTL ? 'جاري الإعداد...' : 'Setting up...')
+                        : (state.isRTL ? 'إنشاء النظام' : 'Create System')
                     }
                   </span>
                 </Button>
