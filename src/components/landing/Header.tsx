@@ -74,11 +74,11 @@ const Header = ({ onStartFree, onLogin }: HeaderProps) => {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <Button
-              variant="ghost"
               onClick={onLogin}
-              className="text-muted-foreground hover:text-primary"
+              className="bg-success hover:bg-success/90 text-white group"
             >
               تسجيل الدخول
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:-translate-x-1 transition-transform" />
             </Button>
             
             <Button
