@@ -921,7 +921,20 @@ export default function OnboardingWizard() {
             )}
 
             {/* Navigation Buttons */}
-            <div className={`flex justify-between pt-12 mt-8 border-t border-border/20`}>
+            <div className={`flex justify-between pt-12 mt-8 border-t border-border/20 ${state.isRTL ? 'flex-row-reverse' : ''}`}>
+              <Button 
+                variant="outline" 
+                onClick={prevStep} 
+                disabled={state.currentStep === 1}
+                className="flex items-center gap-2 px-8 py-3 h-auto border-2 hover:border-primary/50 transition-all duration-300"
+              >
+                {!state.isRTL && <ChevronLeft className="w-5 h-5" />}
+                <span className="font-medium">
+                  {state.isRTL ? 'السابق' : 'Previous'}
+                </span>
+                {state.isRTL && <ChevronRight className="w-5 h-5" />}
+              </Button>
+
               {state.currentStep < totalSteps ? (
                 <Button 
                   onClick={nextStep} 
@@ -951,19 +964,6 @@ export default function OnboardingWizard() {
                   </span>
                 </Button>
               )}
-
-              <Button 
-                variant="outline" 
-                onClick={prevStep} 
-                disabled={state.currentStep === 1}
-                className="flex items-center gap-2 px-8 py-3 h-auto border-2 hover:border-primary/50 transition-all duration-300"
-              >
-                {!state.isRTL && <ChevronLeft className="w-5 h-5" />}
-                <span className="font-medium">
-                  {state.isRTL ? 'السابق' : 'Previous'}
-                </span>
-                {state.isRTL && <ChevronRight className="w-5 h-5" />}
-              </Button>
             </div>
             </CardContent>
           </Card>
