@@ -11,45 +11,41 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, requireTenant = true }: ProtectedRouteProps) {
   const { user, loading: authLoading } = useAuth();
-  const { tenant, loading: tenantLoading } = useTenant();
+  const { tenant, loading: tenantLoading, isReady: tenantReady } = useTenant();
   const navigate = useNavigate();
-  const [delayedCheck, setDelayedCheck] = useState(false);
-
-  // Add a small delay to allow for tenant data loading after onboarding
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDelayedCheck(true);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
-    // Don't redirect immediately, wait for delayedCheck to be true
-    if (!delayedCheck) return;
+    // Wait for auth to be ready
+    if (authLoading) return;
 
     // Redirect to signin if not authenticated
-    if (!authLoading && !user) {
+    if (!user) {
       console.log('ProtectedRoute: User not authenticated, redirecting to signin');
       navigate('/signin');
       return;
     }
 
+    // For routes that require tenant, wait for tenant data to be ready
+    if (requireTenant && !tenantReady) {
+      console.log('ProtectedRoute: Waiting for tenant data to be ready...');
+      return;
+    }
+
     // Redirect to onboarding if user has no tenant (and tenant is required)
-    if (!authLoading && user && requireTenant && !tenantLoading && !tenant) {
+    if (requireTenant && tenantReady && !tenant) {
       console.log('ProtectedRoute: User has no tenant, redirecting to onboarding');
       navigate('/onboarding');
       return;
     }
 
     // Log successful access
-    if (!authLoading && user && (!requireTenant || (!tenantLoading && tenant))) {
+    if (user && (!requireTenant || (tenantReady && tenant))) {
       console.log('ProtectedRoute: Access granted', { user: user.email, tenant: tenant?.name });
     }
-  }, [user, tenant, authLoading, tenantLoading, requireTenant, navigate, delayedCheck]);
+  }, [user, tenant, authLoading, tenantReady, requireTenant, navigate]);
 
   // Show loading spinner while checking authentication and tenant
-  if (authLoading || (requireTenant && tenantLoading) || !delayedCheck) {
+  if (authLoading || (requireTenant && (tenantLoading || !tenantReady))) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -57,6 +53,7 @@ export function ProtectedRoute({ children, requireTenant = true }: ProtectedRout
           <p className="text-muted-foreground">
             {authLoading ? 'Checking authentication...' : 
              tenantLoading ? 'Loading tenant data...' : 
+             !tenantReady ? 'Preparing tenant data...' :
              'Initializing...'}
           </p>
         </div>

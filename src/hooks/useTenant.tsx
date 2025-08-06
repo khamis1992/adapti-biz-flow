@@ -26,6 +26,8 @@ interface TenantContextType {
   loading: boolean;
   error: string | null;
   dashboardData: any;
+  isReady: boolean; // New: indicates if initial load is complete
+  retryCount: number; // New: track retry attempts
   refreshTenant: () => Promise<void>;
   refreshDashboard: () => Promise<void>;
 }
@@ -39,8 +41,10 @@ export function TenantProvider({ children }: { children: ReactNode }) {
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
-  const fetchTenant = async () => {
+  const fetchTenant = async (isRetry = false) => {
     // Check for mock tenant first
     const mockTenant = localStorage.getItem('mock_tenant');
     if (mockTenant) {
@@ -51,6 +55,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         setDashboardData(null);
         setError(null);
         setLoading(false);
+        setIsReady(true);
+        setRetryCount(0);
         return;
       } catch (error) {
         console.error('Error parsing mock tenant data:', error);
@@ -65,6 +71,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
       setDashboardData(null);
       setError(null);
       setLoading(false);
+      setIsReady(true); // Set ready even when no user
+      setRetryCount(0);
       return;
     }
 
@@ -86,6 +94,15 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         setTenant(null);
         setModules([]);
         setDashboardData(null);
+        
+        // Retry logic for user data
+        if (!isRetry && retryCount < 2) {
+          console.log('useTenant: Retrying user data fetch...');
+          setRetryCount(prev => prev + 1);
+          setTimeout(() => fetchTenant(true), 1000 * (retryCount + 1));
+          return;
+        }
+        setIsReady(true);
         return;
       }
 
@@ -96,6 +113,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         setModules([]);
         setDashboardData(null);
         setError(null);
+        setIsReady(true);
+        setRetryCount(0);
         return;
       }
 
@@ -114,6 +133,15 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         setTenant(null);
         setModules([]);
         setDashboardData(null);
+        
+        // Retry logic for tenant data
+        if (!isRetry && retryCount < 2) {
+          console.log('useTenant: Retrying tenant data fetch...');
+          setRetryCount(prev => prev + 1);
+          setTimeout(() => fetchTenant(true), 1000 * (retryCount + 1));
+          return;
+        }
+        setIsReady(true);
         return;
       }
 
@@ -123,6 +151,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         setModules([]);
         setDashboardData(null);
         setError(null);
+        setIsReady(true);
+        setRetryCount(0);
         return;
       }
 
@@ -142,12 +172,25 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         console.log('useTenant: Modules loaded:', modulesData?.length || 0);
         setModules((modulesData as unknown as TenantModule[]) || []);
       }
+      
+      // Mark as ready and reset retry count on success
+      setIsReady(true);
+      setRetryCount(0);
     } catch (error: any) {
       console.error('useTenant: Unexpected error in fetchTenant:', error);
       setError(error.message || 'Unexpected error occurred');
       setTenant(null);
       setModules([]);
       setDashboardData(null);
+      
+      // Retry logic for unexpected errors
+      if (!isRetry && retryCount < 2) {
+        console.log('useTenant: Retrying after unexpected error...');
+        setRetryCount(prev => prev + 1);
+        setTimeout(() => fetchTenant(true), 1000 * (retryCount + 1));
+        return;
+      }
+      setIsReady(true);
     } finally {
       setLoading(false);
     }
@@ -172,6 +215,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    setIsReady(false);
+    setRetryCount(0);
     fetchTenant();
   }, [user, session]);
 
@@ -195,6 +240,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     loading,
     error,
     dashboardData,
+    isReady,
+    retryCount,
     refreshTenant,
     refreshDashboard,
   };
