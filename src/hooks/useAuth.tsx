@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +22,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check for mock authentication first
+    const mockUser = localStorage.getItem('mock_user');
+    const mockSession = localStorage.getItem('mock_session');
+    
+    if (mockUser && mockSession) {
+      try {
+        const parsedUser = JSON.parse(mockUser);
+        const parsedSession = JSON.parse(mockSession);
+        setUser(parsedUser as User);
+        setSession(parsedSession as Session);
+        setLoading(false);
+        return;
+      } catch (error) {
+        console.error('Error parsing mock auth data:', error);
+        localStorage.removeItem('mock_user');
+        localStorage.removeItem('mock_session');
+      }
+    }
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {

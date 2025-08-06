@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -41,6 +41,23 @@ export function TenantProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchTenant = async () => {
+    // Check for mock tenant first
+    const mockTenant = localStorage.getItem('mock_tenant');
+    if (mockTenant) {
+      try {
+        const parsedTenant = JSON.parse(mockTenant);
+        setTenant(parsedTenant);
+        setModules([]); // Mock modules can be added here if needed
+        setDashboardData(null);
+        setError(null);
+        setLoading(false);
+        return;
+      } catch (error) {
+        console.error('Error parsing mock tenant data:', error);
+        localStorage.removeItem('mock_tenant');
+      }
+    }
+
     if (!user || !session) {
       console.log('useTenant: No user or session, clearing tenant data');
       setTenant(null);

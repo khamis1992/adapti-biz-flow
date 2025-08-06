@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Car, 
   Users, 
@@ -27,8 +27,6 @@ import {
   Clock,
   Receipt,
   Briefcase,
-  ChefHat,
-  Utensils,
   Building2,
   Warehouse,
   Factory,
@@ -48,757 +46,725 @@ import {
   Eye,
   Edit,
   Trash2,
-  Star,
-  TrendingDown,
-  ArrowUp,
-  ArrowDown,
   MoreHorizontal,
-  RefreshCw,
-  Download,
-  Upload,
+  ChevronRight,
+  ChevronDown,
+  Star,
+  Target,
+  Gauge,
   PieChart,
   LineChart,
   BarChart,
-  Target,
-  Award,
-  Bookmark,
-  MessageSquare,
+  TrendingDown,
+  ArrowUp,
+  ArrowDown,
+  RefreshCw,
+  Download,
+  Upload,
+  Share2,
+  BookOpen,
+  Layers,
+  Grid3X3,
+  List,
+  Calendar as CalendarIcon,
+  Clock3,
+  MapPin,
   Phone,
   Mail,
   Globe,
-  MapPin,
-  Calendar as CalendarIcon,
-  Clock as ClockIcon
+  Wifi,
+  WifiOff,
+  Database,
+  Server,
+  HardDrive,
+  Cpu,
+  MemoryStick,
+  Monitor,
+  Smartphone,
+  Tablet,
+  Laptop
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { useTenant } from '@/hooks/useTenant';
+import { useTranslation, useDashboardTranslations, useModuleTranslations, useCommonTranslations, formatCurrency, formatNumber } from '@/hooks/useTranslation';
 import { useModules } from '@/contexts/ModuleContext';
-import { useModuleIntegration } from '@/hooks/useModuleIntegration';
-import { useNavigate } from 'react-router-dom';
-import { 
-  useTranslation, 
-  useCommonTranslations, 
-  useNavigationTranslations, 
-  useDashboardTranslations,
-  useModuleTranslations,
-  formatCurrency,
-  formatRelativeTime 
-} from '@/hooks/useTranslation';
+import { Link, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
-export default function Dashboard() {
-  const { signOut, user } = useAuth();
-  const { tenant, modules, loading, dashboardData } = useTenant();
-  const { state: moduleState, isModuleEnabled, getIntegratedData } = useModules();
-  const moduleIntegration = useModuleIntegration();
+interface DashboardStats {
+  totalCustomers: number;
+  monthlyRevenue: number;
+  completionRate: number;
+  activeContracts: number;
+  pendingPayments: number;
+  fleetUtilization: number;
+  employeeCount: number;
+  systemUptime: number;
+}
+
+interface QuickAction {
+  id: string;
+  title: string;
+  description: string;
+  icon: any;
+  color: string;
+  path: string;
+  enabled: boolean;
+}
+
+interface SystemAlert {
+  id: string;
+  type: 'info' | 'warning' | 'error' | 'success';
+  title: string;
+  message: string;
+  timestamp: Date;
+  read: boolean;
+}
+
+interface RecentActivity {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  timestamp: Date;
+  user: string;
+  icon: any;
+  color: string;
+}
+
+const Dashboard = () => {
+  const { t, isRTL } = useTranslation();
+  const dashboardT = useDashboardTranslations();
+  const moduleT = useModuleTranslations();
+  const commonT = useCommonTranslations();
+  const { enabledModules } = useModules();
   const navigate = useNavigate();
-  
-  // Translation hooks
-  const { t } = useTranslation();
-  const common = useCommonTranslations();
-  const nav = useNavigationTranslations();
-  const dashboard = useDashboardTranslations();
-  const modules_t = useModuleTranslations();
-  
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  // Update time every minute
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Filter enabled modules from tenant data
-  const enabledModules = modules.filter(m => m.is_enabled && isModuleEnabled(m.module_id));
-
-  // Module categories for filtering
-  const moduleCategories = [
-    { id: 'all', name: 'جميع الوحدات', icon: <BarChart3 className="h-4 w-4" />, color: 'bg-gray-100 text-gray-700' },
-    { id: 'core', name: 'الوحدات الأساسية', icon: <Home className="h-4 w-4" />, color: 'bg-blue-100 text-blue-700' },
-    { id: 'financial', name: 'المالية والمحاسبة', icon: <DollarSign className="h-4 w-4" />, color: 'bg-green-100 text-green-700' },
-    { id: 'operations', name: 'العمليات التشغيلية', icon: <Settings className="h-4 w-4" />, color: 'bg-purple-100 text-purple-700' },
-    { id: 'hr', name: 'الموارد البشرية', icon: <Users className="h-4 w-4" />, color: 'bg-orange-100 text-orange-700' },
-    { id: 'customer', name: 'خدمة العملاء', icon: <UserCheck className="h-4 w-4" />, color: 'bg-pink-100 text-pink-700' },
-    { id: 'advanced', name: 'الوحدات المتقدمة', icon: <Zap className="h-4 w-4" />, color: 'bg-indigo-100 text-indigo-700' }
-  ];
-
-  const getModuleIcon = (moduleId: string) => {
-    const iconMap: Record<string, JSX.Element> = {
-      'fleet': <Truck className="h-5 w-5" />,
-      'customers': <Users className="h-5 w-5" />,
-      'contracts': <FileText className="h-5 w-5" />,
-      'accounting': <Calculator className="h-5 w-5" />,
-      'hr': <UserCheck className="h-5 w-5" />,
-      'payroll': <CreditCard className="h-5 w-5" />,
-      'attendance': <Clock className="h-5 w-5" />,
-      'leaves': <Calendar className="h-5 w-5" />,
-      'financial-reports': <TrendingUp className="h-5 w-5" />,
-      'inventory': <Package className="h-5 w-5" />,
-      'purchasing': <ShoppingCart className="h-5 w-5" />,
-      'invoices': <Receipt className="h-5 w-5" />,
-      'projects': <Briefcase className="h-5 w-5" />,
-      'analytics': <BarChart3 className="h-5 w-5" />,
-      'bookings': <Calendar className="h-5 w-5" />,
-      'delivery': <Truck className="h-5 w-5" />,
-      'kitchen': <ChefHat className="h-5 w-5" />,
-      'menu': <Utensils className="h-5 w-5" />,
-      'orders': <ClipboardList className="h-5 w-5" />,
-      'payments': <CreditCard className="h-5 w-5" />,
-      'pos': <ShoppingCart className="h-5 w-5" />,
-      'work-orders': <ClipboardList className="h-5 w-5" />
-    };
-    return iconMap[moduleId] || <Settings className="h-5 w-5" />;
-  };
-
-  const getModuleName = (moduleId: string) => {
-    const moduleNames: Record<string, string> = {
-      'fleet': 'إدارة الأسطول',
-      'customers': 'إدارة العملاء',
-      'contracts': 'إدارة العقود',
-      'accounting': 'المحاسبة المالية',
-      'hr': 'الموارد البشرية',
-      'payroll': 'نظام الرواتب',
-      'attendance': 'الحضور والانصراف',
-      'leaves': 'إدارة الإجازات',
-      'financial-reports': 'التقارير المالية',
-      'inventory': 'إدارة المخزون',
-      'purchasing': 'إدارة المشتريات',
-      'invoices': 'إدارة الفواتير',
-      'projects': 'إدارة المشاريع',
-      'analytics': 'التحليلات والتقارير',
-      'bookings': 'نظام الحجوزات',
-      'delivery': 'إدارة التوصيل',
-      'kitchen': 'إدارة المطبخ',
-      'menu': 'إدارة القائمة',
-      'orders': 'إدارة الطلبات',
-      'payments': 'إدارة المدفوعات',
-      'pos': 'نقاط البيع',
-      'work-orders': 'أوامر العمل'
-    };
-    return moduleNames[moduleId] || moduleId;
-  };
-
-  const getModuleCategory = (moduleId: string) => {
-    const categories: Record<string, string> = {
-      'customers': 'core',
-      'contracts': 'core',
-      'bookings': 'core',
-      'accounting': 'financial',
-      'financial-reports': 'financial',
-      'invoices': 'financial',
-      'payroll': 'financial',
-      'payments': 'financial',
-      'fleet': 'operations',
-      'inventory': 'operations',
-      'purchasing': 'operations',
-      'projects': 'operations',
-      'delivery': 'operations',
-      'kitchen': 'operations',
-      'work-orders': 'operations',
-      'hr': 'hr',
-      'attendance': 'hr',
-      'leaves': 'hr',
-      'analytics': 'advanced',
-      'menu': 'customer',
-      'orders': 'customer',
-      'pos': 'customer'
-    };
-    return categories[moduleId] || 'core';
-  };
-
-  const getModuleRoute = (moduleId: string) => {
-    const routes: Record<string, string> = {
-      'fleet': '/fleet',
-      'customers': '/customers',
-      'contracts': '/contracts',
-      'accounting': '/accounting',
-      'hr': '/hr',
-      'payroll': '/payroll',
-      'attendance': '/attendance',
-      'leaves': '/leaves',
-      'financial-reports': '/financial-reports',
-      'inventory': '/inventory',
-      'purchasing': '/purchasing',
-      'invoices': '/invoices',
-      'projects': '/projects',
-      'analytics': '/analytics',
-      'bookings': '/bookings',
-      'delivery': '/delivery',
-      'kitchen': '/kitchen',
-      'menu': '/menu',
-      'orders': '/orders',
-      'payments': '/payments',
-      'pos': '/pos',
-      'work-orders': '/work-orders'
-    };
-    return routes[moduleId] || `/${moduleId}`;
-  };
-
-  // Filter modules based on search and category
-  const filteredModules = enabledModules.filter(module => {
-    const matchesSearch = getModuleName(module.module_id).toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || getModuleCategory(module.module_id) === selectedCategory;
-    return matchesSearch && matchesCategory;
+  const [selectedTimeRange, setSelectedTimeRange] = useState('thisMonth');
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
+    totalCustomers: 1247,
+    monthlyRevenue: 125750.500,
+    completionRate: 94.2,
+    activeContracts: 89,
+    pendingPayments: 23,
+    fleetUtilization: 87.5,
+    employeeCount: 45,
+    systemUptime: 99.8
   });
 
-  // Get integration status for modules
-  const getIntegrationStatus = (moduleId: string) => {
-    const integrations = moduleState.integrations.filter(
-      i => i.sourceModule === moduleId || i.targetModule === moduleId
-    );
-    return integrations.length;
-  };
-
-  // Get module statistics
-  const getModuleStats = (moduleId: string) => {
-    const data = getIntegratedData(moduleId);
-    return {
-      totalRecords: Object.keys(data).length,
-      lastUpdated: new Date().toLocaleDateString('ar-SA'),
-      integrations: getIntegrationStatus(moduleId)
-    };
-  };
-
-  // Quick actions data
-  const quickActions = [
-    { id: 'new-invoice', name: 'فاتورة جديدة', icon: <Receipt className="h-4 w-4" />, route: '/invoices/new', color: 'bg-green-500' },
-    { id: 'new-customer', name: 'عميل جديد', icon: <UserPlus className="h-4 w-4" />, route: '/customers/new', color: 'bg-blue-500' },
-    { id: 'new-contract', name: 'عقد جديد', icon: <FileText className="h-4 w-4" />, route: '/contracts/new', color: 'bg-purple-500' },
-    { id: 'new-project', name: 'مشروع جديد', icon: <FolderKanban className="h-4 w-4" />, route: '/projects/new', color: 'bg-orange-500' },
-    { id: 'add-vehicle', name: 'إضافة مركبة', icon: <Car className="h-4 w-4" />, route: '/fleet/add-vehicle', color: 'bg-red-500' },
-    { id: 'new-payment', name: 'دفعة جديدة', icon: <CreditCard className="h-4 w-4" />, route: '/payments/new', color: 'bg-indigo-500' },
-    { id: 'leave-request', name: 'طلب إجازة', icon: <Calendar className="h-4 w-4" />, route: '/leaves/new', color: 'bg-pink-500' },
-    { id: 'add-product', name: 'إضافة منتج', icon: <Package className="h-4 w-4" />, route: '/inventory/new', color: 'bg-teal-500' }
-  ];
-
-  // System alerts data
-  const systemAlerts = [
+  const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([
     {
-      id: 1,
-      title: 'دفعات متأخرة',
-      description: '5 فواتير متأخرة السداد تتطلب متابعة فورية',
-      type: 'high',
-      icon: <AlertTriangle className="h-4 w-4" />,
-      action: 'عرض التفاصيل',
-      time: 'منذ ساعة',
-      route: '/invoices?status=overdue'
+      id: '1',
+      type: 'warning',
+      title: 'تنبيه صيانة',
+      message: 'يوجد 3 مركبات تحتاج صيانة دورية خلال الأسبوع القادم',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      read: false
     },
     {
-      id: 2,
-      title: 'عقود منتهية الصلاحية',
-      description: '3 عقود ستنتهي خلال الأسبوع القادم',
-      type: 'medium',
-      icon: <FileText className="h-4 w-4" />,
-      action: 'مراجعة العقود',
-      time: 'منذ 2 ساعة',
-      route: '/contracts?status=expiring'
+      id: '2',
+      type: 'info',
+      title: 'تحديث النظام',
+      message: 'تم تحديث النظام بنجاح إلى الإصدار 2.1.0',
+      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      read: false
     },
     {
-      id: 3,
-      title: 'صيانة مستحقة',
-      description: '7 مركبات تحتاج صيانة دورية',
-      type: 'medium',
-      icon: <Car className="h-4 w-4" />,
-      action: 'جدولة الصيانة',
-      time: 'منذ 3 ساعات',
-      route: '/fleet?maintenance=due'
-    },
-    {
-      id: 4,
-      title: 'مخزون منخفض',
-      description: 'نفاد مخزون قطع الغيار الأساسية',
-      type: 'high',
-      icon: <Package className="h-4 w-4" />,
-      action: 'طلب توريد',
-      time: 'منذ 4 ساعات',
-      route: '/inventory?status=low'
+      id: '3',
+      type: 'success',
+      title: 'دفعة جديدة',
+      message: 'تم استلام دفعة بقيمة 15,750 د.ك من العميل أحمد محمد',
+      timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000),
+      read: true
     }
-  ];
+  ]);
 
-  // Recent activities data
-  const recentActivities = [
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([
     {
-      id: 1,
-      title: 'فاتورة جديدة',
-      description: 'تم إنشاء فاتورة INV-2024-001 للعميل أحمد الكندري',
-      amount: '175.000 د.ك.',
-      time: 'منذ 10 دقائق',
-      icon: <Receipt className="h-4 w-4 text-green-600" />,
-      type: 'success'
+      id: '1',
+      type: 'contract',
+      title: 'عقد جديد',
+      description: 'تم إنشاء عقد تأجير جديد للعميل سارة أحمد',
+      timestamp: new Date(Date.now() - 30 * 60 * 1000),
+      user: 'محمد علي',
+      icon: FileText,
+      color: 'text-blue-600'
     },
     {
-      id: 2,
+      id: '2',
+      type: 'payment',
       title: 'دفعة مستلمة',
-      description: 'تم استلام دفعة من شركة الخليج للتجارة',
-      amount: '1,500.000 د.ك.',
-      time: 'منذ 25 دقيقة',
-      icon: <CreditCard className="h-4 w-4 text-blue-600" />,
-      type: 'info'
+      description: 'تم استلام دفعة بقيمة 2,500 د.ك',
+      timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
+      user: 'فاطمة خالد',
+      icon: CreditCard,
+      color: 'text-green-600'
     },
     {
-      id: 3,
+      id: '3',
+      type: 'vehicle',
+      title: 'مركبة جديدة',
+      description: 'تم إضافة مركبة جديدة إلى الأسطول - تويوتا كامري 2024',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      user: 'أحمد سالم',
+      icon: Car,
+      color: 'text-purple-600'
+    },
+    {
+      id: '4',
+      type: 'customer',
       title: 'عميل جديد',
-      description: 'تم تسجيل عميل جديد: محمد سالم الرشيد',
-      time: 'منذ 45 دقيقة',
-      icon: <UserPlus className="h-4 w-4 text-purple-600" />,
-      type: 'info'
+      description: 'تم تسجيل عميل جديد - شركة الخليج للتجارة',
+      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
+      user: 'نورا محمد',
+      icon: Users,
+      color: 'text-orange-600'
+    }
+  ]);
+
+  const quickActions: QuickAction[] = [
+    {
+      id: 'new-contract',
+      title: 'عقد جديد',
+      description: 'إنشاء عقد تأجير جديد',
+      icon: FileText,
+      color: 'bg-blue-500 hover:bg-blue-600',
+      path: '/contracts/new',
+      enabled: enabledModules.includes('contracts')
     },
     {
-      id: 4,
-      title: 'صيانة مركبة',
-      description: 'تم جدولة صيانة للمركبة ABC-123',
-      time: 'منذ ساعة',
-      icon: <Car className="h-4 w-4 text-orange-600" />,
-      type: 'warning'
+      id: 'new-customer',
+      title: 'عميل جديد',
+      description: 'إضافة عميل جديد',
+      icon: UserPlus,
+      color: 'bg-green-500 hover:bg-green-600',
+      path: '/customers/new',
+      enabled: enabledModules.includes('customers')
     },
     {
-      id: 5,
-      title: 'عقد منتهي الصلاحية',
-      description: 'العقد CNT-2024-005 سينتهي خلال 3 أيام',
-      time: 'منذ ساعتين',
-      icon: <FileText className="h-4 w-4 text-red-600" />,
-      type: 'error'
+      id: 'new-invoice',
+      title: 'فاتورة جديدة',
+      description: 'إنشاء فاتورة جديدة',
+      icon: Receipt,
+      color: 'bg-purple-500 hover:bg-purple-600',
+      path: '/invoices/new',
+      enabled: enabledModules.includes('invoices')
+    },
+    {
+      id: 'new-vehicle',
+      title: 'مركبة جديدة',
+      description: 'إضافة مركبة للأسطول',
+      icon: Car,
+      color: 'bg-orange-500 hover:bg-orange-600',
+      path: '/fleet/add-vehicle',
+      enabled: enabledModules.includes('fleet')
+    },
+    {
+      id: 'financial-report',
+      title: 'تقرير مالي',
+      description: 'عرض التقارير المالية',
+      icon: BarChart3,
+      color: 'bg-indigo-500 hover:bg-indigo-600',
+      path: '/financial-reports',
+      enabled: enabledModules.includes('financialReports')
+    },
+    {
+      id: 'analytics',
+      title: 'التحليلات',
+      description: 'عرض تحليلات الأداء',
+      icon: TrendingUp,
+      color: 'bg-pink-500 hover:bg-pink-600',
+      path: '/analytics',
+      enabled: enabledModules.includes('analytics')
     }
   ];
+
+  const moduleCards = [
+    {
+      id: 'contracts',
+      title: moduleT.contracts,
+      description: 'إدارة العقود والاتفاقيات',
+      icon: FileText,
+      color: 'from-blue-500 to-blue-600',
+      stats: { total: 89, active: 76, pending: 13 },
+      path: '/contracts',
+      enabled: enabledModules.includes('contracts')
+    },
+    {
+      id: 'customers',
+      title: moduleT.customers,
+      description: 'إدارة قاعدة العملاء',
+      icon: Users,
+      color: 'from-green-500 to-green-600',
+      stats: { total: 1247, active: 1180, new: 67 },
+      path: '/customers',
+      enabled: enabledModules.includes('customers')
+    },
+    {
+      id: 'fleet',
+      title: moduleT.fleet,
+      description: 'إدارة أسطول المركبات',
+      icon: Car,
+      color: 'from-purple-500 to-purple-600',
+      stats: { total: 45, available: 32, rented: 13 },
+      path: '/fleet',
+      enabled: enabledModules.includes('fleet')
+    },
+    {
+      id: 'accounting',
+      title: moduleT.accounting,
+      description: 'النظام المحاسبي المتكامل',
+      icon: Calculator,
+      color: 'from-orange-500 to-orange-600',
+      stats: { revenue: 125750.5, expenses: 45230.2, profit: 80520.3 },
+      path: '/accounting',
+      enabled: enabledModules.includes('accounting')
+    },
+    {
+      id: 'hr',
+      title: moduleT.hr,
+      description: 'إدارة الموارد البشرية',
+      icon: UserCheck,
+      color: 'from-indigo-500 to-indigo-600',
+      stats: { employees: 45, present: 42, absent: 3 },
+      path: '/hr',
+      enabled: enabledModules.includes('hr')
+    },
+    {
+      id: 'invoices',
+      title: moduleT.invoices,
+      description: 'نظام الفوترة الإلكترونية',
+      icon: Receipt,
+      color: 'from-pink-500 to-pink-600',
+      stats: { total: 234, paid: 198, pending: 36 },
+      path: '/invoices',
+      enabled: enabledModules.includes('invoices')
+    }
+  ];
+
+  const sidebarModules = [
+    { id: 'dashboard', title: 'لوحة التحكم', icon: Home, path: '/dashboard', enabled: true },
+    { id: 'contracts', title: moduleT.contracts, icon: FileText, path: '/contracts', enabled: enabledModules.includes('contracts') },
+    { id: 'customers', title: moduleT.customers, icon: Users, path: '/customers', enabled: enabledModules.includes('customers') },
+    { id: 'fleet', title: moduleT.fleet, icon: Car, path: '/fleet', enabled: enabledModules.includes('fleet') },
+    { id: 'accounting', title: moduleT.accounting, icon: Calculator, path: '/accounting', enabled: enabledModules.includes('accounting') },
+    { id: 'invoices', title: moduleT.invoices, icon: Receipt, path: '/invoices', enabled: enabledModules.includes('invoices') },
+    { id: 'payments', title: moduleT.payments, icon: CreditCard, path: '/payments', enabled: enabledModules.includes('payments') },
+    { id: 'hr', title: moduleT.hr, icon: UserCheck, path: '/hr', enabled: enabledModules.includes('hr') },
+    { id: 'payroll', title: moduleT.payroll, icon: DollarSign, path: '/payroll', enabled: enabledModules.includes('payroll') },
+    { id: 'inventory', title: moduleT.inventory, icon: Package, path: '/inventory', enabled: enabledModules.includes('inventory') },
+    { id: 'projects', title: moduleT.projects, icon: FolderKanban, path: '/projects', enabled: enabledModules.includes('projects') },
+    { id: 'analytics', title: moduleT.analytics, icon: BarChart3, path: '/analytics', enabled: enabledModules.includes('analytics') },
+    { id: 'settings', title: 'الإعدادات', icon: Settings, path: '/settings', enabled: true }
+  ].filter(module => module.enabled);
+
+  const formatRelativeTime = (date: Date): string => {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) {
+      return 'الآن';
+    } else if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `منذ ${minutes} دقيقة`;
+    } else if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `منذ ${hours} ساعة`;
+    } else {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `منذ ${days} يوم`;
+    }
+  };
+
+  const getAlertIcon = (type: string) => {
+    switch (type) {
+      case 'warning': return AlertTriangle;
+      case 'error': return AlertTriangle;
+      case 'success': return CheckCircle;
+      default: return Info;
+    }
+  };
+
+  const getAlertColor = (type: string) => {
+    switch (type) {
+      case 'warning': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case 'error': return 'text-red-600 bg-red-50 border-red-200';
+      case 'success': return 'text-green-600 bg-green-50 border-green-200';
+      default: return 'text-blue-600 bg-blue-50 border-blue-200';
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl">
-      {/* Enhanced Right Sidebar */}
-      <div className={`fixed top-0 right-0 h-full ${sidebarCollapsed ? 'w-16' : 'w-72'} bg-white border-l border-gray-200 shadow-xl z-50 transition-all duration-300`}>
-        {/* Sidebar Header */}
-        <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700">
-          <div className="flex items-center justify-between">
-            {!sidebarCollapsed && (
-              <div>
-                <h2 className="text-lg font-bold text-white">نظام إدارة الأعمال</h2>
-                <p className="text-sm text-blue-100">{enabledModules.length} وحدة نشطة</p>
+    <div className={cn("min-h-screen bg-gradient-to-br from-slate-50 to-slate-100", isRTL && "rtl")}>
+      {/* Sidebar */}
+      <div className={cn(
+        "fixed top-0 h-full bg-white shadow-xl border-l border-gray-200 transition-all duration-300 z-50",
+        isRTL ? "right-0" : "left-0",
+        sidebarOpen ? "w-80" : "w-16"
+      )}>
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            {sidebarOpen && (
+              <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Building2 className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-gray-900">نظام إدارة الأعمال</h1>
+                  <p className="text-sm text-gray-500">ERP المتكامل</p>
+                </div>
               </div>
             )}
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="text-white hover:bg-blue-800"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2"
             >
-              {sidebarCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
-        </div>
 
-        {/* User Info */}
-        {!sidebarCollapsed && (
-          <div className="p-4 border-b border-gray-200 bg-gray-50">
-            <div className="flex items-center space-x-3 space-x-reverse">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">{user?.email?.charAt(0).toUpperCase()}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{tenant?.name}</p>
-                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-              </div>
-            </div>
-          </div>
-        )}
+          {/* Navigation */}
+          <ScrollArea className="flex-1 px-4 py-6">
+            <nav className="space-y-2">
+              {sidebarModules.map((module) => {
+                const Icon = module.icon;
+                return (
+                  <Link
+                    key={module.id}
+                    to={module.path}
+                    className={cn(
+                      "flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg transition-all duration-200",
+                      "hover:bg-gray-100 hover:text-blue-600",
+                      module.id === 'dashboard' ? "bg-blue-50 text-blue-600 border-r-4 border-blue-600" : "text-gray-700"
+                    )}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    {sidebarOpen && (
+                      <span className="font-medium">{module.title}</span>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+          </ScrollArea>
 
-        {/* Search and Filter */}
-        {!sidebarCollapsed && (
-          <div className="p-4 border-b border-gray-200">
-            <div className="relative">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="البحث في الوحدات..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 text-right"
-              />
-            </div>
-            <div className="mt-3 flex flex-wrap gap-1">
-              {moduleCategories.slice(0, 3).map((category) => (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory === category.id ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`text-xs ${selectedCategory === category.id ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
-                >
-                  {category.icon}
-                  <span className="mr-1">{category.name}</span>
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        <div className="overflow-y-auto h-full pb-20">
-          <div className="p-2 space-y-1">
-            {/* Dashboard Link */}
-            <Button
-              variant="ghost"
-              className={`w-full ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start'} text-right h-12 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100`}
-              onClick={() => navigate('/dashboard')}
-            >
-              <Home className="h-5 w-5" />
-              {!sidebarCollapsed && <span className="mr-3">لوحة التحكم</span>}
-            </Button>
-
-            {/* Module Links */}
-            {filteredModules.map((module) => (
-              <Button
-                key={module.module_id}
-                variant="ghost"
-                className={`w-full ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start'} text-right h-12 hover:bg-gray-100 group`}
-                onClick={() => navigate(getModuleRoute(module.module_id))}
-              >
-                <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} w-full`}>
-                  <div className="flex items-center">
-                    {getModuleIcon(module.module_id)}
-                    {!sidebarCollapsed && <span className="mr-3">{getModuleName(module.module_id)}</span>}
-                  </div>
-                  {!sidebarCollapsed && (
-                    <Badge variant="secondary" className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                      {getIntegrationStatus(module.module_id)}
-                    </Badge>
-                  )}
+          {/* Footer */}
+          {sidebarOpen && (
+            <div className="p-4 border-t border-gray-200">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <UserCheck className="w-4 h-4 text-gray-600" />
                 </div>
-              </Button>
-            ))}
-
-            {/* Settings Link */}
-            <Button
-              variant="ghost"
-              className={`w-full ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start'} text-right h-12 hover:bg-gray-100`}
-              onClick={() => navigate('/settings')}
-            >
-              <Settings className="h-5 w-5" />
-              {!sidebarCollapsed && <span className="mr-3">الإعدادات</span>}
-            </Button>
-          </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">المدير العام</p>
+                  <p className="text-xs text-gray-500">admin@company.com</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`${sidebarCollapsed ? 'mr-16' : 'mr-72'} min-h-screen transition-all duration-300`}>
-        {/* Enhanced Header */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4 space-x-reverse">
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                    <Building2 className="h-6 w-6 ml-2 text-blue-600" />
-                    {tenant?.name || 'نظام إدارة الأعمال'}
-                  </h1>
-                  <p className="text-gray-600 flex items-center mt-1">
-                    <CalendarIcon className="h-4 w-4 ml-1" />
-                    {currentTime.toLocaleDateString('ar-SA', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                    <ClockIcon className="h-4 w-4 mr-3 ml-1" />
-                    {currentTime.toLocaleTimeString('ar-SA', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </p>
-                </div>
+      <div className={cn(
+        "transition-all duration-300",
+        isRTL ? (sidebarOpen ? "mr-80" : "mr-16") : (sidebarOpen ? "ml-80" : "ml-16")
+      )}>
+        {/* Top Bar */}
+        <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">{dashboardT.title}</h1>
+              <p className="text-gray-600 mt-1">مرحباً بك في نظام إدارة الأعمال المتكامل</p>
+            </div>
+            <div className="flex items-center space-x-4 rtl:space-x-reverse">
+              <div className="relative">
+                <Search className="absolute left-3 rtl:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="البحث في النظام..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 rtl:pr-10 w-64"
+                />
               </div>
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="sm" className="relative">
-                  <Bell className="h-4 w-4" />
-                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-                    {systemAlerts.filter(alert => alert.type === 'high').length}
-                  </span>
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" onClick={signOut} className="hover:bg-red-50 hover:text-red-600 hover:border-red-200">
-                  تسجيل الخروج
-                </Button>
-              </div>
+              <Button variant="outline" size="sm">
+                <Bell className="w-4 h-4 ml-2 rtl:mr-2" />
+                الإشعارات
+                <Badge variant="destructive" className="ml-2 rtl:mr-2">3</Badge>
+              </Button>
             </div>
           </div>
         </div>
 
+        {/* Dashboard Content */}
         <div className="p-6 space-y-6">
-          {/* Enhanced Statistics Cards */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="hover:shadow-lg transition-all duration-300 border-r-4 border-r-green-500 bg-gradient-to-br from-green-50 to-green-100">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-700">الوحدات المفعلة</CardTitle>
-                <div className="p-2 bg-green-500 rounded-lg">
-                  <Activity className="h-5 w-5 text-white" />
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-blue-100 text-sm font-medium">إجمالي العملاء</p>
+                    <p className="text-3xl font-bold">{formatNumber(dashboardStats.totalCustomers)}</p>
+                    <p className="text-blue-100 text-sm mt-1">
+                      <ArrowUp className="w-4 h-4 inline ml-1 rtl:mr-1" />
+                      +12% من الشهر الماضي
+                    </p>
+                  </div>
+                  <Users className="w-12 h-12 text-blue-200" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600">{enabledModules.length}</div>
-                <p className="text-xs text-gray-500 flex items-center mt-1">
-                  <ArrowUp className="h-3 w-3 text-green-500 ml-1" />
-                  من إجمالي {modules.length} وحدة
-                </p>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-lg transition-all duration-300 border-r-4 border-r-blue-500 bg-gradient-to-br from-blue-50 to-blue-100">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-700">التكاملات النشطة</CardTitle>
-                <div className="p-2 bg-blue-500 rounded-lg">
-                  <Zap className="h-5 w-5 text-white" />
+            <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-green-100 text-sm font-medium">الإيرادات الشهرية</p>
+                    <p className="text-3xl font-bold">{formatCurrency(dashboardStats.monthlyRevenue)}</p>
+                    <p className="text-green-100 text-sm mt-1">
+                      <ArrowUp className="w-4 h-4 inline ml-1 rtl:mr-1" />
+                      +8.5% من الشهر الماضي
+                    </p>
+                  </div>
+                  <DollarSign className="w-12 h-12 text-green-200" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-blue-600">{moduleState.integrations.length}</div>
-                <p className="text-xs text-gray-500 flex items-center mt-1">
-                  <Target className="h-3 w-3 text-blue-500 ml-1" />
-                  تكامل ذكي بين الوحدات
-                </p>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-lg transition-all duration-300 border-r-4 border-r-purple-500 bg-gradient-to-br from-purple-50 to-purple-100">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-700">العملاء</CardTitle>
-                <div className="p-2 bg-purple-500 rounded-lg">
-                  <Users className="h-5 w-5 text-white" />
+            <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100 text-sm font-medium">معدل الإنجاز</p>
+                    <p className="text-3xl font-bold">{dashboardStats.completionRate}%</p>
+                    <p className="text-purple-100 text-sm mt-1">
+                      <ArrowUp className="w-4 h-4 inline ml-1 rtl:mr-1" />
+                      +2.1% من الشهر الماضي
+                    </p>
+                  </div>
+                  <Target className="w-12 h-12 text-purple-200" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <Skeleton className="h-8 w-16" />
-                ) : (
-                  <div className="text-3xl font-bold text-purple-600">{dashboardData?.customers_count || 247}</div>
-                )}
-                <p className="text-xs text-gray-500 flex items-center mt-1">
-                  <TrendingUp className="h-3 w-3 text-purple-500 ml-1" />
-                  +12% هذا الشهر
-                </p>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-lg transition-all duration-300 border-r-4 border-r-orange-500 bg-gradient-to-br from-orange-50 to-orange-100">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-700">الإيرادات الشهرية</CardTitle>
-                <div className="p-2 bg-orange-500 rounded-lg">
-                  <DollarSign className="h-5 w-5 text-white" />
+            <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-orange-100 text-sm font-medium">العقود النشطة</p>
+                    <p className="text-3xl font-bold">{dashboardStats.activeContracts}</p>
+                    <p className="text-orange-100 text-sm mt-1">
+                      <ArrowUp className="w-4 h-4 inline ml-1 rtl:mr-1" />
+                      +5 عقود جديدة
+                    </p>
+                  </div>
+                  <FileText className="w-12 h-12 text-orange-200" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-orange-600">45,250 د.ك.</div>
-                <p className="text-xs text-gray-500 flex items-center mt-1">
-                  <ArrowUp className="h-3 w-3 text-orange-500 ml-1" />
-                  +8.2% من الشهر الماضي
-                </p>
               </CardContent>
             </Card>
           </div>
 
           {/* Quick Actions */}
-          <Card className="shadow-lg">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Star className="h-5 w-5 ml-2 text-yellow-500" />
+                <Zap className="w-5 h-5 ml-2 rtl:mr-2" />
                 الإجراءات السريعة
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-                {quickActions.map((action) => (
-                  <Button
-                    key={action.id}
-                    variant="outline"
-                    className="h-20 flex flex-col items-center justify-center space-y-2 hover:shadow-md transition-all duration-300 group"
-                    onClick={() => navigate(action.route)}
-                  >
-                    <div className={`p-2 rounded-lg ${action.color} text-white group-hover:scale-110 transition-transform`}>
-                      {action.icon}
-                    </div>
-                    <span className="text-xs text-center">{action.name}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* System Alerts */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <AlertTriangle className="h-5 w-5 ml-2 text-red-500" />
-                    تنبيهات النظام
-                  </div>
-                  <Badge variant="destructive">{systemAlerts.filter(alert => alert.type === 'high').length}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {systemAlerts.slice(0, 4).map((alert) => (
-                  <div key={alert.id} className={`p-3 rounded-lg border-r-4 ${
-                    alert.type === 'high' ? 'border-r-red-500 bg-red-50' :
-                    alert.type === 'medium' ? 'border-r-yellow-500 bg-yellow-50' :
-                    'border-r-blue-500 bg-blue-50'
-                  }`}>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center">
-                          {alert.icon}
-                          <h4 className="font-medium text-sm mr-2">{alert.title}</h4>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-1">{alert.description}</p>
-                        <p className="text-xs text-gray-500 mt-1">{alert.time}</p>
-                      </div>
-                      <Button size="sm" variant="ghost" onClick={() => navigate(alert.route)}>
-                        <Eye className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Recent Activities */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Activity className="h-5 w-5 ml-2 text-blue-500" />
-                  الأنشطة الأخيرة
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {recentActivities.slice(0, 5).map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3 space-x-reverse">
-                    <div className="flex-shrink-0">
-                      {activity.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                      <p className="text-xs text-gray-500">{activity.description}</p>
-                      <div className="flex items-center justify-between mt-1">
-                        <p className="text-xs text-gray-400">{activity.time}</p>
-                        {activity.amount && (
-                          <span className="text-xs font-medium text-green-600">{activity.amount}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Performance Overview */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BarChart3 className="h-5 w-5 ml-2 text-green-500" />
-                  نظرة عامة على الأداء
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">معدل الإنجاز</span>
-                    <span className="text-sm font-medium">87%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: '87%' }}></div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">رضا العملاء</span>
-                    <span className="text-sm font-medium">94%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: '94%' }}></div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">كفاءة النظام</span>
-                    <span className="text-sm font-medium">91%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-purple-500 h-2 rounded-full" style={{ width: '91%' }}></div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div>
-                    <p className="text-2xl font-bold text-green-600">98.5%</p>
-                    <p className="text-xs text-gray-500">وقت التشغيل</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-blue-600">2.3s</p>
-                    <p className="text-xs text-gray-500">متوسط الاستجابة</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Module Overview Grid */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Package className="h-5 w-5 ml-2 text-indigo-500" />
-                  نظرة عامة على الوحدات
-                </div>
-                <Button variant="outline" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {enabledModules.slice(0, 6).map((module) => {
-                  const stats = getModuleStats(module.module_id);
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {quickActions.filter(action => action.enabled).map((action) => {
+                  const Icon = action.icon;
                   return (
-                    <Card key={module.module_id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(getModuleRoute(module.module_id))}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center">
-                            {getModuleIcon(module.module_id)}
-                            <span className="font-medium text-sm mr-2">{getModuleName(module.module_id)}</span>
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            {getModuleCategory(module.module_id)}
-                          </Badge>
-                        </div>
-                        <div className="space-y-2 text-xs text-gray-500">
-                          <div className="flex justify-between">
-                            <span>السجلات:</span>
-                            <span className="font-medium">{stats.totalRecords}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>التكاملات:</span>
-                            <span className="font-medium">{stats.integrations}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>آخر تحديث:</span>
-                            <span className="font-medium">{stats.lastUpdated}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <Button
+                      key={action.id}
+                      variant="outline"
+                      className={cn(
+                        "h-auto p-4 justify-start hover:shadow-md transition-all duration-200",
+                        action.color.replace('bg-', 'hover:bg-').replace('hover:bg-', 'hover:bg-opacity-10 hover:border-')
+                      )}
+                      onClick={() => navigate(action.path)}
+                    >
+                      <Icon className="w-6 h-6 ml-3 rtl:mr-3" />
+                      <div className="text-right rtl:text-left">
+                        <p className="font-medium">{action.title}</p>
+                        <p className="text-sm text-gray-500">{action.description}</p>
+                      </div>
+                    </Button>
                   );
                 })}
               </div>
             </CardContent>
           </Card>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Module Overview */}
+            <div className="lg:col-span-2 space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Grid3X3 className="w-5 h-5 ml-2 rtl:mr-2" />
+                    نظرة عامة على الوحدات
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {moduleCards.filter(module => module.enabled).map((module) => {
+                      const Icon = module.icon;
+                      return (
+                        <Card key={module.id} className="hover:shadow-md transition-shadow duration-200 cursor-pointer" onClick={() => navigate(module.path)}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className={cn("w-12 h-12 rounded-lg bg-gradient-to-r flex items-center justify-center", module.color)}>
+                                <Icon className="w-6 h-6 text-white" />
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-gray-400" />
+                            </div>
+                            <h3 className="font-semibold text-gray-900 mb-1">{module.title}</h3>
+                            <p className="text-sm text-gray-600 mb-3">{module.description}</p>
+                            <div className="flex items-center justify-between text-sm">
+                              {module.id === 'accounting' ? (
+                                <>
+                                  <span className="text-gray-500">الإيرادات</span>
+                                  <span className="font-medium text-green-600">{formatCurrency(module.stats.revenue)}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-gray-500">المجموع</span>
+                                  <span className="font-medium">{formatNumber(module.stats.total)}</span>
+                                </>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sidebar Content */}
+            <div className="space-y-6">
+              {/* System Alerts */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Bell className="w-5 h-5 ml-2 rtl:mr-2" />
+                      تنبيهات النظام
+                    </div>
+                    <Badge variant="secondary">{systemAlerts.filter(alert => !alert.read).length}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {systemAlerts.slice(0, 3).map((alert) => {
+                    const Icon = getAlertIcon(alert.type);
+                    return (
+                      <div key={alert.id} className={cn("p-3 rounded-lg border", getAlertColor(alert.type))}>
+                        <div className="flex items-start space-x-3 rtl:space-x-reverse">
+                          <Icon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                          <div className="flex-1">
+                            <p className="font-medium text-sm">{alert.title}</p>
+                            <p className="text-xs mt-1 opacity-90">{alert.message}</p>
+                            <p className="text-xs mt-2 opacity-75">{formatRelativeTime(alert.timestamp)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <Button variant="outline" size="sm" className="w-full">
+                    عرض جميع التنبيهات
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activities */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Activity className="w-5 h-5 ml-2 rtl:mr-2" />
+                    الأنشطة الأخيرة
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-64">
+                    <div className="space-y-3">
+                      {recentActivities.map((activity) => {
+                        const Icon = activity.icon;
+                        return (
+                          <div key={activity.id} className="flex items-start space-x-3 rtl:space-x-reverse p-2 rounded-lg hover:bg-gray-50">
+                            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center bg-gray-100", activity.color)}>
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                              <p className="text-xs text-gray-600 mt-1">{activity.description}</p>
+                              <div className="flex items-center justify-between mt-2">
+                                <p className="text-xs text-gray-500">{activity.user}</p>
+                                <p className="text-xs text-gray-500">{formatRelativeTime(activity.timestamp)}</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+
+              {/* System Status */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Monitor className="w-5 h-5 ml-2 rtl:mr-2" />
+                    حالة النظام
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm">وقت التشغيل</span>
+                    </div>
+                    <span className="text-sm font-medium">{dashboardStats.systemUptime}%</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm">الوحدات المفعلة</span>
+                    </div>
+                    <span className="text-sm font-medium">{enabledModules.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <span className="text-sm">المدفوعات المعلقة</span>
+                    </div>
+                    <span className="text-sm font-medium">{dashboardStats.pendingPayments}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                      <span className="text-sm">استخدام الأسطول</span>
+                    </div>
+                    <span className="text-sm font-medium">{dashboardStats.fleetUtilization}%</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;
 
