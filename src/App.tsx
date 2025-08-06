@@ -9,6 +9,7 @@ import { ModuleProvider } from '@/contexts/ModuleContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { OnboardingGuard } from '@/components/OnboardingGuard';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import MainLayout from '@/components/layout/MainLayout';
 import Index from "./pages/Index";
 import OnboardingWizard from "./pages/OnboardingWizard";
 import SignIn from "./pages/SignIn";
@@ -90,9 +91,7 @@ const App = () => (
                 {/* Onboarding route - accessible without authentication */}
                 <Route path="/onboarding" element={<OnboardingWizard />} />
                 
-                {/* Protected Routes */}
-                
-                {/* Protected routes - auth + tenant required */}
+                {/* Protected Routes with MainLayout */}
                 <Route 
                   path="/dashboard" 
                   element={
@@ -105,7 +104,9 @@ const App = () => (
                   path="/settings" 
                   element={
                     <ProtectedRoute>
-                      <Settings />
+                      <MainLayout>
+                        <Settings />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -113,7 +114,9 @@ const App = () => (
                   path="/accounting" 
                   element={
                     <ProtectedRoute>
-                      <Accounting />
+                      <MainLayout>
+                        <Accounting />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -121,7 +124,9 @@ const App = () => (
                   path="/accounting/accounts/:accountId" 
                   element={
                     <ProtectedRoute>
-                      <AccountLedger />
+                      <MainLayout>
+                        <AccountLedger />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -129,7 +134,9 @@ const App = () => (
                   path="/invoices" 
                   element={
                     <ProtectedRoute>
-                      <Invoices />
+                      <MainLayout>
+                        <Invoices />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -137,7 +144,9 @@ const App = () => (
                   path="/invoices/new" 
                   element={
                     <ProtectedRoute>
-                      <CreateInvoice />
+                      <MainLayout>
+                        <CreateInvoice />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -145,7 +154,9 @@ const App = () => (
                   path="/invoices/:id" 
                   element={
                     <ProtectedRoute>
-                      <InvoiceDetails />
+                      <MainLayout>
+                        <InvoiceDetails />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -153,7 +164,9 @@ const App = () => (
                   path="/invoices/edit/:id" 
                   element={
                     <ProtectedRoute>
-                      <EditInvoice />
+                      <MainLayout>
+                        <EditInvoice />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -161,7 +174,9 @@ const App = () => (
                   path="/financial-reports" 
                   element={
                     <ProtectedRoute>
-                      <FinancialReports />
+                      <MainLayout>
+                        <FinancialReports />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -169,7 +184,9 @@ const App = () => (
                   path="/inventory" 
                   element={
                     <ProtectedRoute>
-                      <Inventory />
+                      <MainLayout>
+                        <Inventory />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -177,7 +194,9 @@ const App = () => (
                   path="/purchasing" 
                   element={
                     <ProtectedRoute>
-                      <Purchasing />
+                      <MainLayout>
+                        <Purchasing />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -185,7 +204,9 @@ const App = () => (
                   path="/fleet" 
                   element={
                     <ProtectedRoute>
-                      <Fleet />
+                      <MainLayout>
+                        <Fleet />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -193,7 +214,9 @@ const App = () => (
                   path="/fleet/add-vehicle" 
                   element={
                     <ProtectedRoute>
-                      <AddVehicle />
+                      <MainLayout>
+                        <AddVehicle />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -201,7 +224,9 @@ const App = () => (
                   path="/fleet/edit-vehicle/:id" 
                   element={
                     <ProtectedRoute>
-                      <EditVehicle />
+                      <MainLayout>
+                        <EditVehicle />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -209,7 +234,9 @@ const App = () => (
                   path="/customers" 
                   element={
                     <ProtectedRoute>
-                      <Customers />
+                      <MainLayout>
+                        <Customers />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -217,7 +244,9 @@ const App = () => (
                   path="/customers/new" 
                   element={
                     <ProtectedRoute>
-                      <AddCustomer />
+                      <MainLayout>
+                        <AddCustomer />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -225,7 +254,9 @@ const App = () => (
                   path="/customers/add" 
                   element={
                     <ProtectedRoute>
-                      <AddCustomer />
+                      <MainLayout>
+                        <AddCustomer />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -233,7 +264,9 @@ const App = () => (
                   path="/customers/import" 
                   element={
                     <ProtectedRoute>
-                      <ImportCustomers />
+                      <MainLayout>
+                        <ImportCustomers />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -241,7 +274,9 @@ const App = () => (
                   path="/customers/:id" 
                   element={
                     <ProtectedRoute>
-                      <CustomerDetails />
+                      <MainLayout>
+                        <CustomerDetails />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -249,7 +284,9 @@ const App = () => (
                   path="/customers/:id/edit" 
                   element={
                     <ProtectedRoute>
-                      <EditCustomer />
+                      <MainLayout>
+                        <EditCustomer />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -257,7 +294,9 @@ const App = () => (
                   path="/contracts" 
                   element={
                     <ProtectedRoute>
-                      <Contracts />
+                      <MainLayout>
+                        <Contracts />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -265,7 +304,9 @@ const App = () => (
                   path="/contracts/new" 
                   element={
                     <ProtectedRoute>
-                      <CreateContract />
+                      <MainLayout>
+                        <CreateContract />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -273,7 +314,9 @@ const App = () => (
                   path="/contracts/:id" 
                   element={
                     <ProtectedRoute>
-                      <ContractDetails />
+                      <MainLayout>
+                        <ContractDetails />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -281,7 +324,9 @@ const App = () => (
                   path="/contracts/:id/edit" 
                   element={
                     <ProtectedRoute>
-                      <EditContract />
+                      <MainLayout>
+                        <EditContract />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -289,7 +334,9 @@ const App = () => (
                   path="/contracts/templates" 
                   element={
                     <ProtectedRoute>
-                      <ContractTemplates />
+                      <MainLayout>
+                        <ContractTemplates />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -297,7 +344,9 @@ const App = () => (
                   path="/contracts/reports" 
                   element={
                     <ProtectedRoute>
-                      <ContractReports />
+                      <MainLayout>
+                        <ContractReports />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -305,7 +354,9 @@ const App = () => (
                   path="/hr" 
                   element={
                     <ProtectedRoute>
-                      <HR />
+                      <MainLayout>
+                        <HR />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -313,7 +364,9 @@ const App = () => (
                   path="/attendance" 
                   element={
                     <ProtectedRoute>
-                      <Attendance />
+                      <MainLayout>
+                        <Attendance />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -321,7 +374,9 @@ const App = () => (
                   path="/leaves" 
                   element={
                     <ProtectedRoute>
-                      <Leaves />
+                      <MainLayout>
+                        <Leaves />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -329,7 +384,9 @@ const App = () => (
                   path="/payroll" 
                   element={
                     <ProtectedRoute>
-                      <Payroll />
+                      <MainLayout>
+                        <Payroll />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -337,7 +394,9 @@ const App = () => (
                   path="/payments" 
                   element={
                     <ProtectedRoute>
-                      <Payments />
+                      <MainLayout>
+                        <Payments />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -345,7 +404,9 @@ const App = () => (
                   path="/work-orders" 
                   element={
                     <ProtectedRoute>
-                      <WorkOrders />
+                      <MainLayout>
+                        <WorkOrders />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -353,7 +414,9 @@ const App = () => (
                   path="/projects" 
                   element={
                     <ProtectedRoute>
-                      <Projects />
+                      <MainLayout>
+                        <Projects />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -361,7 +424,9 @@ const App = () => (
                   path="/projects/new" 
                   element={
                     <ProtectedRoute>
-                      <CreateProject />
+                      <MainLayout>
+                        <CreateProject />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -369,7 +434,9 @@ const App = () => (
                   path="/projects/:id" 
                   element={
                     <ProtectedRoute>
-                      <ProjectDetails />
+                      <MainLayout>
+                        <ProjectDetails />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -377,7 +444,9 @@ const App = () => (
                   path="/analytics" 
                   element={
                     <ProtectedRoute>
-                      <Analytics />
+                      <MainLayout>
+                        <Analytics />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -385,7 +454,9 @@ const App = () => (
                   path="/advanced-accounting" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedAccounting />
+                      <MainLayout>
+                        <AdvancedAccounting />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -393,7 +464,9 @@ const App = () => (
                   path="/advanced-inventory" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedInventory />
+                      <MainLayout>
+                        <AdvancedInventory />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -401,7 +474,9 @@ const App = () => (
                   path="/advanced-sales" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedSales />
+                      <MainLayout>
+                        <AdvancedSales />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -409,7 +484,9 @@ const App = () => (
                   path="/advanced-crm" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedCRM />
+                      <MainLayout>
+                        <AdvancedCRM />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -417,7 +494,9 @@ const App = () => (
                   path="/advanced-pos" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedPOS />
+                      <MainLayout>
+                        <AdvancedPOS />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -425,7 +504,9 @@ const App = () => (
                   path="/advanced-procurement" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedProcurement />
+                      <MainLayout>
+                        <AdvancedProcurement />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -433,7 +514,9 @@ const App = () => (
                   path="/manufacturing" 
                   element={
                     <ProtectedRoute>
-                      <Manufacturing />
+                      <MainLayout>
+                        <Manufacturing />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -441,7 +524,9 @@ const App = () => (
                   path="/quality-management" 
                   element={
                     <ProtectedRoute>
-                      <QualityManagement />
+                      <MainLayout>
+                        <QualityManagement />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -449,7 +534,9 @@ const App = () => (
                   path="/document-management" 
                   element={
                     <ProtectedRoute>
-                      <DocumentManagement />
+                      <MainLayout>
+                        <DocumentManagement />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -457,7 +544,9 @@ const App = () => (
                   path="/system-integrations" 
                   element={
                     <ProtectedRoute>
-                      <SystemIntegrations />
+                      <MainLayout>
+                        <SystemIntegrations />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -465,7 +554,9 @@ const App = () => (
                   path="/advanced-hr" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedHR />
+                      <MainLayout>
+                        <AdvancedHR />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -473,39 +564,75 @@ const App = () => (
                   path="/advanced-payroll" 
                   element={
                     <ProtectedRoute>
-                      <AdvancedPayroll />
+                      <MainLayout>
+                        <AdvancedPayroll />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
                 <Route 
-                  path="/menu-management" 
+                  path="/menu" 
                   element={
                     <ProtectedRoute>
-                      <MenuManagement />
+                      <MainLayout>
+                        <MenuManagement />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
                 <Route 
-                  path="/order-management" 
+                  path="/orders" 
                   element={
                     <ProtectedRoute>
-                      <OrderManagement />
+                      <MainLayout>
+                        <OrderManagement />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
                 <Route 
-                  path="/kitchen-management" 
+                  path="/kitchen" 
                   element={
                     <ProtectedRoute>
-                      <KitchenManagement />
+                      <MainLayout>
+                        <KitchenManagement />
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
                 <Route 
-                  path="/delivery-management" 
+                  path="/delivery" 
                   element={
                     <ProtectedRoute>
-                      <DeliveryManagement />
+                      <MainLayout>
+                        <DeliveryManagement />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/bookings" 
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <div className="p-6">
+                          <h1 className="text-2xl font-bold mb-4">نظام الحجوزات</h1>
+                          <p>صفحة نظام الحجوزات قيد التطوير...</p>
+                        </div>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/pos" 
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <div className="p-6">
+                          <h1 className="text-2xl font-bold mb-4">نقاط البيع</h1>
+                          <p>صفحة نقاط البيع قيد التطوير...</p>
+                        </div>
+                      </MainLayout>
                     </ProtectedRoute>
                   } 
                 />
@@ -524,3 +651,4 @@ const App = () => (
 );
 
 export default App;
+
