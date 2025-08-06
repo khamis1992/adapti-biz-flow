@@ -4,6 +4,7 @@ import { useTenant } from '@/hooks/useTenant';
 
 interface ModuleContextType {
   state: ModuleState;
+  enabledModules: string[];
   enableModule: (moduleId: string) => void;
   disableModule: (moduleId: string) => void;
   updateModuleData: (moduleId: string, data: Record<string, any>) => void;
@@ -99,14 +100,14 @@ export function ModuleProvider({ children }: { children: React.ReactNode }) {
       modules.forEach(module => {
         configs[module.module_id] = {
           id: module.module_id,
-          nameAr: module.name_ar || module.module_id,
-          nameEn: module.name_en || module.module_id,
-          descriptionAr: module.description_ar || '',
-          category: module.category || 'general',
-          icon: module.icon || 'Settings',
+          nameAr: module.module_id,
+          nameEn: module.module_id,
+          descriptionAr: '',
+          category: 'general',
+          icon: 'Settings',
           path: `/${module.module_id}`,
           dependencies: [],
-          order: module.order || 0,
+          order: 0,
           isEnabled: module.is_enabled,
         };
 
@@ -176,6 +177,7 @@ export function ModuleProvider({ children }: { children: React.ReactNode }) {
 
   const value: ModuleContextType = {
     state,
+    enabledModules: state.enabledModules,
     enableModule,
     disableModule,
     updateModuleData,
