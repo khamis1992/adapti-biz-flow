@@ -206,6 +206,10 @@ export default function OnboardingWizard() {
       if (tenantId) {
         console.log('Onboarding completed successfully, tenantId:', tenantId);
         
+        // Save onboarding completion flag in localStorage
+        localStorage.setItem('onboarding_completed', 'true');
+        localStorage.setItem('onboarding_time', Date.now().toString());
+        
         toast.success(state.isRTL ? 'تم إنشاء النظام بنجاح!' : 'System created successfully!');
         
         setRedirecting(true);

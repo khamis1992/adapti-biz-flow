@@ -27,6 +27,24 @@ export function OnboardingGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Check if onboarding was recently completed (within last 5 minutes)
+    const onboardingCompleted = localStorage.getItem('onboarding_completed');
+    const onboardingTime = localStorage.getItem('onboarding_time');
+    const now = Date.now();
+    const fiveMinutes = 5 * 60 * 1000;
+    
+    if (onboardingCompleted && onboardingTime) {
+      const completedTime = parseInt(onboardingTime);
+      if (now - completedTime < fiveMinutes) {
+        console.log('OnboardingGuard: Onboarding recently completed, allowing access');
+        return;
+      } else {
+        // Clear old onboarding flags
+        localStorage.removeItem('onboarding_completed');
+        localStorage.removeItem('onboarding_time');
+      }
+    }
+
     // If user is authenticated and tenant data is ready but has no tenant, redirect to onboarding
     if (user && tenantReady && !tenant) {
       console.log('OnboardingGuard: User has no tenant, redirecting to onboarding');

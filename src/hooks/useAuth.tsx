@@ -164,6 +164,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       console.log('Onboarding completed successfully:', result);
       
+      // Update user's tenant_id in the users table
+      if (result?.tenant_id) {
+        console.log('Updating user tenant_id:', result.tenant_id);
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({ tenant_id: result.tenant_id })
+          .eq('id', user.id);
+          
+        if (updateError) {
+          console.error('Error updating user tenant_id:', updateError);
+          // Don't fail the onboarding for this error, just log it
+        } else {
+          console.log('User tenant_id updated successfully');
+        }
+      }
+      
       // Force refresh auth state to get updated user data
       const { error: refreshError } = await supabase.auth.refreshSession();
       if (refreshError) {
