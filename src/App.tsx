@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from '@/hooks/useAuth';
 import { TenantProvider } from '@/hooks/useTenant';
 import { ModuleProvider } from '@/contexts/ModuleContext';
+import { TranslationProvider } from '@/hooks/useTranslation';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { OnboardingGuard } from '@/components/OnboardingGuard';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -73,13 +74,14 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ErrorBoundary>
-      <AuthProvider>
-        <TenantProvider>
-          <ModuleProvider>
-            <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+      <TranslationProvider>
+        <AuthProvider>
+          <TenantProvider>
+            <ModuleProvider>
+              <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
               <OnboardingGuard>
                 <Routes>
                 {/* Public routes - no authentication required */}
@@ -646,6 +648,7 @@ const App = () => (
           </ModuleProvider>
         </TenantProvider>
       </AuthProvider>
+      </TranslationProvider>
     </ErrorBoundary>
   </QueryClientProvider>
 );
